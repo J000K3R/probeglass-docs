@@ -69,9 +69,9 @@ append which of those it actually is:
 
 ```
 weatherglass: ping database /data/weatherglass.db: unable to open database file (14); /data is
-not writable by uid 65532, the user this process runs as. A bind mount keeps the ownership of the
+not writable by uid 500, the user this process runs as. A bind mount keeps the ownership of the
 host folder rather than taking the image's, so hand that folder to it once and start again:
-chown -R 65532:65532 <host folder>
+chown -R 500:500 <host folder>
 ```
 
 If your line carries no such hint, the cause is one of the others — check the free
@@ -82,13 +82,21 @@ container expects to be able to write.
 
 This is the cause almost every time, and it catches people who did nothing wrong.
 
-The image runs as uid **65532** (see [the image](/getting-started/install#the-image)).
+The image runs as uid **500** (see [the image](/getting-started/install#the-image)),
+which is the uid the appdata folders on those hosts are usually created with.
 A **named volume** is created by Docker from the image's own `/data`, so it
-inherits 65532 and simply works — that is what the install instructions and the
+inherits 500 and simply works — that is what the install instructions and the
 compose example use. A **bind mount** (`-v /host/path:/data`) does not: the host
-folder keeps whatever owner it already had, and if that owner is root, uid 65532
-cannot create a database inside it. Docker starts the container anyway, which is
-why the failure arrives one line later rather than at startup.
+folder keeps whatever owner it already had, and if that owner is `root` or a
+desktop user account, uid 500 cannot create a database inside it. Docker starts
+the container anyway, which is why the failure arrives one line later rather than
+at startup.
+
+A platform template is a bind mount even when it does not look like one. The
+MOS template, for instance, mounts `/mnt/cache/appdata/weatherglass` — the
+folder it just created — into `/data`. If that platform creates appdata as a
+different uid than the one it runs containers with, this is the line you will
+see on the very first start.
 
 Find out what the container is actually mounting, rather than trusting the
 compose file to say what you think it says:
@@ -103,10 +111,10 @@ Then look at the owner of that `Source` path **on the host**:
 ls -ln /path/from/above
 ```
 
-The third column is the numeric uid. If it is not `65532`, that is the problem:
+The third column is the numeric uid. If it is not `500`, that is the problem:
 
 ```bash
-sudo chown -R 65532:65532 /path/from/above
+sudo chown -R 500:500 /path/from/above
 docker restart weatherglass
 ```
 

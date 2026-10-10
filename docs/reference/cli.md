@@ -147,7 +147,7 @@ weatherglass doctor
 
 ok    build             weatherglass 0.1.0 (4a1c2e7) built 2026-11-02T09:14:03Z
 ok    config            /data/weatherglass.yaml (3 sensors, 1 channel)
-ok    data dir          /data (writable, uid 65532)
+ok    data dir          /data (writable, uid 500)
 ok    database          /data/weatherglass.db, 1.2 MiB, 40213 probes
 ok    integrity         quick_check ok
 ok    schema            version 3

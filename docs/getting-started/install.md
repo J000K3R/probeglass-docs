@@ -74,7 +74,7 @@ Notes on the flags:
 - `-v weatherglass-data:/data` — the whole state is one SQLite file in here.
   Backing up this volume backs up everything; see [Backup](/operations/backup).
   Prefer a named volume as above over `-v /host/path:/data`. A bind mount keeps the
-  host folder's owner, the image runs as uid 65532, and a folder that root created
+  host folder's owner, the image runs as uid 500, and a folder that root created
   is one the daemon cannot write its database into — the container then exits a
   second after it starts. See
   [Troubleshooting](/operations/troubleshooting#the-container-starts-and-stops-again).
@@ -127,8 +127,16 @@ which is exactly what makes the static cross-build possible.
 Available architectures: `linux/amd64`, `linux/arm64`, `linux/arm/v7`.
 
 The runtime stage is `gcr.io/distroless/static-debian12:nonroot`: no shell, no
-package manager, running as uid 65532. That is why the `HEALTHCHECK` invokes the
-binary itself (`weatherglass healthcheck`) instead of `curl`. It also means
+package manager, running as uid 500. 500 rather than distroless's own 65532,
+because the platforms this gets installed on — MOS, Unraid, and the compose files
+people write on top of them — create an appdata folder as 500:500. A folder the
+process does not own is a container that exits a second after it starts, so
+matching them means a first install works with no `chown`. If you need a
+different uid, it is set where the runtime reads it, not by an environment
+variable: `user:` in compose, `--user` for `docker run`.
+
+That uid is also why the `HEALTHCHECK` invokes the binary itself
+(`weatherglass healthcheck`) instead of `curl`. It also means
 `docker exec ... sh` will not work — there is no shell to give you. The binary
 is still there, so `docker exec weatherglass weatherglass doctor` does.
 

@@ -169,7 +169,7 @@ UI. Bot tokens end up in bug reports and pasted into chat rooms more often than
 anyone would like.
 
 **The image is minimal.** Distroless, no shell, no package manager, running as
-uid 65532. There is no interpreter in the container to pivot to, and
+uid 500. There is no interpreter in the container to pivot to, and
 `docker exec ... sh` does not work because there is no shell.
 
 ## 💾 The backup file carries secrets in the clear {#backup-secrets}
