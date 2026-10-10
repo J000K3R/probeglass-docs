@@ -18,7 +18,7 @@ the outage. It is the same interface the container serves, with no server behind
 it and nothing stored.
 
 <iframe
-  src="https://j000k3r.github.io/weatherglass-website/demo.html"
+  src="https://j000k3r.github.io/weatherglass-website/demo/"
   title="The Weatherglass dashboard, running on demo data"
   loading="lazy"
   style={{width: '100%', height: '640px', border: '1px solid var(--ifm-color-emphasis-300)', borderRadius: '8px'}}
@@ -27,14 +27,16 @@ it and nothing stored.
 :::tip It will not fit on a phone
 The dashboard is a wall-display interface; below about 900px of width it is
 cramped. If the frame above is too narrow, [open the demo in its own
-tab](https://j000k3r.github.io/weatherglass-website/demo.html) instead.
+tab](https://j000k3r.github.io/weatherglass-website/demo/) instead.
 :::
 
 ## 🌱 Or grow a real one locally {#or-grow-a-real-one-locally}
 
-The demo above has no history of its own — it is drawn from a fixed set of
-numbers. To get an actual week in a database you can poke at, in a volume you
-can throw away:
+The demo above is a recording and not an installation: the interface, the map and
+the charts are the real ones, answering from a set of replies taken from a real
+installation seeded with the data below. Nothing it offers writes anywhere, so a
+setting you change there lasts as long as the tab. To get an actual week in a
+database you can poke at, in a volume you can throw away:
 
 ```bash
 docker volume create weatherglass-demo
@@ -53,24 +55,42 @@ is exercised too.
 
 ## What the demo set contains
 
-Five sensors that between them cover all four types:
+Thirteen sensors covering all six types, in three groups and at two sites:
 
 | Sensor | Type | What it exercises |
 |---|---|---|
 | Example website | `http` | `expected_status` as a range, certificate warning |
 | Public resolver | `dns` | A record lookup by hostname |
-| Gateway ping | `ping` | Three echo requests per probe |
+| Internet ping | `ping` | Three echo requests per probe |
 | Resolver port | `tcp` | A plain connection to `host:port` |
-| Example website TLS | `tcp` | TLS handshake with a `server_name` override |
+| Example website TLS | `tls` | Handshake with a `server_name` override |
+| Package mirror | `http` | A second public HTTP target, a mirror that redirects |
+| DNS over TLS | `tls` | Certificate expiry read out of the reply |
+| Router: ping | `ping` | Paused — the homelab's own gateway |
+| NAS: SSH | `tcp` | Paused — a NAS, by port |
+| NAS: web interface | `http` | Paused — the same NAS, over HTTP |
+| Printer: ink level | `snmp` | Paused — an SNMP walk |
+| Rented server: SSH | `tcp` | Paused — a machine somewhere else |
+| Rented server: web | `http` | Paused — the same machine, over HTTPS |
 
-They are spread over two groups — Internet and Network — and carry tags, so the
-grouping and the search box have something to work with.
+Seven of them are **enabled**, and every enabled target is a public service.
+These are real sensors that the scheduler really probes: the history above them
+is a week of green, and a sensor that started failing a minute after it was
+seeded would contradict it.
+
+The other six are the homelab's own addresses, and they arrive **paused**.
+`192.168.1.10` does not answer on anybody else's network, so they place pins on
+the map and fill the wall without claiming anything about a network this
+installation cannot see. Turning one on is a click.
+
+The two places, **Homelab** and **Rented server**, carry coordinates. That is what
+gives the map its markers; without them the map tab has nothing to draw.
 
 The synthetic week is written at five-minute spacing: plausible latencies with a
-slow hourly drift, so the min/max band on the charts is not a flat line, and six
-outages between 3 and 26 minutes long — enough that the uptime percentages differ
-between the 24-hour, 7-day, and 30-day columns, and enough that the Incidents tab
-has a real history rather than one row.
+slow hourly drift, so the min/max band on the charts is not a flat line, and
+eleven outages between 3 and 60 minutes long — enough that the uptime percentages
+differ between the 24-hour, 7-day, and 30-day columns, and enough that the
+Incidents tab has a real history rather than one row.
 
 The generator is **deterministic** — it seeds itself from the sensor ID — so the
 same command produces the same dashboard. That makes it usable for screenshots
@@ -126,8 +146,8 @@ data**, so a single button under **Settings → Monitoring → Example data** re
 
 <img
   src="/img/example-data.png"
-  alt="The Example data panel: a sentence saying the sensors the dashboard started with are examples, a line reading five example sensors, 10080 stored probes and 7 incidents, and a red Remove all example data button."
-  width="1600"
+  alt="The Example data panel: a sentence saying the sensors the dashboard started with are examples, a line reading 13 example sensors, 26208 stored probes and 11 incidents, and a red Remove all example data button."
+  width="1492"
 />
 
 Their history goes with them, and the button asks before it does anything. Sensors

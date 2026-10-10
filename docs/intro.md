@@ -46,9 +46,11 @@ invented. When you are done with it, **Settings → Monitoring → Example data*
 invented set in one click.*
 
 :::tip Try it before you install it
-There is a [clickable demo](https://j000k3r.github.io/weatherglass-website/demo.html)
+There is a [clickable demo](https://j000k3r.github.io/weatherglass-website/demo/)
 of the whole dashboard running in your browser on invented data — no container,
-no account, nothing stored. It is the same interface this container serves.
+no account, nothing stored. It is not a copy of the interface: it is the same
+files this container serves, answering from a set of recorded replies, which is
+why the map, the widgets and the guided tour are all there.
 :::
 
 :::warning A hobby project, vibe coded, and nobody is liable for anything
