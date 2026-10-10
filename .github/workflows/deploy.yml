@@ -1,0 +1,54 @@
+name: Deploy documentation
+
+on:
+  push:
+    branches: [main]
+  # Lets you re-run a deployment from the Actions tab without pushing a commit.
+  workflow_dispatch:
+
+# GITHUB_TOKEN needs to write the Pages artifact; nothing else.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deployments race, and never cancel one that is already
+# publishing — a half-uploaded site is worse than a slightly stale one.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Broken internal links and unknown sidebar ids fail the build here rather
+      # than reaching the deployed site.
+      - name: Build
+        run: npm run build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

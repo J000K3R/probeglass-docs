@@ -1,0 +1,53 @@
+/**
+ * Styling for the Weatherglass documentation site.
+ *
+ * Docusaurus is themed by overriding its CSS variables rather than by
+ * swizzling components, which keeps the theme upgradeable. The accent is the
+ * same blue the dashboard uses as its default ("azure"), so the site and the
+ * product look like one thing.
+ */
+
+:root {
+  --ifm-color-primary: #2563eb;
+  --ifm-color-primary-dark: #1d55d0;
+  --ifm-color-primary-darker: #1b50c4;
+  --ifm-color-primary-darkest: #16419f;
+  --ifm-color-primary-light: #4079ee;
+  --ifm-color-primary-lighter: #4d83f0;
+  --ifm-color-primary-lightest: #7ba3f4;
+
+  --ifm-code-font-size: 92%;
+  --ifm-font-size-base: 16px;
+  --docusaurus-highlighted-code-line-bg: rgba(37, 99, 235, 0.12);
+}
+
+/* The dark palette needs its own, lighter set of steps to stay legible. */
+[data-theme='dark'] {
+  --ifm-color-primary: #7ba3f4;
+  --ifm-color-primary-dark: #5b8df1;
+  --ifm-color-primary-darker: #4d83f0;
+  --ifm-color-primary-darkest: #2563eb;
+  --ifm-color-primary-light: #9bbaf7;
+  --ifm-color-primary-lighter: #aac4f8;
+  --ifm-color-primary-lightest: #d9e5fc;
+  --docusaurus-highlighted-code-line-bg: rgba(123, 163, 244, 0.2);
+}
+
+/* Tables carry a lot of this documentation — check options, environment
+   variables, API routes — so they get a little more room than the default. */
+.markdown table {
+  display: table;
+  width: 100%;
+  font-size: 0.92rem;
+}
+
+.markdown table th,
+.markdown table td {
+  padding: 0.5rem 0.75rem;
+}
+
+/* Long identifiers in tables should wrap rather than force a horizontal
+   scrollbar on the whole page. */
+.markdown table code {
+  white-space: nowrap;
+}

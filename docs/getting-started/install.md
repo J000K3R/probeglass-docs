@@ -1,0 +1,186 @@
+---
+title: Installation
+sidebar_label: Installation
+description: Install Weatherglass with Docker Compose, plain Docker, or from source, and finish the first-run setup.
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Installation
+
+Weatherglass is one container with no runtime dependencies. Pick whichever of
+the three routes below matches how you run the rest of your homelab.
+
+## Requirements
+
+- Any machine that runs Docker, or a Go toolchain if you build from source.
+- Roughly 30 MB of disk for the image and a few MB of RAM while running.
+- `NET_RAW` **only** if you want ICMP ping sensors. Everything else works
+  unprivileged.
+
+Weatherglass speaks plain HTTP on port 8080. It expects to sit behind your
+existing reverse proxy if you need TLS — see
+[Running behind a reverse proxy](/operations/reverse-proxy).
+
+## Install
+
+Pick the route that matches how you run the rest of your homelab. They all end
+up serving the same binary on port 8080.
+
+<Tabs groupId="install-method">
+<TabItem value="compose" label="Docker Compose" default>
+
+The repository ships a `docker-compose.yml` with the volume, the port, and the
+`NET_RAW` capability already set up:
+
+```bash
+git clone https://github.com/j000k3r/weatherglass.git
+cd weatherglass
+docker compose up -d
+```
+
+The compose file pins `j000k3r/weatherglass:latest`. For a reproducible
+deployment, replace that with a specific version tag once you have decided
+which one you are on.
+
+</TabItem>
+<TabItem value="docker" label="docker run">
+
+```bash
+docker run -d \
+  --name weatherglass \
+  --restart unless-stopped \
+  -p 8080:8080 \
+  -v weatherglass-data:/data \
+  --cap-add NET_RAW \
+  j000k3r/weatherglass:latest
+```
+
+Notes on the flags:
+
+- `-v weatherglass-data:/data` — the whole state is one SQLite file in here.
+  Backing up this volume backs up everything; see [Backup](/operations/backup).
+- `--cap-add NET_RAW` — needed for ICMP ping. Without it, ping sensors fall back
+  to an unprivileged UDP ping, and if that is unavailable too the sensor result
+  says so explicitly rather than silently reporting a failure.
+- `--restart unless-stopped` — the image ships a `HEALTHCHECK`, so Docker knows
+  the difference between "running" and "working" and can restart it if needed.
+
+If you would rather not hand-write the command, `weatherglass doctor` tells you
+what a running installation is actually configured with — including a warning
+when ping is listed as a problem and the capability is missing.
+
+</TabItem>
+<TabItem value="source" label="From source">
+
+Requires Go 1.27 or newer. There is no frontend build step; the dashboard is
+embedded from `internal/web/assets` at compile time.
+
+```bash
+git clone https://github.com/j000k3r/weatherglass.git
+cd weatherglass
+make run          # builds the binary and serves :8080, data in ./data
+```
+
+Other useful targets:
+
+```bash
+make build        # just the binary, into ./bin
+make test         # the test suite
+make dev          # run straight from source with debug logging
+make seed         # fill ./data with demo data
+make help         # everything else
+```
+
+To cross-compile for a Raspberry Pi without a Docker build:
+
+```bash
+GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -o weatherglass ./cmd/weatherglass
+```
+
+`CGO_ENABLED=0` is not optional — the SQLite driver is a pure-Go translation,
+which is exactly what makes the static cross-build possible.
+
+</TabItem>
+</Tabs>
+
+## The image
+
+Available architectures: `linux/amd64`, `linux/arm64`, `linux/arm/v7`.
+
+The runtime stage is `gcr.io/distroless/static-debian12:nonroot`: no shell, no
+package manager, running as uid 65532. That is why the `HEALTHCHECK` invokes the
+binary itself (`weatherglass healthcheck`) instead of `curl`. It also means
+`docker exec ... sh` will not work — there is no shell to give you. The binary
+is still there, so `docker exec weatherglass weatherglass doctor` does.
+
+## Building the container image
+
+`make docker` needs **BuildKit**, because the Dockerfile pins its builder to
+`--platform=$BUILDPLATFORM` and cross-compiles to the target architecture rather
+than emulating it. BuildKit ships with Docker Desktop and is the default on
+current Docker engines. If you installed Docker through Homebrew's `docker`
+formula, it is a separate package:
+
+```bash
+brew install docker-buildx
+```
+
+Without it, the legacy builder fails with `failed to parse platform : "" is an
+invalid OS component`, which is a confusing way of saying "BuildKit is not
+installed". You can always use `make run`, which builds and serves the same
+binary natively.
+
+## First run {#first-run}
+
+The first request to a fresh database redirects the dashboard to a setup screen:
+
+<img
+  src="/img/setup.png"
+  alt="The setup screen: the Weatherglass mark, a Username field, a Password field with a strength bar, a Repeat password field and a Continue button."
+  width="1600"
+/>
+
+1. Open [http://localhost:8080](http://localhost:8080).
+2. Choose a **username** and a **password**. The password must be at least eight
+   characters; it is hashed with bcrypt at cost 12 and never stored or logged in
+   plain text.
+3. Answer the one question about how much interface to show — this is the
+   [simple or advanced mode](/configuration/dashboard#simple-and-advanced), and
+   it can be changed later.
+4. You are signed in as the installation's first **administrator**. Add your first
+   sensor — see [Your first sensor](/getting-started/first-sensor).
+
+More accounts, their roles and their second factors are managed under
+**Settings → Access → Users**; [Security](/concepts/security#accounts) describes what each
+role may do.
+
+To skip the interactive step in an automated deployment, set
+`WEATHERGLASS_ADMIN_PASSWORD` before the first start:
+
+```bash
+docker run -d --name weatherglass -p 8080:8080 \
+  -v weatherglass-data:/data \
+  -e WEATHERGLASS_ADMIN_PASSWORD='correct horse battery staple' \
+  j000k3r/weatherglass:latest
+```
+
+This creates an account called **`admin`** with that password. It is read **only
+when the database has no accounts yet** and is ignored on every later start; it
+does not override an existing account, so leaving it in your compose file is not a
+back door. Sign in as `admin` and rename or replace it once you are in.
+
+:::warning
+The setup endpoint is refused once an account exists. If you forget the password,
+there is no recovery endpoint by design. Unless another administrator can reset it
+for you under **Settings → Access → Users**, the way back in is to delete the rows from the
+`users` table of the SQLite file directly — or, if the database holds nothing you
+care about, to start from a fresh volume, which brings the setup screen back.
+:::
+
+## Next steps
+
+- [Your first sensor](/getting-started/first-sensor)
+- [Try it with demo data](/getting-started/demo-data)
+- [Configuration](/configuration/)
