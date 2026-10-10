@@ -47,7 +47,7 @@ This is the intended way to deploy Weatherglass unattended:
 ```yaml
 services:
   weatherglass:
-    image: j000k3r/weatherglass:latest
+    image: ghcr.io/j000k3r/weatherglass:dev
     restart: unless-stopped
     ports: ["8080:8080"]
     volumes: ["weatherglass-data:/data"]

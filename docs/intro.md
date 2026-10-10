@@ -27,7 +27,7 @@ sorts to the top of its group.*
 ```bash
 docker run -d --name weatherglass --restart unless-stopped \
   -p 8080:8080 -v weatherglass-data:/data --cap-add NET_RAW \
-  j000k3r/weatherglass:latest
+  ghcr.io/j000k3r/weatherglass:dev
 ```
 
 Open [http://localhost:8080](http://localhost:8080), create the administrator

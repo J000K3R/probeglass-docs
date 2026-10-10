@@ -21,12 +21,24 @@ the three routes below matches how you run the rest of your homelab.
 
 Weatherglass speaks plain HTTP on port 8080. It expects to sit behind your
 existing reverse proxy if you need TLS — see
-[Running behind a reverse proxy](/operations/reverse-proxy).
+[Running behind a reverse proxy](/operations/reverse-proxy). That page also
+explains why this must **not** be reachable from outside your network yet.
 
 ## Install
 
 Pick the route that matches how you run the rest of your homelab. They all end
 up serving the same binary on port 8080.
+
+:::note Which tag to pull
+The image lives on the GitHub Container Registry as
+`ghcr.io/j000k3r/weatherglass`. It is public, so pulling it needs no account and
+no `docker login`.
+
+For now there is one moving tag, **`dev`**, and the commands below use it. Every
+image also carries the commit it was built from (`sha-4a1c2e7`), which is the tag
+to pin if you want a build that never changes under you. Once 0.1.0 is released
+there will be a version tag per release, and that is what the commands will name.
+:::
 
 <Tabs groupId="install-method">
 <TabItem value="compose" label="Docker Compose" default>
@@ -40,7 +52,7 @@ cd weatherglass
 docker compose up -d
 ```
 
-The compose file pins `j000k3r/weatherglass:latest`. For a reproducible
+The compose file pins `ghcr.io/j000k3r/weatherglass:dev`. For a reproducible
 deployment, replace that with a specific version tag once you have decided
 which one you are on.
 
@@ -54,7 +66,7 @@ docker run -d \
   -p 8080:8080 \
   -v weatherglass-data:/data \
   --cap-add NET_RAW \
-  j000k3r/weatherglass:latest
+  ghcr.io/j000k3r/weatherglass:dev
 ```
 
 Notes on the flags:
@@ -168,7 +180,7 @@ To skip the interactive step in an automated deployment, set
 docker run -d --name weatherglass -p 8080:8080 \
   -v weatherglass-data:/data \
   -e WEATHERGLASS_ADMIN_PASSWORD='correct horse battery staple' \
-  j000k3r/weatherglass:latest
+  ghcr.io/j000k3r/weatherglass:dev
 ```
 
 This creates an account called **`admin`** with that password. It is read **only

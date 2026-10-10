@@ -105,7 +105,7 @@ const config = {
               },
               {
                 label: 'Container image',
-                href: 'https://hub.docker.com/r/j000k3r/weatherglass',
+                href: 'https://github.com/j000k3r/weatherglass/pkgs/container/weatherglass',
               },
               {
                 label: 'Issues',

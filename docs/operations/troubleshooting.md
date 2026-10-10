@@ -139,7 +139,7 @@ docker run -d --name weatherglass \
   -v weatherglass-data:/data \
   --cap-add NET_RAW \
   --restart unless-stopped \
-  j000k3r/weatherglass:latest
+  ghcr.io/j000k3r/weatherglass:dev
 ```
 
 Nothing inside the container needs a particular host path — the whole state is one

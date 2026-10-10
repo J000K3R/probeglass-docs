@@ -40,11 +40,11 @@ can throw away:
 docker volume create weatherglass-demo
 
 docker run --rm -v weatherglass-demo:/data \
-  j000k3r/weatherglass:latest seed --demo --days 7
+  ghcr.io/j000k3r/weatherglass:dev seed --demo --days 7
 
 docker run -d --name weatherglass-demo -p 8080:8080 \
   -v weatherglass-demo:/data --cap-add NET_RAW \
-  j000k3r/weatherglass:latest
+  ghcr.io/j000k3r/weatherglass:dev
 ```
 
 Open [http://localhost:8080](http://localhost:8080) and create the administrator

@@ -9,13 +9,22 @@ description: How to move between versions, what happens to the database, and how
 Upgrading is pulling a new image and restarting. Database migrations run at
 startup, in a transaction, and are recorded so they are never applied twice.
 
+While the project is in development there is one moving tag, `dev`:
+
 ```bash
-docker pull j000k3r/weatherglass:0.2.0
+docker pull ghcr.io/j000k3r/weatherglass:dev
 
 docker stop weatherglass && docker rm weatherglass
 docker run -d --name weatherglass --restart unless-stopped \
   -p 8080:8080 -v weatherglass-data:/data --cap-add NET_RAW \
-  j000k3r/weatherglass:0.2.0
+  ghcr.io/j000k3r/weatherglass:dev
+```
+
+Once 0.1.0 is released, every version is published as its own tag — `0.1.0`,
+`0.1`, and `latest` — so pin the one you mean and change it when you choose to:
+
+```bash
+docker pull ghcr.io/j000k3r/weatherglass:0.1.0
 ```
 
 With Compose, change the tag and `docker compose up -d`. The volume is untouched
@@ -28,7 +37,7 @@ Take a backup. It costs one command and five seconds:
 ```bash
 docker stop weatherglass
 docker run --rm -v weatherglass-data:/data -v "$PWD:/backup" alpine \
-  cp /data/weatherglass.db /backup/weatherglass-before-0.2.0.db
+  cp /data/weatherglass.db /backup/weatherglass-before-upgrade.db
 docker start weatherglass
 ```
 
@@ -75,7 +84,7 @@ docker exec weatherglass weatherglass version
 ```
 
 ```
-weatherglass 0.2.0 (4a1c2e7) built 2026-11-02T09:14:03Z
+weatherglass 0.1.0 (4a1c2e7) built 2026-11-02T09:14:03Z
 ```
 
 The commit and the build date are only present when they were stamped in at
@@ -95,7 +104,7 @@ exactly where you started, including the incident log:
 docker stop weatherglass
 docker run --rm -v weatherglass-data:/data -v "$PWD:/backup" alpine \
   sh -c 'rm -f /data/weatherglass.db-wal /data/weatherglass.db-shm && \
-         cp /backup/weatherglass-before-0.2.0.db /data/weatherglass.db'
+         cp /backup/weatherglass-before-upgrade.db /data/weatherglass.db'
 docker start weatherglass
 ```
 

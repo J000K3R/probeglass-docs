@@ -1,10 +1,38 @@
 ---
 title: Running behind a reverse proxy
 sidebar_label: Reverse proxy
-description: nginx, Caddy, and Traefik configurations, with the two settings that actually matter.
+description: nginx, Caddy, and Traefik configurations, with the two settings that actually matter — and why this must not be exposed to the internet yet.
 ---
 
 # Running behind a reverse proxy
+
+:::danger Do not expose this to the internet yet
+
+Weatherglass is at version 0.1.0 and is not ready to be reachable from outside
+your own network. A reverse proxy is for TLS, a hostname and an IP allowlist
+**inside a LAN**. It is not a way to make this safe to publish.
+
+What is missing, concretely:
+
+- **The login throttling is per process and in memory.** It slows a single
+  attacker down. It is not a lockout, it does not survive a restart, and it
+  knows nothing about a second instance.
+- **There is no account recovery and no audit trail** of who signed in from
+  where, so an intrusion would leave little to notice.
+- **The API key carries full administrative rights** and is a single string
+  with no expiry and no scopes. Anyone who reads it owns the installation. See
+  [Security](/concepts/security#authentication).
+- **The session cookie has no `Secure` flag**, deliberately, because homelab
+  installs are often plain HTTP. Behind a TLS proxy the cookie is still willing
+  to travel in clear text.
+- **The alert channels hold credentials** — a bot token, a webhook URL — and
+  the backup file contains them unmasked on purpose.
+
+An IP allowlist narrows who can reach it. It does not fix any of the above, and
+it is one misconfigured rule away from being no protection at all. When the
+project leaves 0.1.0, this page will say what changed and what to review first.
+
+:::
 
 Weatherglass serves plain HTTP on port 8080 and expects a proxy in front of it if
 you want TLS, a hostname, or an IP allowlist. Two things need configuring, and
@@ -81,7 +109,7 @@ weatherglass.lan {
 }
 ```
 
-If you want the IP allowlist that makes this safe to expose on a wider network:
+If you want to narrow who can reach the dashboard inside your own network:
 
 ```caddyfile
 weatherglass.lan {
@@ -93,12 +121,16 @@ weatherglass.lan {
 }
 ```
 
+An allowlist like that is a useful second lock on a LAN and no help at all
+against the things listed at the top of this page — it narrows the door, it does
+not replace one.
+
 ## Traefik
 
 ```yaml
 services:
   weatherglass:
-    image: j000k3r/weatherglass:latest
+    image: ghcr.io/j000k3r/weatherglass:dev
     labels:
       traefik.enable: "true"
       traefik.http.routers.wg.rule: "Host(`weatherglass.lan`)"

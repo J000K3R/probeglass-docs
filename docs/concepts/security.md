@@ -375,6 +375,14 @@ be one.
 
 ## ⚠️ What is not protected {#what-is-not-protected}
 
+:::danger This is not ready for the internet
+Everything below is a boundary of a version 0.1.0 installation, and taken together
+they mean Weatherglass must not be reachable from outside your own network yet. A
+reverse proxy with TLS and an allowlist is for a LAN; it is not a way to publish
+this. See [Running behind a reverse proxy](/operations/reverse-proxy) for the
+detail and for what has to change first.
+:::
+
 To be clear about the boundaries:
 
 - **The traffic is plain HTTP by default.** Anything on the network path can read
@@ -391,10 +399,13 @@ To be clear about the boundaries:
   includes someone with the disk, use full-disk encryption.
 - **Login rate limiting is per process and in memory.** It is a speed bump
   against casual guessing, not a defence against a distributed attack.
+- **The API key is a single string with no expiry and no scopes**, and it is an
+  administrator. See [Authentication](#authentication).
 
-If any of those are wrong for your deployment, the fix is a reverse proxy with
-TLS and an IP allowlist in front of Weatherglass, which is two lines of nginx
-configuration. See [Running behind a reverse proxy](/operations/reverse-proxy).
+If any of those are wrong for your deployment, the first step is a reverse proxy
+with TLS and an IP allowlist, which is two lines of nginx configuration — and the
+second step, before anything is reachable from outside, is waiting for a version
+that is meant for it. See [Running behind a reverse proxy](/operations/reverse-proxy).
 
 ## 🐛 Reporting a vulnerability {#reporting-a-vulnerability}
 
