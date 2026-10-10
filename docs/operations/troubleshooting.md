@@ -1,7 +1,7 @@
 ---
 title: Troubleshooting
 sidebar_label: Troubleshooting
-description: What to look at when the dashboard will not load, sensors never turn green, alerts do not arrive, or the database is locked.
+description: What to look at when the container will not stay up, the dashboard will not load, sensors never turn green, alerts do not arrive, or the database is locked.
 ---
 
 # Troubleshooting
@@ -42,6 +42,112 @@ docker run -d --name weatherglass -e WEATHERGLASS_LOG_LEVEL=debug ...
 **Settings → Help and maintenance → About** shows the version, the base URL, the data directory, the
 configuration file actually loaded, and the log level. That panel answers "is it
 running the file I think it is running?" in one look.
+
+## 🛑 The container starts and stops again {#the-container-starts-and-stops-again}
+
+`docker ps -a` shows it as `Exited (1)`, and with `--restart unless-stopped` it
+comes back every few seconds. First, because it is the natural next move and it
+will not work here: `doctor` needs a running container to exec into. There is
+nothing to look at in the dashboard either — the process never got as far as
+listening. The log is the whole story:
+
+```bash
+docker logs weatherglass --tail 20
+```
+
+The line that matters is the one without a timestamp, because it goes straight to
+stderr rather than through the logger:
+
+```
+weatherglass: ping database /data/weatherglass.db: unable to open database file (14)
+```
+
+That is SQLite failing to open its own file. `14` is `SQLITE_CANTOPEN`, and SQLite
+reports the same number whether the directory is missing, the file is read-only,
+the disk is full, or the directory belongs to somebody else. Current versions
+append which of those it actually is:
+
+```
+weatherglass: ping database /data/weatherglass.db: unable to open database file (14); /data is
+not writable by uid 65532, the user this process runs as. A bind mount keeps the ownership of the
+host folder rather than taking the image's, so hand that folder to it once and start again:
+chown -R 65532:65532 <host folder>
+```
+
+If your line carries no such hint, the cause is one of the others — check the free
+space on the volume, and see [Backup](/operations/backup) for what else the
+container expects to be able to write.
+
+### The bind mount kept the host's ownership
+
+This is the cause almost every time, and it catches people who did nothing wrong.
+
+The image runs as uid **65532** (see [the image](/getting-started/install#the-image)).
+A **named volume** is created by Docker from the image's own `/data`, so it
+inherits 65532 and simply works — that is what the install instructions and the
+compose example use. A **bind mount** (`-v /host/path:/data`) does not: the host
+folder keeps whatever owner it already had, and if that owner is root, uid 65532
+cannot create a database inside it. Docker starts the container anyway, which is
+why the failure arrives one line later rather than at startup.
+
+Find out what the container is actually mounting, rather than trusting the
+compose file to say what you think it says:
+
+```bash
+docker inspect -f '{{range .Mounts}}{{.Type}} {{.Source}} -> {{.Destination}}{{"\n"}}{{end}}' weatherglass
+```
+
+Then look at the owner of that `Source` path **on the host**:
+
+```bash
+ls -ln /path/from/above
+```
+
+The third column is the numeric uid. If it is not `65532`, that is the problem:
+
+```bash
+sudo chown -R 65532:65532 /path/from/above
+docker restart weatherglass
+```
+
+The same applies to the directories above it: a path has to be walkable, so every
+parent needs its execute bit. A folder that is `700` and owned by root is
+unreadable at any depth, no matter who owns the last component.
+
+### When that does not hold
+
+- **A network share that squashes root** (NFS `root_squash`, some SMB exports)
+  silently discards the `chown`. The export has to permit the ownership change,
+  or the data directory has to live on a local disk.
+- **Unraid** serves `/mnt/user/appdata/...` through a FUSE layer over
+  `/mnt/cache/appdata/...`. Changing ownership through the `/mnt/user` view can be
+  slow, or appear to do nothing. Address the disk the data actually lives on.
+- **A read-only mount** (`:ro` in the volume spec) fails in exactly this way.
+  Worth a look at the volume line.
+- **The disk is full.** Check with `df -h` on the host at that path. With no space
+  left, SQLite cannot even create its journal file and reports it as a failure to
+  open the database — the same line as everything else.
+
+### A named volume is the short way out
+
+If the folder is not doing anything else for you, drop the bind mount and let
+Docker own the volume:
+
+```bash
+docker run -d --name weatherglass \
+  -p 8080:8080 \
+  -v weatherglass-data:/data \
+  --cap-add NET_RAW \
+  --restart unless-stopped \
+  j000k3r/weatherglass:latest
+```
+
+Nothing inside the container needs a particular host path — the whole state is one
+SQLite file and its write-ahead log. A named volume is created with the right owner
+from the start, and `docker volume inspect weatherglass-data` still tells you where
+it lives when you want to copy it out. The one thing to know is that a bind mount
+is what you want if you already have a backup routine pointed at an appdata
+folder; in that case keep the bind mount and fix the ownership.
 
 ## 🚪 The dashboard will not load {#the-dashboard-will-not-load}
 

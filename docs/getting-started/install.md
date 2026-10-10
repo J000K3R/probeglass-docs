@@ -61,6 +61,11 @@ Notes on the flags:
 
 - `-v weatherglass-data:/data` — the whole state is one SQLite file in here.
   Backing up this volume backs up everything; see [Backup](/operations/backup).
+  Prefer a named volume as above over `-v /host/path:/data`. A bind mount keeps the
+  host folder's owner, the image runs as uid 65532, and a folder that root created
+  is one the daemon cannot write its database into — the container then exits a
+  second after it starts. See
+  [Troubleshooting](/operations/troubleshooting#the-container-starts-and-stops-again).
 - `--cap-add NET_RAW` — needed for ICMP ping. Without it, ping sensors fall back
   to an unprivileged UDP ping, and if that is unavailable too the sensor result
   says so explicitly rather than silently reporting a failure.
