@@ -373,7 +373,7 @@ their sparkline, their 24-hour uptime and their buttons.
 
 <img
   src="/img/dashboard-tree.png"
-  alt="The tree view: two places, Hetzner Cloud and Homelab, each folded open into its groups and sensors, with a third heading for the sensors that have no place yet."
+  alt="The tree view: two places, Homelab and Rented server, each folded open into its groups and sensors, with a third heading for the sensors that have no place yet."
   width="1600"
 />
 
@@ -402,7 +402,7 @@ the point under the pointer, and buttons for the ones who prefer them.
 
 <img
   src="/img/dashboard-map.png"
-  alt="The map view: the world's coastlines drawn by Weatherglass itself, with two markers, Hetzner Cloud in the north-east and Homelab further south-west, and a legend in the bottom left corner."
+  alt="The map view: the world's coastlines drawn by Weatherglass itself — Europe, Africa, Greenland, and the coast of North America — with two markers, Homelab in the north-east and Rented server in the south-west, and a legend in the bottom left corner."
   width="1600"
 />
 
@@ -420,7 +420,7 @@ of its own under **Settings → Monitoring → Sites**.
 
 <img
   src="/img/settings-sites.png"
-  alt="The Sites panel in Settings: two rows, Homelab marked local with coordinates and Hetzner Cloud marked external, each with its sensor count, plus the button that adds another."
+  alt="The Sites panel in Settings: two rows, Homelab marked local with coordinates and Rented server marked external, each with its sensor count, plus the button that adds another."
   width="1600"
 />
 
@@ -467,6 +467,11 @@ The data is coarse on purpose: continents are recognisable to about zoom 6, and 
 city the coastline is straight lines between distant points. It exists so that the map
 has something honest underneath its markers, and so that a machine with no route to the
 internet still shows the places in the right position relative to each other.
+
+**The map opens on the closest zoom that holds every marker.** One place opens on its
+own town, with the outline off the picture — that is the case the tile field is for.
+Places on different continents open on the world, and there the coastlines are the
+ground under the pins.
 
 If you want detailed imagery, run a tile server and put its address in
 **Settings → Look → Map**. The field takes an ordinary raster-tile URL:

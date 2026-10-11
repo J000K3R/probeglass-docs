@@ -84,7 +84,9 @@ the map and fill the wall without claiming anything about a network this
 installation cannot see. Turning one on is a click.
 
 The two places, **Homelab** and **Rented server**, carry coordinates. That is what
-gives the map its markers; without them the map tab has nothing to draw.
+gives the map its markers; without them the map tab has nothing to draw. They are also
+an ocean apart, so the map opens with the world on it and the coastlines showing — which
+two places in one country would not give.
 
 The synthetic week is written at five-minute spacing: plausible latencies with a
 slow hourly drift, so the min/max band on the charts is not a flat line, and
