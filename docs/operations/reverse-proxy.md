@@ -133,10 +133,10 @@ services:
     image: ghcr.io/j000k3r/probeglass:dev
     labels:
       traefik.enable: "true"
-      traefik.http.routers.wg.rule: "Host(`probeglass.lan`)"
-      traefik.http.routers.wg.entrypoints: "websecure"
-      traefik.http.routers.wg.tls: "true"
-      traefik.http.services.wg.loadbalancer.server.port: "8080"
+      traefik.http.routers.probeglass.rule: "Host(`probeglass.lan`)"
+      traefik.http.routers.probeglass.entrypoints: "websecure"
+      traefik.http.routers.probeglass.tls: "true"
+      traefik.http.services.probeglass.loadbalancer.server.port: "8080"
     volumes: ["probeglass-data:/data"]
 ```
 

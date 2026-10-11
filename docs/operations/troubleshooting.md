@@ -431,7 +431,7 @@ disabled shows as **Paused**, which is grey rather than green, and is easy to
 miss on a busy dashboard.
 
 ```bash
-curl -s -H "X-API-Key: $WG_KEY" localhost:8080/api/sensors | jq '.[] | {name, enabled, interval}'
+curl -s -H "X-API-Key: $PG_KEY" localhost:8080/api/sensors | jq '.[] | {name, enabled, interval}'
 ```
 
 If a sensor is missing entirely, it may have been declared in a configuration file

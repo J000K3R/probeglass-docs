@@ -897,9 +897,9 @@ The same settings are readable and writable over HTTP, and they are the settings
 of whichever account the request is authenticated as:
 
 ```bash
-curl -H "X-API-Key: $WG_KEY" localhost:8080/api/settings | jq
+curl -H "X-API-Key: $PG_KEY" localhost:8080/api/settings | jq
 
-curl -X PUT -H "X-API-Key: $WG_KEY" -H 'Content-Type: application/json' \
+curl -X PUT -H "X-API-Key: $PG_KEY" -H 'Content-Type: application/json' \
   -d '{"ui":{"theme":"dark","density":"compact"}}' \
   localhost:8080/api/settings
 ```

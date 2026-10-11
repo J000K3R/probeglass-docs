@@ -16,10 +16,10 @@ Three ways, in order of usefulness for a script:
 
 ```bash
 # API key in a header
-curl -H "X-API-Key: $WG_KEY" http://localhost:8080/api/summary
+curl -H "X-API-Key: $PG_KEY" http://localhost:8080/api/summary
 
 # …or as a bearer token, for clients that want OAuth-shaped syntax
-curl -H "Authorization: Bearer $WG_KEY" http://localhost:8080/api/summary
+curl -H "Authorization: Bearer $PG_KEY" http://localhost:8080/api/summary
 
 # …or a session cookie, which is what the dashboard uses
 curl -c /tmp/jar -X POST -H 'Content-Type: application/json' \
@@ -137,7 +137,7 @@ page can.
 
 ```bash
 # Everything still running on one sensor, in the last week.
-curl -H "X-API-Key: $WG_KEY" \
+curl -H "X-API-Key: $PG_KEY" \
   'localhost:8080/api/incidents?state=open&sensor=3&range=7d'
 ```
 
@@ -160,7 +160,7 @@ error — it is answered with an empty list, because somebody typing one letter 
 time has done nothing wrong and does not deserve a red toast for it.
 
 ```bash
-curl -s -H "X-API-Key: $WG_KEY" 'localhost:8080/api/search?q=router' | jq
+curl -s -H "X-API-Key: $PG_KEY" 'localhost:8080/api/search?q=router' | jq
 ```
 
 ```json
@@ -275,7 +275,7 @@ everything, with `days=all`. `days` means nothing for the config scope, and is
 absent from such a file rather than present as a zero.
 
 ```bash
-curl -fsS -H "X-API-Key: $WG_KEY" \
+curl -fsS -H "X-API-Key: $PG_KEY" \
   "localhost:8080/api/backup?scope=history&days=30" -o backup.json
 ```
 
@@ -297,7 +297,7 @@ anywhere in the product and this does not introduce the first one; the body is
 capped at 64 MiB and read as a stream.
 
 ```bash
-curl -X POST -H "X-API-Key: $WG_KEY" -H 'Content-Type: application/json' \
+curl -X POST -H "X-API-Key: $PG_KEY" -H 'Content-Type: application/json' \
   --data-binary @backup.json localhost:8080/api/restore
 ```
 
@@ -366,7 +366,7 @@ rows it does not declare is how two sources of truth begin to disagree.
 | `PUT` | `/api/map` | `{"tile_url":"…","attribution":"…","borders":"on"}` — the installation-wide tile source and whether the map draws its borders and names; empty `tile_url` means "fetch nothing" | admin |
 
 ```bash
-curl -X POST -H "X-API-Key: $WG_KEY" -H 'Content-Type: application/json' \
+curl -X POST -H "X-API-Key: $PG_KEY" -H 'Content-Type: application/json' \
   -d '{"name":"Rack A","kind":"local","lat":48.1372,"lon":11.5756}' \
   localhost:8080/api/sites
 ```
@@ -387,11 +387,11 @@ through the API at all, because the next apply would put the old name back.
 Deleting a site that is still in use is refused rather than cascading:
 
 ```bash
-curl -X DELETE -H "X-API-Key: $WG_KEY" localhost:8080/api/sites/Rack%20A
+curl -X DELETE -H "X-API-Key: $PG_KEY" localhost:8080/api/sites/Rack%20A
 # 409 {"error":"site \"Rack A\" still has 3 sensor(s): move them to another site,
 #       or delete it with unassign=1 to leave them without one"}
 
-curl -X DELETE -H "X-API-Key: $WG_KEY" 'localhost:8080/api/sites/Rack%20A?unassign=1'
+curl -X DELETE -H "X-API-Key: $PG_KEY" 'localhost:8080/api/sites/Rack%20A?unassign=1'
 # 200 {"deleted":"Rack A","unassigned":true}
 ```
 
@@ -443,12 +443,12 @@ string or empty list clears it.
 
 ```bash
 # Change the target and nothing else.
-curl -X PUT -H "X-API-Key: $WG_KEY" -H 'Content-Type: application/json' \
+curl -X PUT -H "X-API-Key: $PG_KEY" -H 'Content-Type: application/json' \
   -d '{"target":"nas2.local:445"}' \
   localhost:8080/api/sensors/3
 
 # Clear the group and the tags, and leave everything else alone.
-curl -X PUT -H "X-API-Key: $WG_KEY" -H 'Content-Type: application/json' \
+curl -X PUT -H "X-API-Key: $PG_KEY" -H 'Content-Type: application/json' \
   -d '{"group":"","tags":[]}' \
   localhost:8080/api/sensors/3
 ```
@@ -464,12 +464,12 @@ secret comes back as a marker string, and sending that marker back **preserves
 the stored value** rather than overwriting it with the literal text:
 
 ```bash
-curl -H "X-API-Key: $WG_KEY" localhost:8080/api/channels | jq '.[0].config.bot_token'
+curl -H "X-API-Key: $PG_KEY" localhost:8080/api/channels | jq '.[0].config.bot_token'
 # "__stored__"   — the marker, not the token
 
 # Round-trip it safely: read the channel, change one field, send it back.
-curl -s -H "X-API-Key: $WG_KEY" localhost:8080/api/channels/1 | jq '.config.chat_id = "-100999"' \
-  | curl -X PUT -H "X-API-Key: $WG_KEY" -H 'Content-Type: application/json' -d @- \
+curl -s -H "X-API-Key: $PG_KEY" localhost:8080/api/channels/1 | jq '.config.chat_id = "-100999"' \
+  | curl -X PUT -H "X-API-Key: $PG_KEY" -H 'Content-Type: application/json' -d @- \
       localhost:8080/api/channels/1
 ```
 
@@ -519,8 +519,8 @@ Reconnect with `Last-Event-ID` is not supported; refetch `/api/summary` instead.
 ### Uptime for every sensor, as a table
 
 ```bash
-for id in $(curl -s -H "X-API-Key: $WG_KEY" localhost:8080/api/sensors | jq -r '.[].id'); do
-  curl -s -H "X-API-Key: $WG_KEY" "localhost:8080/api/sensors/$id/uptime?range=30d" \
+for id in $(curl -s -H "X-API-Key: $PG_KEY" localhost:8080/api/sensors | jq -r '.[].id'); do
+  curl -s -H "X-API-Key: $PG_KEY" "localhost:8080/api/sensors/$id/uptime?range=30d" \
     | jq -r --arg id "$id" '[$id, (.uptime.percent|tostring), (.incidents.count|tostring)] | @tsv'
 done
 ```
@@ -528,14 +528,14 @@ done
 ### Alert on anything currently down
 
 ```bash
-curl -s -H "X-API-Key: $WG_KEY" localhost:8080/api/sensors \
+curl -s -H "X-API-Key: $PG_KEY" localhost:8080/api/sensors \
   | jq -r '.[] | select(.status == "down") | "\(.name) — \(.message)"'
 ```
 
 ### Import from a shell script
 
 ```bash
-curl -X POST -H "X-API-Key: $WG_KEY" -H 'Content-Type: application/json' \
+curl -X POST -H "X-API-Key: $PG_KEY" -H 'Content-Type: application/json' \
   -d '{"name":"Router","type":"ping","target":"192.168.1.1","interval":30,"retries":3,"group":"Network"}' \
   localhost:8080/api/sensors
 ```
