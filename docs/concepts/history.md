@@ -6,7 +6,7 @@ description: How probe results are stored, why there are three resolutions, and 
 
 # History and uptime
 
-Weatherglass keeps every probe result, but not forever and not at full
+ProbeGlass keeps every probe result, but not forever and not at full
 resolution. Storage is arranged in three tiers so that "what is the uptime over
 the last year?" is a cheap question with an honest answer.
 
@@ -46,7 +46,7 @@ drawn as a gap; in the uptime calculation it is excluded from the denominator.
 
 "We did not probe" and "the probe failed" are different facts, and a monitoring
 tool that conflates them is worse than useless: it reports an outage that never
-happened, and — worse — dilutes the outages that did. If you stop Weatherglass
+happened, and — worse — dilutes the outages that did. If you stop ProbeGlass
 for a week and start it again, you see a one-week gap, not a week of downtime.
 
 The same applies to the current hour and the current day: they are never rolled

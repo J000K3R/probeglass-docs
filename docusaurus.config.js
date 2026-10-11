@@ -1,4 +1,4 @@
-// Docusaurus configuration for the Weatherglass documentation site.
+// Docusaurus configuration for the ProbeGlass documentation site.
 //
 // Everything here is meant to be edited in one place when the site moves: the
 // url/baseUrl pair at the top, and the organization/project pair at the bottom.
@@ -9,16 +9,16 @@ import {themes as prismThemes} from 'prism-react-renderer';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Weatherglass',
+  title: 'ProbeGlass',
   tagline: 'A small, self-hosted watchdog for your homelab.',
 
   // Used in the sitemap and in social cards. For a project page on GitHub Pages
   // the baseUrl is the repository name; for a custom domain set baseUrl to '/'.
   url: 'https://j000k3r.github.io',
-  baseUrl: '/weatherglass-docs/',
+  baseUrl: '/probeglass-docs/',
 
   organizationName: 'j000k3r',
-  projectName: 'weatherglass-docs',
+  projectName: 'probeglass-docs',
 
   favicon: 'img/favicon.svg',
 
@@ -40,7 +40,7 @@ const config = {
         docs: {
           routeBasePath: '/',
           sidebarPath: './sidebars.js',
-          editUrl: 'https://github.com/j000k3r/weatherglass-docs/tree/main/',
+          editUrl: 'https://github.com/j000k3r/probeglass-docs/tree/main/',
         },
         // No blog: release notes live in the repository's CHANGELOG.
         blog: false,
@@ -60,9 +60,9 @@ const config = {
         respectPrefersColorScheme: true,
       },
       navbar: {
-        title: 'Weatherglass',
+        title: 'ProbeGlass',
         logo: {
-          alt: 'Weatherglass',
+          alt: 'ProbeGlass',
           src: 'img/logo.svg',
         },
         items: [
@@ -73,12 +73,12 @@ const config = {
             label: 'Documentation',
           },
           {
-            href: 'https://j000k3r.github.io/weatherglass-website/',
+            href: 'https://j000k3r.github.io/probeglass-website/',
             label: 'Website',
             position: 'right',
           },
           {
-            href: 'https://github.com/j000k3r/weatherglass',
+            href: 'https://github.com/j000k3r/probeglass',
             label: 'GitHub',
             position: 'right',
           },
@@ -101,19 +101,19 @@ const config = {
             items: [
               {
                 label: 'Source code',
-                href: 'https://github.com/j000k3r/weatherglass',
+                href: 'https://github.com/j000k3r/probeglass',
               },
               {
                 label: 'Container image',
-                href: 'https://github.com/j000k3r/weatherglass/pkgs/container/weatherglass',
+                href: 'https://github.com/j000k3r/probeglass/pkgs/container/probeglass',
               },
               {
                 label: 'Issues',
-                href: 'https://github.com/j000k3r/weatherglass/issues',
+                href: 'https://github.com/j000k3r/probeglass/issues',
               },
               {
                 label: 'Changelog',
-                href: 'https://github.com/j000k3r/weatherglass/blob/main/CHANGELOG.md',
+                href: 'https://github.com/j000k3r/probeglass/blob/main/CHANGELOG.md',
               },
               {
                 label: 'Who makes this, and how',
@@ -126,7 +126,7 @@ const config = {
         // `to` link: Docusaurus does not route an href written here, and the site
         // is served from a subpath, so a root-absolute "/about" would leave the
         // site. Absolute, for that reason only.
-        copyright: `Weatherglass is a hobby project, written in dialogue with an AI coding agent. MIT licensed, no warranty, no liability. <a href="https://j000k3r.github.io/weatherglass-docs/about">Read more</a>.`,
+        copyright: `ProbeGlass is a hobby project, written in dialogue with an AI coding agent. MIT licensed, no warranty, no liability. <a href="https://j000k3r.github.io/probeglass-docs/about">Read more</a>.`,
       },
       prism: {
         theme: prismThemes.github,

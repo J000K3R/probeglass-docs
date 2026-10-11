@@ -2,13 +2,13 @@
 slug: /about
 title: Who makes this, and how
 sidebar_label: About this project
-description: Weatherglass is a hobby project, written in dialogue with an AI coding agent. No warranty, no liability, no support contract, nobody to call.
+description: ProbeGlass is a hobby project, written in dialogue with an AI coding agent. No warranty, no liability, no support contract, nobody to call.
 ---
 
 # ⚖️ Who makes this, and how {#who-makes-this}
 
-:::warning Read this before you rely on Weatherglass for anything
-**Weatherglass is a hobby project by somebody who is not a professional software
+:::warning Read this before you rely on ProbeGlass for anything
+**ProbeGlass is a hobby project by somebody who is not a professional software
 developer.** One person, spare time, written for their own homelab. There is no
 company behind it, no support contract, no paid tier, no SLA, and no promise that a
 bug will be fixed — or fixed soon.
@@ -19,7 +19,7 @@ written by the agent and then read, run, measured and argued with until it behav
 It has not had a design review, a security audit, or a second pair of human eyes on
 every line. Expect the rough edges that come with that, and please report them.
 
-**Nobody is liable for anything.** Weatherglass is MIT licensed and provided "as
+**Nobody is liable for anything.** ProbeGlass is MIT licensed and provided "as
 is", without warranty of any kind. That covers data loss, a container that will not
 start, and — the case this project exists to catch — a service that was down for a
 day while the dashboard said it was fine. **Do not make it your only line of
@@ -32,7 +32,7 @@ on the things that matter most.
 It started with an annoyance. A homelab had outgrown the way it was being watched:
 the tools that were to hand wanted a few hundred megabytes of RAM and a stack of
 moving parts to answer the question *"is the NAS up?"*, and setting up a new check
-was a project of its own. So the first constraint Weatherglass was built under was
+was a project of its own. So the first constraint ProbeGlass was built under was
 the opposite one: **smaller than the thing it monitors**. One container, one SQLite
 file, a few megabytes of RAM, and no dependency that can itself be the reason the
 monitor is down.
@@ -43,7 +43,7 @@ that makes it harder is a bug.
 
 The third constraint was that it had to exist at all. There are enough monitoring
 tools in the world and no shortage of good ones — this is not an argument against
-any of them, and if one of them fits what you need, use that one. Weatherglass is
+any of them, and if one of them fits what you need, use that one. ProbeGlass is
 here because it was wanted in this particular shape, and because the person who
 wanted it could build it.
 
@@ -55,7 +55,7 @@ in which things got in the way.
 
 ## Who this is for {#who-this-is-for}
 
-Weatherglass is built for one homelab: the one it runs in. It is shared on the
+ProbeGlass is built for one homelab: the one it runs in. It is shared on the
 chance that somebody else is looking for something similar, and that is the whole of
 its ambition. There is no roadmap anybody promised you and no plan to compete with
 anything — a feature arrives because it was wanted here, or it does not arrive.
@@ -122,7 +122,7 @@ rewritten.
 ## What it is not {#what-it-is-not}
 
 - **No telemetry, no phone-home, no analytics, no update check, no account.** There
-  is no server to call. Weatherglass makes outbound connections only to the targets
+  is no server to call. ProbeGlass makes outbound connections only to the targets
   you configure and the alert channels you set up.
 - **No hosted version and no paid tier.** The project exists as source code and as a
   container image, and there is no plan to sell anything.
@@ -136,7 +136,7 @@ MIT. In full and in plain words: you may use, copy, modify and sell this softwar
 the copyright notice stays; and **it comes with no warranty of any kind**, express
 or implied, and the authors are **not liable** for any claim, damage or other
 liability arising from it or from using it. The full text is in
-[LICENSE](https://github.com/j000k3r/weatherglass/blob/main/LICENSE) — that file is
+[LICENSE](https://github.com/j000k3r/probeglass/blob/main/LICENSE) — that file is
 the one that counts, not this paragraph.
 
 If that is not the trade you want to make for a hobby project, that is a completely

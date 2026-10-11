@@ -6,17 +6,17 @@ description: How the pieces fit together and why they were cut this way — for 
 
 # Architecture
 
-Weatherglass is one process: an HTTP server, a scheduler, and a SQLite file. This
+ProbeGlass is one process: an HTTP server, a scheduler, and a SQLite file. This
 page explains how the pieces fit together and why they were cut this way. It is
 written for someone about to change the code, not for an end user.
 
 ## Shape of the process
 
 ```
-cmd/weatherglass        flags, wiring, graceful shutdown
+cmd/probeglass        flags, wiring, graceful shutdown
   ├── internal/config   defaults → YAML → environment → flags → validate
   ├── internal/store    one *sql.DB, schema, queries, rollups, retention
-  ├── internal/doctor   read-only inspection, for `weatherglass doctor`
+  ├── internal/doctor   read-only inspection, for `probeglass doctor`
   ├── internal/scheduler  one goroutine per enabled sensor
   │     ├── internal/sensor   http | tcp | ping | dns
   │     ├── internal/notify   telegram, discord, matrix, ntfy, slack, webhook
@@ -183,7 +183,7 @@ group, and resets the interval to its default.
 
 Authentication supports two paths:
 
-- **Session cookie** — `weatherglass_session`, value `"<expiry>.<hmac>"` signed with
+- **Session cookie** — `probeglass_session`, value `"<expiry>.<hmac>"` signed with
   a secret generated on first start, `HttpOnly`, `SameSite=Strict`, and deliberately
   **without** `Secure`, because homelab installs are usually plain HTTP on the LAN.
   The code comments say so; the test asserts it.
@@ -198,7 +198,7 @@ they carry no ambient cookie and are already covered by the API key.
 Passwords are bcrypt at cost 12. Login attempts are limited to five per minute in
 memory. `/api/setup` runs once: a fresh database has no password, the dashboard shows
 a setup screen, and after that the endpoint refuses. A password in
-`WEATHERGLASS_ADMIN_PASSWORD` bootstraps the first one and is then ignored.
+`PROBEGLASS_ADMIN_PASSWORD` bootstraps the first one and is then ignored.
 
 Secrets never leave the server. `internal/api/mask.go` replaces every field the
 channel definition marks `Secret: true` with a marker on the way out, and a request
@@ -280,12 +280,12 @@ directory to `PUID:PGID` and become that user (`internal/privdrop`), because tha
 directory is a bind mount whose owner only root can change; after that it is
 unprivileged and cannot go back. See
 [Privileges](/concepts/security#privileges). Because there is no shell, the image's
-`HEALTHCHECK` runs the binary itself (`weatherglass healthcheck`), which makes a
+`HEALTHCHECK` runs the binary itself (`probeglass healthcheck`), which makes a
 `GET /healthz` and exits non-zero on failure.
 
 Multi-arch publishing and the release archives are driven from
 `.github/workflows/release.yml`, with the version, commit, and build date stamped
-into `internal/model` via `-ldflags`, so `weatherglass version` and `/api/version`
+into `internal/model` via `-ldflags`, so `probeglass version` and `/api/version`
 report exactly which build is running.
 
 ## Testing

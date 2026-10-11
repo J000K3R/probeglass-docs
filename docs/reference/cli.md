@@ -7,35 +7,35 @@ description: Every subcommand and flag, and what each one is for.
 # Command line
 
 ```
-weatherglass — a small, self-hosted watchdog for your homelab
+probeglass — a small, self-hosted watchdog for your homelab
 
 Usage:
-  weatherglass [serve] [flags]     start the daemon
-  weatherglass version             print the version and exit
-  weatherglass healthcheck         query the local /healthz endpoint
-  weatherglass doctor              report what is wrong with this installation
-  weatherglass seed --demo         create demo sensors with synthetic history
+  probeglass [serve] [flags]     start the daemon
+  probeglass version             print the version and exit
+  probeglass healthcheck         query the local /healthz endpoint
+  probeglass doctor              report what is wrong with this installation
+  probeglass seed --demo         create demo sensors with synthetic history
 ```
 
-With no subcommand, `weatherglass` serves. That is the common case, so it is the
+With no subcommand, `probeglass` serves. That is the common case, so it is the
 default: the container entrypoint needs no arguments at all.
 
 ## ▶️ `serve` {#serve}
 
 ```bash
-weatherglass serve
-weatherglass serve --listen :9000 --data /srv/weatherglass --log-level debug
+probeglass serve
+probeglass serve --listen :9000 --data /srv/probeglass --log-level debug
 ```
 
 | Flag | Default | Meaning |
 |---|---|---|
-| `-config PATH` | — | YAML configuration file. Defaults to `$WEATHERGLASS_CONFIG`, then `<data_dir>/weatherglass.yaml` |
+| `-config PATH` | — | YAML configuration file. Defaults to `$PROBEGLASS_CONFIG`, then `<data_dir>/probeglass.yaml` |
 | `-listen ADDR` | `:8080` | Address to serve the dashboard on |
 | `-data DIR` | `/data` | Directory for the database |
 | `-log-level LVL` | `info` | `debug`, `info`, `warn`, or `error` |
 | `-log-format FMT` | `text` | `text` or `json` |
 
-Every flag has a `WEATHERGLASS_*` environment equivalent, and the environment
+Every flag has a `PROBEGLASS_*` environment equivalent, and the environment
 wins over the configuration file. See
 [Environment variables](/configuration/environment).
 
@@ -44,8 +44,8 @@ Flags use Go's `flag` package, so `-listen` and `--listen` are the same thing.
 ## `version`
 
 ```bash
-$ weatherglass version
-weatherglass 0.1.0 (4a1c2e7) built 2026-11-02T09:14:03Z
+$ probeglass version
+probeglass 0.1.0 (4a1c2e7) built 2026-11-02T09:14:03Z
 ```
 
 The commit and build date are stamped in by the release workflow. A local
@@ -59,8 +59,8 @@ real state of the container without needing a shell inside it — the distroless
 image has neither a shell nor `curl`.
 
 ```bash
-weatherglass healthcheck
-weatherglass healthcheck --listen 127.0.0.1:9000 --timeout 10s
+probeglass healthcheck
+probeglass healthcheck --listen 127.0.0.1:9000 --timeout 10s
 ```
 
 | Flag | Default | Meaning |
@@ -78,7 +78,7 @@ Fills a database with demo sensors and a synthetic history, so the dashboard can
 looked at without waiting a week for data to accumulate.
 
 ```bash
-weatherglass seed --demo --days 7 --data /tmp/weatherglass-demo
+probeglass seed --demo --days 7 --data /tmp/probeglass-demo
 ```
 
 | Flag | Default | Meaning |
@@ -98,8 +98,8 @@ See [Try it with demo data](/getting-started/demo-data).
 Reports what is wrong with this installation, and changes nothing.
 
 ```bash
-docker exec weatherglass weatherglass doctor
-weatherglass doctor --data /srv/weatherglass --listen 127.0.0.1:9000
+docker exec probeglass probeglass doctor
+probeglass doctor --data /srv/probeglass --listen 127.0.0.1:9000
 ```
 
 This is the command for the container. The image is distroless — no shell, no
@@ -142,13 +142,13 @@ their timeouts allow, and report a passing network blip as an installation fault
 A healthy installation:
 
 ```bash
-$ docker exec -u 500:500 weatherglass weatherglass doctor
-weatherglass doctor
+$ docker exec -u 500:500 probeglass probeglass doctor
+probeglass doctor
 
-ok    build             weatherglass 0.1.0 (4a1c2e7) built 2026-11-02T09:14:03Z
-ok    config            /data/weatherglass.yaml (3 sensors, 1 channel)
+ok    build             probeglass 0.1.0 (4a1c2e7) built 2026-11-02T09:14:03Z
+ok    config            /data/probeglass.yaml (3 sensors, 1 channel)
 ok    data dir          /data (writable by uid 500)
-ok    database          /data/weatherglass.db, 1.2 MiB, 40213 probes
+ok    database          /data/probeglass.db, 1.2 MiB, 40213 probes
 ok    integrity         quick_check ok
 ok    schema            version 3
 ok    users             3 accounts, 1 active administrator
@@ -190,7 +190,7 @@ when it is worth knowing.
 | Code | Meaning |
 |---|---|
 | `0` | Success |
-| `1` | Anything else — with the reason on stderr, prefixed `weatherglass:` |
+| `1` | Anything else — with the reason on stderr, prefixed `probeglass:` |
 
 There is no distinction between "your flags are wrong" and "the port is taken"
 in the exit code, because nothing scripts on that difference. The message is the

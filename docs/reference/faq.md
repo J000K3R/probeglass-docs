@@ -9,7 +9,7 @@ description: Short answers to the questions that come up most often.
 ## Why not just use one of the other monitoring tools?
 
 If you already run something you are happy with, there is no reason to switch —
-this is not an argument against anything else out there. Weatherglass exists for
+this is not an argument against anything else out there. ProbeGlass exists for
 the case where you want the monitoring to be *smaller than the thing it monitors*:
 one binary, one file, about three megabytes of RAM, and a dependency tree you can
 read in an afternoon. The [introduction](/#why-another-monitor) has the comparison
@@ -65,7 +65,7 @@ have never heard from this at all".
 
 It was, and it is fixed. The recovery alert now names the real outage length,
 computed from the incident's start time. If you see it again, please
-[open an issue](https://github.com/j000k3r/weatherglass/issues) with the
+[open an issue](https://github.com/j000k3r/probeglass/issues) with the
 alert text.
 
 ## Can I use it for a public status page?
@@ -85,7 +85,7 @@ webhook can push every event into whatever you already run.
 Yes, up to a point. A fresh install creates one administrator; under **Settings →
 Users** you add as many more as you like, as **operator** or **viewer**, and any of
 them can enrol a second factor. What they all share is the same set of sensors,
-the same history and the same incidents — Weatherglass is one homelab, and
+the same history and the same incidents — ProbeGlass is one homelab, and
 **multi-tenancy** is explicitly [out of scope](/development/roadmap#out-of-scope).
 Running two containers is the answer to wanting two.
 
@@ -100,7 +100,7 @@ which the file-wins rule will then keep in sync on every start.
 
 ## Where is the data, and how do I back it up?
 
-`/data/weatherglass.db` — one SQLite file. Stop the container and copy it. See
+`/data/probeglass.db` — one SQLite file. Stop the container and copy it. See
 [Backup and restore](/operations/backup).
 
 ## The dashboard shows a spinner and never loads
@@ -111,7 +111,7 @@ twelve seconds, and a reload button. See
 
 ## Something is wrong inside the container, and there is no shell
 
-Run `docker exec weatherglass weatherglass doctor`. The image is distroless — no
+Run `docker exec probeglass probeglass doctor`. The image is distroless — no
 shell, no `curl`, no tools — so that is the one command you have, and it reports the
 configuration, the data directory, the database's size, integrity and schema, the
 stored sensors and channels, and whether the daemon is answering. It opens the
@@ -135,12 +135,12 @@ addition. See [Contributing](/development/contributing).
 
 ## Is there a hosted version?
 
-No. Weatherglass is a homelab tool: you run it, its data stays with you, and there
+No. ProbeGlass is a homelab tool: you run it, its data stays with you, and there
 is nothing to sign up for.
 
 ## Who makes this? Is it a company?
 
-No. Weatherglass is a hobby project by somebody who is not a professional software
+No. ProbeGlass is a hobby project by somebody who is not a professional software
 developer — one person, spare time, written for their own homelab, and shared on the
 chance that somebody else finds it useful. There is no company, no support contract
 and no warranty — it is MIT licensed and comes "as is", and nobody is liable for anything

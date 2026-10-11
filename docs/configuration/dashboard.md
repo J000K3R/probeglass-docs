@@ -81,7 +81,7 @@ take equal shares of what is left over. What the field does is
 
 <img
   src="/img/dashboard.png"
-  alt="The top bar of the dashboard: the Weatherglass mark and the four tabs, each with an icon and a word, on the left; the search field centred; and on the right the layout switcher, the Customise button, New sensor, the Live indicator and the account chip."
+  alt="The top bar of the dashboard: the ProbeGlass mark and the four tabs, each with an icon and a word, on the left; the search field centred; and on the right the layout switcher, the Customise button, New sensor, the Live indicator and the account chip."
   width="1600"
 />
 
@@ -400,7 +400,7 @@ one-minute interval and about three and a half hours at five. The heading says
 "recent checks" rather than "the last hour" for exactly that reason.
 
 **Map** (`map`) draws the places that have coordinates on a map of the world, which
-Weatherglass draws itself: the coastlines, the lakes and rivers, the country, district
+ProbeGlass draws itself: the coastlines, the lakes and rivers, the country, district
 and
 province borders, and the names of the countries, the provinces and the larger
 cities. Homelab and external sites are told apart by
@@ -412,7 +412,7 @@ the point under the pointer, and buttons for the ones who prefer them.
 
 <img
   src="/img/dashboard-map.png"
-  alt="The map view: the world's coastlines and borders drawn by Weatherglass itself — Europe, Greenland and the coast of North America — with the countries named (Norway, the United Kingdom, Germany, Poland, Spain and others), two markers, Homelab in the north-east and Rented server in the south-west, and a legend in the bottom left corner."
+  alt="The map view: the world's coastlines and borders drawn by ProbeGlass itself — Europe, Greenland and the coast of North America — with the countries named (Norway, the United Kingdom, Germany, Poland, Spain and others), two markers, Homelab in the north-east and Rented server in the south-west, and a legend in the bottom left corner."
   width="1600"
 />
 
@@ -537,7 +537,7 @@ Statistik Austria publishes the district boundaries under
 **[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)**, which asks to be named
 when the work is shown. Everything else this map draws is public domain and asks for
 nothing, so this is the one obligation the project passes on to you: **whoever shows a
-Weatherglass map with the Austrian districts on it should name Statistik Austria** —
+ProbeGlass map with the Austrian districts on it should name Statistik Austria** —
 in the footer, in the attribution field next to a tile server, or wherever the page
 already says where its data came from.
 :::
@@ -634,7 +634,7 @@ fleet you monitor on behalf of somebody else, and on a phone away from home it i
 third party learning that this dashboard exists and about where.
 :::
 
-That is also why Weatherglass no longer defaults to OpenStreetMap: their
+That is also why ProbeGlass no longer defaults to OpenStreetMap: their
 [tile usage policy](https://operations.osmfoundation.org/policies/tiles/) does not
 permit use by third-party applications, and a dashboard that pointed there was shown a
 block notice instead of a map.
@@ -652,7 +652,7 @@ http://osm.lan/{z}/{x}/{y}.png
 **Google Maps.** Google's tiles are **not** usable through this field, and this is not
 a limitation that a setting could lift: Google licenses its maps through the Maps
 JavaScript API with a key of your own, and its tile endpoints are an internal detail
-of that product rather than a service it promises to answer. Weatherglass embeds no
+of that product rather than a service it promises to answer. ProbeGlass embeds no
 third-party scripts and stores no API keys by design, so the honest answer is that a
 Google basemap means a different map library. If you want imagery behind your pins,
 run your own tile server; that is what the field is for.
@@ -660,7 +660,7 @@ run your own tile server; that is what the field is for.
 For anything more than a homelab, run a tile server inside your own network and put
 its address in the field. Nothing about the map needs the public internet: with your
 own server the browser fetches tiles from an address it could already reach, and the
-dashboard's content security policy does not have to be widened at all. Weatherglass
+dashboard's content security policy does not have to be widened at all. ProbeGlass
 does not proxy tiles through the daemon — a proxy would make the server an
 outbound fetcher with an interesting attack surface and a cache to manage, and the
 privacy would end up the same.
@@ -752,7 +752,7 @@ simple mode on the kitchen tablet while another keeps the full one open.
 
 A new installation comes with a few invented sensors so that there is something to
 look at — four of them, carrying a week of invented history, so the cards are not
-empty and nothing is grey — and `weatherglass seed --demo` adds more. Both are marked
+empty and nothing is grey — and `probeglass seed --demo` adds more. Both are marked
 in the database as **sample data**, and Settings has a panel that says how much of it
 there is.
 
@@ -833,7 +833,7 @@ clear](/concepts/security#backup-secrets) before you put one somewhere.
 :::
 
 **Restoring** asks twice and says what is about to be replaced. Before anything is
-written it checks the file — a document that is not a Weatherglass backup, or one
+written it checks the file — a document that is not a ProbeGlass backup, or one
 from a newer version, is refused and nothing changes — and it writes a byte-exact
 `VACUUM INTO` safety copy of the database beside itself. A file **without history**
 leaves the incidents and the rollups exactly where they are, so a configuration
@@ -874,7 +874,7 @@ panel and the API key below it is the administrator's.
 ## 🩺 The self-check {#the-self-check}
 
 The **Diagnostics** panel at the bottom of Settings runs the same checks
-`weatherglass doctor` runs on the command line — the database, the schema, the
+`probeglass doctor` runs on the command line — the database, the schema, the
 integrity of the file, the configuration, the accounts, whether the daemon is
 answering, and whether it can open an ICMP socket — and shows both the results and
 the literal text the command line prints. It also gives you the one-line
@@ -933,6 +933,6 @@ person gets their theme on every device, and why two people sharing one dashboar
 can disagree about the layout without either of them being wrong.
 
 Two people on one installation still see the same **sensors, history and
-incidents**, and will always see the same ones: Weatherglass is one homelab, not a
+incidents**, and will always see the same ones: ProbeGlass is one homelab, not a
 multi-tenant service. Isolating two organisations from each other is explicitly
 [out of scope](/development/roadmap#out-of-scope).

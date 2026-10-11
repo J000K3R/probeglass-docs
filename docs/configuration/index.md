@@ -2,17 +2,17 @@
 slug: /configuration/
 title: Configuration
 sidebar_label: Overview
-description: Where Weatherglass reads its settings from, and the order of precedence.
+description: Where ProbeGlass reads its settings from, and the order of precedence.
 ---
 
 # Configuration
 
-Weatherglass reads its process configuration from four places. **Later sources
+ProbeGlass reads its process configuration from four places. **Later sources
 win:**
 
 1. Built-in defaults
 2. A YAML file
-3. `WEATHERGLASS_*` environment variables
+3. `PROBEGLASS_*` environment variables
 4. Command-line flags
 
 The dashboard's own settings — theme, accent colour, density, layout, language,
@@ -22,18 +22,18 @@ deployment configuration.
 
 ## Which file is read
 
-If you do not pass `-config`, Weatherglass looks in two more places before giving
+If you do not pass `-config`, ProbeGlass looks in two more places before giving
 up:
 
 ```
 -config PATH
-  → $WEATHERGLASS_CONFIG
-  → <data_dir>/weatherglass.yaml   (only if that file exists)
+  → $PROBEGLASS_CONFIG
+  → <data_dir>/probeglass.yaml   (only if that file exists)
   → no file at all
 ```
 
 The third entry is what makes the container image work without arguments: mount a
-`weatherglass.yaml` next to the database and it is picked up. A missing file is
+`probeglass.yaml` next to the database and it is picked up. A missing file is
 not an error; a file that exists but does not parse is, and the process refuses to
 start rather than silently running on defaults.
 
@@ -43,20 +43,20 @@ start rather than silently running on defaults.
 |---|---|---|
 | `listen` | `:8080` | Address the dashboard listens on |
 | `data_dir` | `/data` | Directory holding the database |
-| `db_path` | `<data_dir>/weatherglass.db` | Path to the SQLite file, if you want it elsewhere |
+| `db_path` | `<data_dir>/probeglass.db` | Path to the SQLite file, if you want it elsewhere |
 | `base_url` | — | Public URL, used in links inside alerts |
 | `log_level` | `info` | `debug`, `info`, `warn`, or `error` |
 | `log_format` | `text` | `text` or `json` |
 | `trust_proxy` | `false` | Honour `X-Forwarded-*` headers from a reverse proxy |
 
-`WEATHERGLASS_ADMIN_PASSWORD` is the one setting with no file equivalent:
+`PROBEGLASS_ADMIN_PASSWORD` is the one setting with no file equivalent:
 putting a password in a file that gets committed is how it ends up in a
 repository. It is read only when the database has no password yet.
 
 ```yaml
 listen: ":8080"
 data_dir: /data
-base_url: https://weatherglass.lan
+base_url: https://probeglass.lan
 log_level: info
 log_format: text
 trust_proxy: false
@@ -67,7 +67,7 @@ retention:
 ```
 
 :::caution
-Only set `trust_proxy: true` when Weatherglass is actually behind a proxy that
+Only set `trust_proxy: true` when ProbeGlass is actually behind a proxy that
 sets `X-Forwarded-For`. Otherwise any client can forge its own address, and the
 login rate limiter becomes trivial to sidestep.
 :::

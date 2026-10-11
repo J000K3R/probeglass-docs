@@ -6,12 +6,12 @@ description: How to build, test, and send a patch — including how to add a pro
 
 # Contributing
 
-Weatherglass stays small on purpose. Every contribution — a bug report, a docs fix,
+ProbeGlass stays small on purpose. Every contribution — a bug report, a docs fix,
 a new probe engine — helps, and the constraints in the
 [roadmap](/development/roadmap#guiding-constraints) are what keep it small.
 
 The authoritative version of this page lives in the repository as
-[CONTRIBUTING.md](https://github.com/j000k3r/weatherglass/blob/main/CONTRIBUTING.md).
+[CONTRIBUTING.md](https://github.com/j000k3r/probeglass/blob/main/CONTRIBUTING.md).
 What follows is the part that needs more room than a file in the repository root.
 
 ## Development setup
@@ -20,8 +20,8 @@ What follows is the part that needs more room than a file in the repository root
 - Docker, if you want to build and test the image.
 
 ```bash
-git clone https://github.com/j000k3r/weatherglass.git
-cd weatherglass
+git clone https://github.com/j000k3r/probeglass.git
+cd probeglass
 make help          # lists every target
 make run           # build and serve on :8080, data in ./data
 make test          # the test suite
@@ -59,8 +59,8 @@ view is visible, and a reload does not send you back to the login form. On
 failure it writes a screenshot, which says more about a stuck spinner than a
 stack trace does.
 
-A browser is found automatically, or `WEATHERGLASS_E2E_BROWSER` names one. With
-none, the test skips — unless `WEATHERGLASS_E2E_REQUIRE_BROWSER=1`, which CI sets
+A browser is found automatically, or `PROBEGLASS_E2E_BROWSER` names one. With
+none, the test skips — unless `PROBEGLASS_E2E_REQUIRE_BROWSER=1`, which CI sets
 so that a missing browser can never quietly pass as coverage.
 
 It lives in `e2e/`, a module of its own, and that is deliberate: a browser driver
@@ -167,12 +167,12 @@ easiest for everyone. Documentation issues are welcome in either repository.
 
 ## Reporting a bug
 
-Include the version from `weatherglass version`, how you deployed it, what you
+Include the version from `probeglass version`, how you deployed it, what you
 expected, what happened, and the relevant logs with secrets redacted. If it is a
 dashboard problem, the browser console output is worth more than a screenshot.
 
 Security problems: please do not open a public issue. See
-[SECURITY.md](https://github.com/j000k3r/weatherglass/blob/main/SECURITY.md).
+[SECURITY.md](https://github.com/j000k3r/probeglass/blob/main/SECURITY.md).
 
 ## License
 

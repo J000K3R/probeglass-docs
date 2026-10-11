@@ -280,7 +280,7 @@ curl -fsS -H "X-API-Key: $WG_KEY" \
 ```
 
 It arrives as `application/json` with
-`Content-Disposition: attachment; filename="weatherglass-backup-2026-10-09.json"`
+`Content-Disposition: attachment; filename="probeglass-backup-2026-10-09.json"`
 and `Cache-Control: no-store`. The filename is built on the server from a constant
 and the date; no part of the request reaches it.
 
@@ -304,12 +304,12 @@ curl -X POST -H "X-API-Key: $WG_KEY" -H 'Content-Type: application/json' \
 ```json
 {
   "counts": {"sensors": 12, "channels": 2, "users": 1},
-  "safety_copy": "weatherglass-pre-restore-20261009T211500Z.db",
+  "safety_copy": "probeglass-pre-restore-20261009T211500Z.db",
   "token_epoch_notice": false
 }
 ```
 
-A document whose `format` is not `weatherglass-backup`, or whose format or schema
+A document whose `format` is not `probeglass-backup`, or whose format or schema
 version is newer than this build understands, is a `400` and nothing is written. A
 byte-exact `VACUUM INTO` safety copy is taken before anything is replaced, and a
 restore whose safety copy fails does not go ahead. A table the file does not

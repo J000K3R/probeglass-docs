@@ -7,7 +7,7 @@ description: Alert channels, when they fire, message templates, and webhook sign
 # Alerts
 
 An alert channel is somewhere a notification can go. A sensor is attached to zero
-or more channels, and Weatherglass speaks to them in parallel: one unreachable
+or more channels, and ProbeGlass speaks to them in parallel: one unreachable
 channel never delays the others, and never suppresses them.
 
 <img
@@ -65,7 +65,7 @@ because this page is what you have open when you are hunting for the token.
    own token in place of `<token>`, and read the number in `chat.id`. A group's
    ID starts with a minus, like `-1001234567890`; a person's does not.
 5. **That address contains the token.** It belongs in no chat, no issue and no
-   ticket — anyone who has it controls the bot. Weatherglass strips it out of
+   ticket — anyone who has it controls the bot. ProbeGlass strips it out of
    error messages for the same reason.
 
 `thread_id` is for forum groups only, and is the topic's own ID, not the group's.
@@ -126,10 +126,10 @@ send somewhere else; the `#` is added for you.
 1. Enter the address on your own side that should receive the alerts, and make it
    accept a `POST`.
 2. Each request carries `Content-Type: application/json` and the header
-   `X-Weatherglass-Event` with the kind of event in it. The body is described
+   `X-ProbeGlass-Event` with the kind of event in it. The body is described
    under [Generic webhooks](#generic-webhooks).
 3. With an **HMAC secret** set, the body is signed with HMAC-SHA256 and the
-   signature arrives in `X-Weatherglass-Signature`, prefixed with `sha256=`.
+   signature arrives in `X-ProbeGlass-Signature`, prefixed with `sha256=`.
    Compare it before you act on the body.
 4. Press **Test** before you rely on it: the test event goes through the same
    sender, the same signing and the same retries as a real outage.
@@ -144,7 +144,7 @@ send somewhere else; the `#` is added for you.
 | `test` | You pressed the Test button |
 
 Nothing is sent for the individual failed probes below the retry threshold, for
-**Run now** probes, or for a sensor that was already down when Weatherglass
+**Run now** probes, or for a sensor that was already down when ProbeGlass
 started — a container restart neither loses an outage nor re-announces one.
 
 ## ✏️ Message templates {#message-templates}
@@ -195,7 +195,7 @@ additions to it stay backwards compatible:
   "event": "down",
   "title": "Nextcloud is down",
   "message": "HTTP 503 Service Unavailable",
-  "url": "https://weatherglass.lan/#/dashboard",
+  "url": "https://probeglass.lan/#/dashboard",
   "timestamp": "2026-10-08T12:00:00Z",
   "sensor": {
     "id": 3,
@@ -226,8 +226,8 @@ events, and carries `resolved_at` once the outage is over.
 
 Two headers travel with it:
 
-- `X-Weatherglass-Event` — `down`, `up`, `reminder`, or `test`
-- `X-Weatherglass-Signature` — `sha256=<hex>`, present only when `hmac_secret`
+- `X-ProbeGlass-Event` — `down`, `up`, `reminder`, or `test`
+- `X-ProbeGlass-Signature` — `sha256=<hex>`, present only when `hmac_secret`
   is set
 
 The signature is HMAC-SHA256 over the **exact request body bytes**, so verify it
@@ -238,14 +238,14 @@ import hmac, hashlib, os
 from flask import Flask, request, abort
 
 app = Flask(__name__)
-SECRET = os.environ["WEATHERGLASS_HMAC"].encode()
+SECRET = os.environ["PROBEGLASS_HMAC"].encode()
 
-@app.post("/hooks/weatherglass")
+@app.post("/hooks/probeglass")
 def hook():
     expected = "sha256=" + hmac.new(SECRET, request.get_data(), hashlib.sha256).hexdigest()
-    if not hmac.compare_digest(expected, request.headers.get("X-Weatherglass-Signature", "")):
+    if not hmac.compare_digest(expected, request.headers.get("X-ProbeGlass-Signature", "")):
         abort(401)
-    event = request.headers["X-Weatherglass-Event"]
+    event = request.headers["X-ProbeGlass-Event"]
     ...
 ```
 

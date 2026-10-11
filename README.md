@@ -1,10 +1,10 @@
-# weatherglass-docs
+# probeglass-docs
 
-The documentation site for [Weatherglass](https://github.com/j000k3r/weatherglass),
+The documentation site for [ProbeGlass](https://github.com/j000k3r/probeglass),
 a small self-hosted watchdog for your homelab. Built with
 [Docusaurus](https://docusaurus.io/), published to GitHub Pages.
 
-**Live site:** <https://j000k3r.github.io/weatherglass-docs/>
+**Live site:** <https://j000k3r.github.io/probeglass-docs/>
 
 ## Why a separate repository
 
@@ -124,4 +124,4 @@ deployment-specific configuration in the repository.
 
 ## License
 
-The documentation is licensed under the same MIT License as Weatherglass.
+The documentation is licensed under the same MIT License as ProbeGlass.

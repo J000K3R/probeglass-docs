@@ -140,7 +140,7 @@ container restart therefore:
   "down" alert just because the process restarted. Nobody needs a notification
   every time you upgrade a container.
 
-There is a third case: Weatherglass was switched off when the service went down.
+There is a third case: ProbeGlass was switched off when the service went down.
 On start, if the trailing failures reach the retry threshold and no incident is
 open, one is reconstructed from the stored results, with the start time taken
 from the first failure in the streak. The outage appears in the log with the

@@ -11,10 +11,10 @@ sensors and alert channels themselves. If you declare them, a rebuild from zero
 takes seconds instead of an evening of clicking.
 
 ```yaml
-# weatherglass.yaml — mount this next to the database and it is picked up.
+# probeglass.yaml — mount this next to the database and it is picked up.
 listen: ":8080"
 data_dir: /data
-base_url: https://weatherglass.lan
+base_url: https://probeglass.lan
 log_level: info
 log_format: text
 trust_proxy: false
@@ -58,9 +58,9 @@ channels:
 
 ## Precedence
 
-Defaults, then this file, then `WEATHERGLASS_*` environment variables, then
+Defaults, then this file, then `PROBEGLASS_*` environment variables, then
 command-line flags — later wins. The file's path is resolved in this order:
-`-config PATH`, then `$WEATHERGLASS_CONFIG`, then `<data_dir>/weatherglass.yaml`
+`-config PATH`, then `$PROBEGLASS_CONFIG`, then `<data_dir>/probeglass.yaml`
 if it exists.
 
 A file that exists and does not parse is a startup error. The process refuses to
@@ -73,7 +73,7 @@ notice the next time something broke.
 |---|---|---|---|
 | `listen` | string | `:8080` | Address to serve on |
 | `data_dir` | string | `/data` | Directory holding the database |
-| `db_path` | string | `<data_dir>/weatherglass.db` | Path to the SQLite file |
+| `db_path` | string | `<data_dir>/probeglass.db` | Path to the SQLite file |
 | `base_url` | string | — | Public URL; used to build links inside alerts |
 | `log_level` | string | `info` | `debug`, `info`, `warn`, `error` |
 | `log_format` | string | `text` | `text` or `json` |
@@ -195,7 +195,7 @@ options:
   expected_status: "200-299"
   headers:
     Accept: application/json
-  user_agent: weatherglass/0.1
+  user_agent: probeglass/0.1
   basic_auth_user: monitor
   basic_auth_pass: secret
   bearer_token: eyJ...
@@ -255,7 +255,7 @@ channels:
     type: discord
     config:
       webhook_url: https://discord.com/api/webhooks/...
-      username: Weatherglass
+      username: ProbeGlass
 
   - name: matrix
     type: matrix
@@ -281,7 +281,7 @@ channels:
   - name: homeassistant
     type: webhook
     config:
-      url: https://ha.lan/api/webhook/weatherglass
+      url: https://ha.lan/api/webhook/probeglass
       method: POST
       hmac_secret: a-long-random-string
 ```
@@ -302,7 +302,7 @@ the UI, where the secrets stay in the database and are never returned by the API
 Check it without starting anything:
 
 ```bash
-weatherglass doctor --config /etc/weatherglass/weatherglass.yaml
+probeglass doctor --config /etc/probeglass/probeglass.yaml
 ```
 
 The `config` line says whether the file was found and parses, and `config sensors`

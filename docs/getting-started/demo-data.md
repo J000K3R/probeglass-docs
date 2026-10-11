@@ -6,7 +6,7 @@ description: Fill a throwaway database with invented sensors and a synthetic wee
 
 # Try it with demo data
 
-The fastest way to decide whether Weatherglass is for you is to look at the
+The fastest way to decide whether ProbeGlass is for you is to look at the
 dashboard with a week of data in it. One command produces that, in a volume you
 can delete afterwards.
 
@@ -18,8 +18,8 @@ the outage. It is the same interface the container serves, with no server behind
 it and nothing stored.
 
 <iframe
-  src="https://j000k3r.github.io/weatherglass-website/demo/"
-  title="The Weatherglass dashboard, running on demo data"
+  src="https://j000k3r.github.io/probeglass-website/demo/"
+  title="The ProbeGlass dashboard, running on demo data"
   loading="lazy"
   style={{width: '100%', height: '640px', border: '1px solid var(--ifm-color-emphasis-300)', borderRadius: '8px'}}
 ></iframe>
@@ -27,7 +27,7 @@ it and nothing stored.
 :::tip It will not fit on a phone
 The dashboard is a wall-display interface; below about 900px of width it is
 cramped. If the frame above is too narrow, [open the demo in its own
-tab](https://j000k3r.github.io/weatherglass-website/demo/) instead.
+tab](https://j000k3r.github.io/probeglass-website/demo/) instead.
 :::
 
 ## 🌱 Or grow a real one locally {#or-grow-a-real-one-locally}
@@ -39,14 +39,14 @@ setting you change there lasts as long as the tab. To get an actual week in a
 database you can poke at, in a volume you can throw away:
 
 ```bash
-docker volume create weatherglass-demo
+docker volume create probeglass-demo
 
-docker run --rm -v weatherglass-demo:/data \
-  ghcr.io/j000k3r/weatherglass:dev seed --demo --days 7
+docker run --rm -v probeglass-demo:/data \
+  ghcr.io/j000k3r/probeglass:dev seed --demo --days 7
 
-docker run -d --name weatherglass-demo -p 8080:8080 \
-  -v weatherglass-demo:/data --cap-add NET_RAW \
-  ghcr.io/j000k3r/weatherglass:dev
+docker run -d --name probeglass-demo -p 8080:8080 \
+  -v probeglass-demo:/data --cap-add NET_RAW \
+  ghcr.io/j000k3r/probeglass:dev
 ```
 
 Open [http://localhost:8080](http://localhost:8080) and create the administrator
@@ -133,8 +133,8 @@ make run
 ## Clean up
 
 ```bash
-docker rm -f weatherglass-demo
-docker volume rm weatherglass-demo
+docker rm -f probeglass-demo
+docker volume rm probeglass-demo
 ```
 
 The whole state is the single SQLite file in that volume, so removing it removes

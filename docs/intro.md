@@ -1,14 +1,14 @@
 ---
 slug: /
-title: Weatherglass
+title: ProbeGlass
 sidebar_label: Introduction
 sidebar_position: 1
 description: A small, self-hosted watchdog for your homelab — one binary, one SQLite file, a few megabytes of RAM.
 ---
 
-# Weatherglass
+# ProbeGlass
 
-**Weatherglass** is a single-container monitoring daemon: it probes your
+**ProbeGlass** is a single-container monitoring daemon: it probes your
 services on a schedule, keeps their history, draws the graphs, and tells you
 when something breaks. It is built to stay out of the way — one binary, one
 SQLite file, a few megabytes of RAM — while still answering the questions you
@@ -17,7 +17,7 @@ happened?*
 
 <img
   src="/img/dashboard.png"
-  alt="The Weatherglass dashboard: a summary strip with a status donut and uptime, latency and probe counts, then sensor cards grouped by category, each with a status dot, the last result, and a response-time sparkline."
+  alt="The ProbeGlass dashboard: a summary strip with a status donut and uptime, latency and probe counts, then sensor cards grouped by category, each with a status dot, the last result, and a response-time sparkline."
   width="1600"
 />
 
@@ -25,9 +25,9 @@ happened?*
 sorts to the top of its group.*
 
 ```bash
-docker run -d --name weatherglass --restart unless-stopped \
-  -p 8080:8080 -v weatherglass-data:/data --cap-add NET_RAW \
-  ghcr.io/j000k3r/weatherglass:dev
+docker run -d --name probeglass --restart unless-stopped \
+  -p 8080:8080 -v probeglass-data:/data --cap-add NET_RAW \
+  ghcr.io/j000k3r/probeglass:dev
 ```
 
 Open [http://localhost:8080](http://localhost:8080), create the administrator
@@ -48,7 +48,7 @@ invented. When you are done with it, **Settings → Monitoring → Example data*
 invented set in one click.*
 
 :::tip Try it before you install it
-There is a [clickable demo](https://j000k3r.github.io/weatherglass-website/demo/)
+There is a [clickable demo](https://j000k3r.github.io/probeglass-website/demo/)
 of the whole dashboard running in your browser on invented data — no container,
 no account, nothing stored. It is not a copy of the interface: it is the same
 files this container serves, answering from a set of recorded replies, which is
@@ -56,7 +56,7 @@ why the map, the widgets and the guided tour are all there.
 :::
 
 :::warning A hobby project, vibe coded, and nobody is liable for anything
-Weatherglass is written by one person in their spare time, who is not a professional
+ProbeGlass is written by one person in their spare time, who is not a professional
 software developer — built for their own homelab and shared on the chance that somebody
 else is looking for something similar — in dialogue with an AI coding agent. It is MIT
 licensed and comes "as is", without warranty of any kind — including for the case it
@@ -69,10 +69,10 @@ make it your only line of defence. **[How it came about, and how it is written t
 
 There are other monitoring tools, and this is not an argument against any of
 them. There is also no shortage of them. It is simply that most of them are a lot
-bigger than a homelab needs, in memory and in moving parts. Weatherglass makes
+bigger than a homelab needs, in memory and in moving parts. ProbeGlass makes
 the opposite bet:
 
-| | Weatherglass | Typical container-based monitor |
+| | ProbeGlass | Typical container-based monitor |
 |---|---|---|
 | Memory at idle | ~3 MB | 200–400 MB |
 | Runtime dependencies | none (static binary) | Node.js, a JVM, or a full stack |
@@ -131,5 +131,5 @@ so an additional language is a dictionary file and one picker entry, and
 translated documentation is a locale directory in this repository.
 [German is the first planned addition](/development/roadmap).
 
-Weatherglass is MIT licensed. Source:
-[https://github.com/j000k3r/weatherglass](https://github.com/j000k3r/weatherglass).
+ProbeGlass is MIT licensed. Source:
+[https://github.com/j000k3r/probeglass](https://github.com/j000k3r/probeglass).

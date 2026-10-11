@@ -8,7 +8,7 @@ description: nginx, Caddy, and Traefik configurations, with the two settings tha
 
 :::danger Do not expose this to the internet yet
 
-Weatherglass is at version 0.1.0 and is not ready to be reachable from outside
+ProbeGlass is at version 0.1.0 and is not ready to be reachable from outside
 your own network. A reverse proxy is for TLS, a hostname and an IP allowlist
 **inside a LAN**. It is not a way to make this safe to publish.
 
@@ -34,14 +34,14 @@ project leaves 0.1.0, this page will say what changed and what to review first.
 
 :::
 
-Weatherglass serves plain HTTP on port 8080 and expects a proxy in front of it if
+ProbeGlass serves plain HTTP on port 8080 and expects a proxy in front of it if
 you want TLS, a hostname, or an IP allowlist. Two things need configuring, and
 getting them wrong produces failure modes that are confusing rather than obvious.
 
 ## The two settings that matter
 
 ```yaml
-base_url: https://weatherglass.lan
+base_url: https://probeglass.lan
 trust_proxy: true
 ```
 
@@ -60,7 +60,7 @@ The dashboard keeps a Server-Sent Events stream open on `/api/events`. Most prox
 defaults will buffer it, and a buffered event stream is an event stream that
 never arrives — the page loads, then never updates.
 
-Weatherglass sends `X-Accel-Buffering: no`, which nginx honours. Other proxies
+ProbeGlass sends `X-Accel-Buffering: no`, which nginx honours. Other proxies
 need telling explicitly. Two more consequences:
 
 - **Do not set a short proxy read timeout.** A quiet system produces a heartbeat
@@ -73,10 +73,10 @@ need telling explicitly. Two more consequences:
 ```nginx
 server {
     listen 443 ssl http2;
-    server_name weatherglass.lan;
+    server_name probeglass.lan;
 
-    ssl_certificate     /etc/ssl/certs/weatherglass.lan.pem;
-    ssl_certificate_key /etc/ssl/private/weatherglass.lan.key;
+    ssl_certificate     /etc/ssl/certs/probeglass.lan.pem;
+    ssl_certificate_key /etc/ssl/private/probeglass.lan.key;
 
     location / {
         proxy_pass http://127.0.0.1:8080;
@@ -104,7 +104,7 @@ Caddy needs no special handling — it does not buffer responses by default and 
 obtains a certificate on its own:
 
 ```caddyfile
-weatherglass.lan {
+probeglass.lan {
     reverse_proxy 127.0.0.1:8080
 }
 ```
@@ -112,7 +112,7 @@ weatherglass.lan {
 If you want to narrow who can reach the dashboard inside your own network:
 
 ```caddyfile
-weatherglass.lan {
+probeglass.lan {
     @lan remote_ip 192.168.0.0/16 10.0.0.0/8
     handle @lan {
         reverse_proxy 127.0.0.1:8080
@@ -129,15 +129,15 @@ not replace one.
 
 ```yaml
 services:
-  weatherglass:
-    image: ghcr.io/j000k3r/weatherglass:dev
+  probeglass:
+    image: ghcr.io/j000k3r/probeglass:dev
     labels:
       traefik.enable: "true"
-      traefik.http.routers.wg.rule: "Host(`weatherglass.lan`)"
+      traefik.http.routers.wg.rule: "Host(`probeglass.lan`)"
       traefik.http.routers.wg.entrypoints: "websecure"
       traefik.http.routers.wg.tls: "true"
       traefik.http.services.wg.loadbalancer.server.port: "8080"
-    volumes: ["weatherglass-data:/data"]
+    volumes: ["probeglass-data:/data"]
 ```
 
 Traefik does not buffer by default and sets the forwarded headers itself.
@@ -163,13 +163,13 @@ Three sensors, in order:
 curl -s http://127.0.0.1:8080/healthz
 
 # 2. The proxy is passing things through, with the forwarded headers.
-curl -s -H "X-Forwarded-Proto: https" https://weatherglass.lan/healthz
+curl -s -H "X-Forwarded-Proto: https" https://probeglass.lan/healthz
 
 # 3. Authentication survives the round trip.
 curl -s -c /tmp/jar -X POST -H 'Content-Type: application/json' \
-  -H 'Origin: https://weatherglass.lan' \
-  -d '{"password":"..."}' https://weatherglass.lan/api/login
-curl -s -b /tmp/jar https://weatherglass.lan/api/session
+  -H 'Origin: https://probeglass.lan' \
+  -d '{"password":"..."}' https://probeglass.lan/api/login
+curl -s -b /tmp/jar https://probeglass.lan/api/session
 ```
 
 `/healthz` needs no authentication and returns `{"status":"ok","version":…}`,

@@ -41,7 +41,7 @@ five seconds instead of a pile of overlapping probes.
 
 ### 🔁 About retries {#about-retries}
 
-`retries` is a debounce, not a retry. Weatherglass does not re-run a failed probe
+`retries` is a debounce, not a retry. ProbeGlass does not re-run a failed probe
 immediately — it counts *consecutive scheduled failures* and opens an incident
 when the count reaches the threshold. With `interval: 60` and `retries: 3`, a
 service that goes down at 12:00:20 is reported at 12:02:20, and a single dropped
@@ -159,7 +159,7 @@ what `insecure_skip_verify` is for.
 ## 🐳 `docker` {#docker}
 
 Target: a container name or id on the host whose Docker socket is mounted into
-the Weatherglass container.
+the ProbeGlass container.
 
 | Option | Type | Default | Meaning |
 |---|---|---|---|

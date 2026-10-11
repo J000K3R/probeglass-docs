@@ -1,8 +1,8 @@
 {
-  "name": "weatherglass-docs",
+  "name": "probeglass-docs",
   "version": "0.1.0",
   "private": true,
-  "description": "Documentation site for Weatherglass, a small self-hosted homelab watchdog.",
+  "description": "Documentation site for ProbeGlass, a small self-hosted homelab watchdog.",
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",

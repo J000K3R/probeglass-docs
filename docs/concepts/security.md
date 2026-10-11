@@ -6,20 +6,20 @@ description: The authentication model, how secrets are kept out of the API and t
 
 # Security
 
-Weatherglass is a homelab tool, and its security model is built for that: it
+ProbeGlass is a homelab tool, and its security model is built for that: it
 assumes a trusted network and an untrusted browser, and it is explicit about what
 it does and does not protect.
 
 ## 🔑 Accounts {#accounts}
 
-Weatherglass has accounts. A fresh install asks for a **username and a
+ProbeGlass has accounts. A fresh install asks for a **username and a
 password**, and that first account is an administrator. Everything after that —
 more people, their roles, their second factor — is managed under
 **Settings → Access → Users**.
 
 <img
   src="/img/login.png"
-  alt="The sign-in screen: the Weatherglass mark, a username field, a password field and a Sign in button."
+  alt="The sign-in screen: the ProbeGlass mark, a username field, a password field and a Sign in button."
   width="1600"
 />
 
@@ -98,7 +98,7 @@ which signs that person out everywhere.
 
 Two ways in:
 
-**Session cookie.** `weatherglass_session`, whose value names the account it
+**Session cookie.** `probeglass_session`, whose value names the account it
 belongs to and is signed with a secret generated on first start. `HttpOnly`,
 `SameSite=Strict`, and **deliberately without `Secure`** — homelab installs are
 usually plain HTTP on the LAN, and a `Secure` cookie on an HTTP origin is a cookie
@@ -179,12 +179,12 @@ binds a port. That is a decision with a real cost, so it is written out here rat
 left in a Dockerfile comment.
 
 **Why it is necessary.** The data directory is normally a bind mount, and on the hosts
-Weatherglass is installed on — the MOS Hub, and anything with a template that mounts an
+ProbeGlass is installed on — the MOS Hub, and anything with a template that mounts an
 appdata folder — the *platform* creates that folder, as root, before the container starts.
 A process that is not root cannot write in it, and cannot repair it either: only root may
 change who owns a file. Every comparable image on those hosts starts as root, claims its
 folder and drops; that is the whole reason their installs work without a `chown`, and why
-Weatherglass's first install used to need one.
+ProbeGlass's first install used to need one.
 
 **What root is used for**, in this order, before anything else happens: `umask` is set to
 `UMASK`; the data directory is created if it is missing; the directory and its contents are
@@ -200,7 +200,7 @@ startup code itself. That is small, and it is not zero, and pretending otherwise
 the kind of reassurance this page exists to avoid.
 
 **Afterwards it is permanent.** A privileged `setuid` sets the saved uid too, so nothing
-running later — including Weatherglass's own code — can return to root. Go applies `setuid`
+running later — including ProbeGlass's own code — can return to root. Go applies `setuid`
 to every OS thread, so no thread is left behind as root either. `CAP_NET_RAW`, which ICMP
 ping needs, is deliberately carried across the drop; if that fails, the daemon logs which
 capability it lost and keeps running, because a ping sensor that falls back is a smaller
@@ -246,7 +246,7 @@ moment the backup was taken for. **A backup with masked credentials is not a
 backup.** So the secrets travel, the panel that produces the file says so in the
 same words, and this page says so here.
 
-What Weatherglass does about it:
+What ProbeGlass does about it:
 
 - **Both directions are administrator-only.** Only an admin can download the file
   or restore one. A viewer and an operator cannot obtain any of this over the API.
@@ -263,7 +263,7 @@ What Weatherglass does about it:
   the same rule the Telegram bot token already follows, where the URL holding it is
   never logged.
 - **A restore looks before it writes.** The format marker and the format and
-  schema versions are checked first. A file that is not a Weatherglass backup, or
+  schema versions are checked first. A file that is not a ProbeGlass backup, or
   one written by a newer version, is refused with a message saying why, and nothing
   is touched.
 - **A restore takes a safety copy first.** A byte-exact `VACUUM INTO` copy is
@@ -301,7 +301,7 @@ to start a container with the host's root filesystem mounted inside it. Mounting
 the socket into a container is, in practice, the same as giving that container
 root on the host.
 
-It is stated this plainly because it is a decision to make knowingly. Weatherglass
+It is stated this plainly because it is a decision to make knowingly. ProbeGlass
 itself is careful with it:
 
 - The prober makes **one GET per probe**, `GET /containers/{target}/json`, and
@@ -345,7 +345,7 @@ a routed, shared or wireless network is not. If the community matters, treat it 
 compromised the moment it crosses one.
 :::
 
-Within that limit, Weatherglass does the parts it can:
+Within that limit, ProbeGlass does the parts it can:
 
 - The community is treated as a credential. It carries the `Secret` flag, so it is
   masked in the API like a bot token and never reaches the UI, a stored result or
@@ -379,7 +379,7 @@ and has to be kept up to date.
 
 An administrator can still enter a raster-tile URL under **Settings → Look → Map**, and
 that is a real decision with a real cost, so it is stated plainly rather than buried:
-once a server is named, **the browser fetches tiles directly from it**. Weatherglass
+once a server is named, **the browser fetches tiles directly from it**. ProbeGlass
 does not proxy them. Whoever runs that server then sees the **IP address** of the person
 looking at the dashboard, their **browser's user agent**, and the **approximate part of
 the map** they have panned to — which, on a dashboard folded by place, is close to
@@ -461,7 +461,7 @@ be one.
 
 :::danger This is not ready for the internet
 Everything below is a boundary of a version 0.1.0 installation, and taken together
-they mean Weatherglass must not be reachable from outside your own network yet. A
+they mean ProbeGlass must not be reachable from outside your own network yet. A
 reverse proxy with TLS and an allowlist is for a LAN; it is not a way to publish
 this. See [Running behind a reverse proxy](/operations/reverse-proxy) for the
 detail and for what has to change first.
@@ -476,7 +476,7 @@ To be clear about the boundaries:
   nothing else.
 - **There is no multi-tenancy.** Several people can have accounts on one
   installation, with different roles — but they all see the same sensors, the same
-  history and the same incidents. Weatherglass assumes one homelab and one group of
+  history and the same incidents. ProbeGlass assumes one homelab and one group of
   people who trust each other with it. Isolating two organisations from each other
   is a different product.
 - **The database is not encrypted.** It is a SQLite file. If your threat model
@@ -494,5 +494,5 @@ that is meant for it. See [Running behind a reverse proxy](/operations/reverse-p
 ## 🐛 Reporting a vulnerability {#reporting-a-vulnerability}
 
 Please do not open a public issue for a security problem. See
-[SECURITY.md](https://github.com/j000k3r/weatherglass/blob/main/SECURITY.md)
+[SECURITY.md](https://github.com/j000k3r/probeglass/blob/main/SECURITY.md)
 in the repository for how to report it privately.

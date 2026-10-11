@@ -1,7 +1,7 @@
 ---
 title: Environment variables
 sidebar_label: Environment variables
-description: Every WEATHERGLASS_* variable, what it maps to, and how it interacts with the config file.
+description: Every PROBEGLASS_* variable, what it maps to, and how it interacts with the config file.
 ---
 
 # Environment variables
@@ -13,19 +13,19 @@ and override one value per deployment in a compose file.
 
 | Variable | Equivalent | Example |
 |---|---|---|
-| `WEATHERGLASS_CONFIG` | — | `/etc/weatherglass/weatherglass.yaml` |
-| `WEATHERGLASS_LISTEN` | `listen` | `:8080` |
-| `WEATHERGLASS_DATA_DIR` | `data_dir` | `/data` |
-| `WEATHERGLASS_DB` | `db_path` | `/data/weatherglass.db` |
-| `WEATHERGLASS_BASE_URL` | `base_url` | `https://weatherglass.lan` |
-| `WEATHERGLASS_LOG_LEVEL` | `log_level` | `debug` |
-| `WEATHERGLASS_LOG_FORMAT` | `log_format` | `json` |
-| `WEATHERGLASS_TRUST_PROXY` | `trust_proxy` | `true` |
-| `WEATHERGLASS_RETENTION_RAW` | `retention.raw` | `7d` |
-| `WEATHERGLASS_RETENTION_HOURLY` | `retention.hourly` | `90d` |
-| `WEATHERGLASS_ADMIN_PASSWORD` | — | see below |
+| `PROBEGLASS_CONFIG` | — | `/etc/probeglass/probeglass.yaml` |
+| `PROBEGLASS_LISTEN` | `listen` | `:8080` |
+| `PROBEGLASS_DATA_DIR` | `data_dir` | `/data` |
+| `PROBEGLASS_DB` | `db_path` | `/data/probeglass.db` |
+| `PROBEGLASS_BASE_URL` | `base_url` | `https://probeglass.lan` |
+| `PROBEGLASS_LOG_LEVEL` | `log_level` | `debug` |
+| `PROBEGLASS_LOG_FORMAT` | `log_format` | `json` |
+| `PROBEGLASS_TRUST_PROXY` | `trust_proxy` | `true` |
+| `PROBEGLASS_RETENTION_RAW` | `retention.raw` | `7d` |
+| `PROBEGLASS_RETENTION_HOURLY` | `retention.hourly` | `90d` |
+| `PROBEGLASS_ADMIN_PASSWORD` | — | see below |
 
-`WEATHERGLASS_CONFIG` is special: it names the configuration file rather than
+`PROBEGLASS_CONFIG` is special: it names the configuration file rather than
 overriding a setting inside it. If it points at a file that does not exist, that
 is an error — a typo in a mount path should not silently leave you running on
 defaults.
@@ -35,34 +35,34 @@ which user the container runs as. That is [`PUID`, `PGID` and `UMASK`](#puid-pgi
 below.
 
 :::note
-`WEATHERGLASS_DB` maps to the `db_path` key, not to `db`. The variable name is
+`PROBEGLASS_DB` maps to the `db_path` key, not to `db`. The variable name is
 shorter than the key on purpose: it is the one that gets typed into a `docker
 run` line.
 :::
 
-## `WEATHERGLASS_ADMIN_PASSWORD`
+## `PROBEGLASS_ADMIN_PASSWORD`
 
 Bootstraps the dashboard password on a fresh database. It is read **only when no
 password exists yet** and ignored on every later start — it does not override an
 existing password, so leaving it in a compose file is not a back door.
 
-This is the intended way to deploy Weatherglass unattended:
+This is the intended way to deploy ProbeGlass unattended:
 
 ```yaml
 services:
-  weatherglass:
-    image: ghcr.io/j000k3r/weatherglass:dev
+  probeglass:
+    image: ghcr.io/j000k3r/probeglass:dev
     restart: unless-stopped
     ports: ["8080:8080"]
-    volumes: ["weatherglass-data:/data"]
+    volumes: ["probeglass-data:/data"]
     cap_add: ["NET_RAW"]
     environment:
-      WEATHERGLASS_ADMIN_PASSWORD: ${WEATHERGLASS_ADMIN_PASSWORD:?set it in .env}
-      WEATHERGLASS_BASE_URL: http://weatherglass.lan:8080
-      WEATHERGLASS_LOG_FORMAT: json
-      WEATHERGLASS_RETENTION_RAW: 14d
+      PROBEGLASS_ADMIN_PASSWORD: ${PROBEGLASS_ADMIN_PASSWORD:?set it in .env}
+      PROBEGLASS_BASE_URL: http://probeglass.lan:8080
+      PROBEGLASS_LOG_FORMAT: json
+      PROBEGLASS_RETENTION_RAW: 14d
 volumes:
-  weatherglass-data:
+  probeglass-data:
 ```
 
 Compose expands `${VAR:?message}` from the shell environment or a `.env` file
@@ -71,7 +71,7 @@ behaviour you want for a password.
 
 ## `PUID`, `PGID` and `UMASK`
 
-These three have no `WEATHERGLASS_` prefix and no line in the configuration file, and that
+These three have no `PROBEGLASS_` prefix and no line in the configuration file, and that
 is not an oversight: they are not settings of the daemon. They say which **user** the
 container should run as, and there is no equivalent in a YAML file for a decision the
 kernel has to be asked for.
@@ -100,7 +100,7 @@ The practical consequences:
   `User=root` — and it takes the data directory over and drops exactly like the container
   does, so `PUID=0` is how you keep root there.
 - **A value that cannot be parsed stops the start** when the process is root — the same
-  treatment `WEATHERGLASS_LOG_LEVEL` gets. `PUID=abc` is an error rather than a silent fall
+  treatment `PROBEGLASS_LOG_LEVEL` gets. `PUID=abc` is an error rather than a silent fall
   back to 500.
 - **`PUID=0` and `PGID=0` mean "stay root"**, for the whole run. It is supported and it is
   logged at startup, and it is not recommended: it gives up the property that everything a
@@ -111,9 +111,9 @@ The practical consequences:
 
 ```yaml
 services:
-  weatherglass:
-    image: ghcr.io/j000k3r/weatherglass:dev
-    volumes: ["/srv/appdata/weatherglass:/data"]
+  probeglass:
+    image: ghcr.io/j000k3r/probeglass:dev
+    volumes: ["/srv/appdata/probeglass:/data"]
     cap_add: ["NET_RAW"]
     environment:
       PUID: 1000
@@ -123,7 +123,7 @@ services:
 
 ## Durations
 
-`WEATHERGLASS_RETENTION_RAW` and `WEATHERGLASS_RETENTION_HOURLY` accept:
+`PROBEGLASS_RETENTION_RAW` and `PROBEGLASS_RETENTION_HOURLY` accept:
 
 | Form | Example | Meaning |
 |---|---|---|
@@ -142,7 +142,7 @@ An environment variable that cannot be parsed is a startup error naming the
 variable — not a silent fallback to the default:
 
 ```
-weatherglass: WEATHERGLASS_RETENTION_RAW: invalid duration "seven days": ...
+probeglass: PROBEGLASS_RETENTION_RAW: invalid duration "seven days": ...
 ```
 
 The process exits. A monitor that comes up with a different retention policy than
@@ -154,7 +154,7 @@ up at all.
 Given a file with `log_level: info` and:
 
 ```bash
-WEATHERGLASS_LOG_LEVEL=warn weatherglass serve -log-level debug
+PROBEGLASS_LOG_LEVEL=warn probeglass serve -log-level debug
 ```
 
 the effective level is `debug`: flags beat environment, environment beats file,

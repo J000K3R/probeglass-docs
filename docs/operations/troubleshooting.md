@@ -9,7 +9,7 @@ description: What to look at when the container will not stay up, the dashboard 
 Start here: what the process is doing, and what it thinks is wrong.
 
 ```bash
-docker exec -u 500:500 weatherglass weatherglass doctor
+docker exec -u 500:500 probeglass probeglass doctor
 ```
 
 That is the fastest answer, and inside a container it is the only one — the image
@@ -27,14 +27,14 @@ compose file with a different `PUID`, use that number instead.
 When you want the raw log instead:
 
 ```bash
-docker logs weatherglass --tail 50
+docker logs probeglass --tail 50
 curl -s http://localhost:8080/healthz
 ```
 
 At `info` level a healthy start looks like this:
 
 ```
-level=INFO msg="starting weatherglass" version=0.1.0-dev listen=:8080 data_dir=/data config="" database=/data/weatherglass.db uid=500 gid=500
+level=INFO msg="starting probeglass" version=0.1.0-dev listen=:8080 data_dir=/data config="" database=/data/probeglass.db uid=500 gid=500
 level=INFO msg="dashboard listening" url=http://localhost:8080
 ```
 
@@ -47,7 +47,7 @@ For the detail behind a single request — which endpoint, how long it took — 
 with debug logging:
 
 ```bash
-docker run -d --name weatherglass -e WEATHERGLASS_LOG_LEVEL=debug ...
+docker run -d --name probeglass -e PROBEGLASS_LOG_LEVEL=debug ...
 ```
 
 **Settings → Help and maintenance → About** shows the version, the base URL, the data directory, the
@@ -63,14 +63,14 @@ nothing to look at in the dashboard either — the process never got as far as
 listening. The log is the whole story:
 
 ```bash
-docker logs weatherglass --tail 20
+docker logs probeglass --tail 20
 ```
 
 The line that matters is the one without a timestamp, because it goes straight to
 stderr rather than through the logger:
 
 ```
-weatherglass: ping database /data/weatherglass.db: unable to open database file (14)
+probeglass: ping database /data/probeglass.db: unable to open database file (14)
 ```
 
 That is SQLite failing to open its own file. `14` is `SQLITE_CANTOPEN`, and SQLite
@@ -79,7 +79,7 @@ the disk is full, or the directory belongs to somebody else. Current versions
 append which of those it actually is:
 
 ```
-weatherglass: ping database /data/weatherglass.db: unable to open database file (14); /data is
+probeglass: ping database /data/probeglass.db: unable to open database file (14); /data is
 not writable by uid 500, the user this process runs as. In a container the daemon starts as
 root, takes the data directory over and then drops to PUID:PGID, so this means it did not start
 as root — drop --user, or set PUID and PGID to whoever owns the folder, or hand it over
@@ -120,7 +120,7 @@ Find out what the container is actually mounting, rather than trusting the
 compose file to say what you think it says:
 
 ```bash
-docker inspect -f '{{range .Mounts}}{{.Type}} {{.Source}} -> {{.Destination}}{{"\n"}}{{end}}' weatherglass
+docker inspect -f '{{range .Mounts}}{{.Type}} {{.Source}} -> {{.Destination}}{{"\n"}}{{end}}' probeglass
 ```
 
 Then look at the owner of that `Source` path **on the host**:
@@ -134,7 +134,7 @@ mismatch, and either side can change:
 
 ```bash
 sudo chown -R 500:500 /path/from/above   # give the folder to the user the daemon runs as
-docker restart weatherglass
+docker restart probeglass
 ```
 
 or set `PUID` and `PGID` in the compose file to whoever owns the folder and restart — that
@@ -150,7 +150,7 @@ unreadable at any depth, no matter who owns the last component.
 A different line, with a different answer:
 
 ```
-weatherglass: ping database /data/weatherglass.db: unable to open database file (14);
+probeglass: ping database /data/probeglass.db: unable to open database file (14);
 /data is not writable even as root: permission denied
 ```
 
@@ -180,19 +180,19 @@ If the folder is not doing anything else for you, drop the bind mount and let
 Docker own the volume:
 
 ```bash
-docker run -d --name weatherglass \
+docker run -d --name probeglass \
   -p 8080:8080 \
-  -v weatherglass-data:/data \
+  -v probeglass-data:/data \
   --cap-add NET_RAW \
   --restart unless-stopped \
-  ghcr.io/j000k3r/weatherglass:dev
+  ghcr.io/j000k3r/probeglass:dev
 ```
 
 Nothing inside the container needs a particular host path — the whole state is one
 SQLite file and its write-ahead log. A named volume is created from the image's own
 `/data`, which is owned by the default `PUID`, and the daemon corrects the owner to
 `PUID` anyway on the first start, so it is writable either way. `docker volume inspect
-weatherglass-data` still tells you where it lives when you want to copy it out. The one
+probeglass-data` still tells you where it lives when you want to copy it out. The one
 thing to know is that a bind mount is what you want if you already have a backup routine
 pointed at an appdata folder; in that case keep the bind mount, which needs no fixing at
 all.
@@ -272,7 +272,7 @@ anyone can act on.
 A second copy of the daemon cannot start, and the message says so:
 
 ```
-weatherglass: cannot listen on :8080 — is another copy of Weatherglass already
+probeglass: cannot listen on :8080 — is another copy of ProbeGlass already
 running? (listen tcp :8080: bind: address already in use)
 ```
 
@@ -378,12 +378,12 @@ does not suppress any other channel — delivery fans out in parallel.
 
 For a webhook receiver, verify the signature against the **raw body**, not a
 parsed and re-serialised version of it; re-encoding changes the bytes and the HMAC
-will not match. The header is `X-Weatherglass-Signature`, of the form
+will not match. The header is `X-ProbeGlass-Signature`, of the form
 `sha256=<hex>`.
 
 ## 🔒 The database is locked, or a request hangs {#the-database-is-locked-or-a-request-hangs}
 
-Weatherglass opens SQLite with a single connection on purpose: the writes are
+ProbeGlass opens SQLite with a single connection on purpose: the writes are
 tiny, and correctness is worth more than concurrency on a homelab workload. The
 practical consequence is that a request which holds that connection blocks every
 other request — so a hang is a symptom with one cause.
@@ -397,7 +397,7 @@ level=WARN msg="slow request" method=GET path=/api/summary status=200 duration_m
 If you see that line, look for:
 
 - **A second process on the same database file.** Two containers mounting the same
-  volume, or a leftover `weatherglass serve` from a previous experiment still
+  volume, or a leftover `probeglass serve` from a previous experiment still
   holding a port. `docker ps` and `lsof -iTCP:8080` will tell you.
 - **A stalled disk.** NFS, a sleeping USB drive, or a failing SSD. `dmesg` and the
   disk's own health sensor are where to look.
@@ -412,7 +412,7 @@ you take the `-wal` file too — see [Backup](/operations/backup).
 ## 🚧 Port already in use {#port-already-in-use}
 
 ```
-weatherglass: listen tcp :8080: bind: address already in use
+probeglass: listen tcp :8080: bind: address already in use
 ```
 
 Something else has the port. On a host with a previous experiment still running:
@@ -440,9 +440,9 @@ use, or says *None*.
 
 ## 🐛 Reporting a problem {#reporting-a-problem}
 
-Include the version and build from `weatherglass version`, the deployment method,
+Include the version and build from `probeglass version`, the deployment method,
 the last fifty log lines, and what you expected to happen. If it is a dashboard
 problem, the browser console output is worth more than a screenshot.
 
 Security problems: please do not open a public issue. See
-[SECURITY.md](https://github.com/j000k3r/weatherglass/blob/main/SECURITY.md).
+[SECURITY.md](https://github.com/j000k3r/probeglass/blob/main/SECURITY.md).

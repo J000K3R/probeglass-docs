@@ -82,7 +82,7 @@ Each sensor gets a card:
   incident is open, and yellow means the last probe failed but the threshold is not
   reached yet — see [About retries](/concepts/sensors#about-retries).
 - **The sparkline** is recent response time. It is drawn from raw samples, and a
-  gap in it means Weatherglass did not probe — not that the probe failed.
+  gap in it means ProbeGlass did not probe — not that the probe failed.
 - **The three percentages** are uptime over 24 hours, 7 days, and 30 days,
   computed from the rollups, so they stay cheap to ask even on a long history.
 - **`Ø`** is the average latency over the same window.
@@ -120,7 +120,7 @@ wall while your laptop stays on cards.
   of the last forty checks, green or red. It answers "has this been flapping?"
   faster than any chart.
 - **Map** draws the sites that have coordinates on the world's coastlines, which
-  Weatherglass draws itself, and tells you which ones it cannot draw. If a tile
+  ProbeGlass draws itself, and tells you which ones it cannot draw. If a tile
   server is configured and unreachable the markers stay exactly where they belong
   and only the tiles are missing.
 

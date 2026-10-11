@@ -6,7 +6,7 @@ description: Two ways to take your installation with you — a portable JSON exp
 
 # Backup and restore
 
-Everything Weatherglass knows — sensors, channels, probe history, incidents,
+Everything ProbeGlass knows — sensors, channels, probe history, incidents,
 accounts with their password hashes and second factors, per-account settings, and
 the API key — lives in one SQLite file. Backing it up means copying that file, and
 restoring means putting it back.
@@ -19,7 +19,7 @@ history behind on purpose.
 
 | | From the dashboard | The database file |
 |---|---|---|
-| What you get | one JSON document | a byte-exact copy of `weatherglass.db` |
+| What you get | one JSON document | a byte-exact copy of `probeglass.db` |
 | Where | **Settings → Backup**, or the API | `docker cp`, `VACUUM INTO`, or a plain copy |
 | Partial? | yes — without history, or only the last 7, 30 or 90 days | no. All of it or none of it |
 | Readable without tools? | yes, it is JSON | only with SQLite |
@@ -59,7 +59,7 @@ configuration, and a file copy has no way to be that.
 
 ```json
 {
-  "format": "weatherglass-backup",
+  "format": "probeglass-backup",
   "format_version": 1,
   "schema_version": 3,
   "app_version": "0.1.0-dev",
@@ -109,13 +109,13 @@ sensors, channels, accounts and settings — is replaced by what the file says, 
 the second says that this cannot be undone in the dashboard and that the safety copy
 is the way back.
 
-Before it touches anything, Weatherglass:
+Before it touches anything, ProbeGlass:
 
-1. **Checks the file.** A document whose `format` is not `weatherglass-backup`, or
+1. **Checks the file.** A document whose `format` is not `probeglass-backup`, or
    whose format or schema version is newer than this build understands, is refused
    with a message saying which. Nothing is written.
 2. **Takes a safety copy.** `VACUUM INTO` writes
-   `weatherglass-pre-restore-<timestamp>.db` beside the database — a byte-exact
+   `probeglass-pre-restore-<timestamp>.db` beside the database — a byte-exact
    snapshot taken before the change. If that copy cannot be written, the restore
    does not go ahead. This is the way back if the file turns out to lock you out.
 
@@ -146,9 +146,9 @@ the backup instead of you remembering to press a button.
 and matters only for the history scope.
 
 ```bash
-curl -fsS -H "X-API-Key: $WEATHERGLASS_API_KEY" \
+curl -fsS -H "X-API-Key: $PROBEGLASS_API_KEY" \
   "http://localhost:8080/api/backup?scope=history&days=30" \
-  -o "weatherglass-backup-$(date +%F).json"
+  -o "probeglass-backup-$(date +%F).json"
 ```
 
 The answer arrives with `Content-Type: application/json`, a
@@ -159,9 +159,9 @@ the project, and inventing one for this would be a precedent nobody needs. The
 upload is capped at 64 MiB.
 
 ```bash
-curl -fsS -X POST -H "X-API-Key: $WEATHERGLASS_API_KEY" \
+curl -fsS -X POST -H "X-API-Key: $PROBEGLASS_API_KEY" \
   -H "Content-Type: application/json" \
-  --data-binary @weatherglass-backup-2026-10-09.json \
+  --data-binary @probeglass-backup-2026-10-09.json \
   "http://localhost:8080/api/restore"
 ```
 
@@ -170,7 +170,7 @@ The reply says what moved and where the safety copy went:
 ```json
 {
   "counts": { "sensors": 12, "channels": 2, "users": 1, "incidents": 84 },
-  "safety_copy": "weatherglass-pre-restore-20261009T211500Z.db",
+  "safety_copy": "probeglass-pre-restore-20261009T211500Z.db",
   "token_epoch_notice": false
 }
 ```
@@ -185,10 +185,10 @@ installation, and a copy of it is still the right backup when you want everythin
 byte for byte, with nothing left to interpretation.
 
 ```
-/data/weatherglass.db         the database
-/data/weatherglass.db-wal     write-ahead log, if any
-/data/weatherglass.db-shm     shared-memory index, if any
-/data/weatherglass.yaml       the configuration file, if you mounted one
+/data/probeglass.db         the database
+/data/probeglass.db-wal     write-ahead log, if any
+/data/probeglass.db-shm     shared-memory index, if any
+/data/probeglass.yaml       the configuration file, if you mounted one
 ```
 
 ### The safe way: `VACUUM INTO`
@@ -206,22 +206,22 @@ container. Two options:
 **Stop, copy, start.** Short, simple, and for a homelab, entirely adequate:
 
 ```bash
-docker stop weatherglass
-docker run --rm -v weatherglass-data:/data -v "$PWD:/backup" alpine \
-  cp /data/weatherglass.db /backup/weatherglass-$(date +%F).db
-docker start weatherglass
+docker stop probeglass
+docker run --rm -v probeglass-data:/data -v "$PWD:/backup" alpine \
+  cp /data/probeglass.db /backup/probeglass-$(date +%F).db
+docker start probeglass
 ```
 
 **Copy the volume while running**, accepting that you may need the `-wal` file
 too:
 
 ```bash
-docker run --rm -v weatherglass-data:/data -v "$PWD:/backup" alpine \
-  sh -c 'sqlite3 /data/weatherglass.db "VACUUM INTO /backup/weatherglass-$(date +%F).db"'
+docker run --rm -v probeglass-data:/data -v "$PWD:/backup" alpine \
+  sh -c 'sqlite3 /data/probeglass.db "VACUUM INTO /backup/probeglass-$(date +%F).db"'
 ```
 
 This runs `sqlite3` from a throwaway `alpine` container against the volume, which
-is the part you cannot do from inside the Weatherglass image. `VACUUM INTO` takes
+is the part you cannot do from inside the ProbeGlass image. `VACUUM INTO` takes
 a read lock and writes a clean, fully checkpointed copy.
 
 Either way, the result is one file of a few MB that you can `scp` anywhere.
@@ -231,7 +231,7 @@ Either way, the result is one file of a few MB that you can `scp` anywhere.
 Nothing special — the same file, in `./data` by default:
 
 ```bash
-cp data/weatherglass.db ~/backups/weatherglass-$(date +%F).db
+cp data/probeglass.db ~/backups/probeglass-$(date +%F).db
 ```
 
 ### Restoring a database file
@@ -239,10 +239,10 @@ cp data/weatherglass.db ~/backups/weatherglass-$(date +%F).db
 Stop the container, replace the file, start it again:
 
 ```bash
-docker stop weatherglass
-docker run --rm -v weatherglass-data:/data -v "$PWD:/backup" alpine \
-  cp /backup/weatherglass-2026-10-08.db /data/weatherglass.db
-docker start weatherglass
+docker stop probeglass
+docker run --rm -v probeglass-data:/data -v "$PWD:/backup" alpine \
+  cp /backup/probeglass-2026-10-08.db /data/probeglass.db
+docker start probeglass
 ```
 
 If you restored a file from a version that had a `-wal` next to it, delete the
@@ -265,7 +265,7 @@ newer schema rather than trying.
 
 ## 🚚 Migrating to another machine {#migrating}
 
-Copy the database and, if you use one, the `weatherglass.yaml`. That is the whole
+Copy the database and, if you use one, the `probeglass.yaml`. That is the whole
 migration. Two things do not travel and are worth knowing about:
 
 - **The password hash does travel.** It is in the `settings` table, so the
@@ -298,7 +298,7 @@ two by a wide margin.
 Measure yours:
 
 ```bash
-docker run --rm -v weatherglass-data:/data alpine ls -lh /data
+docker run --rm -v probeglass-data:/data alpine ls -lh /data
 ```
 
 ## Next steps

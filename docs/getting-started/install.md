@@ -1,7 +1,7 @@
 ---
 title: Installation
 sidebar_label: Installation
-description: Install Weatherglass with Docker Compose, plain Docker, or from source, and finish the first-run setup.
+description: Install ProbeGlass with Docker Compose, plain Docker, or from source, and finish the first-run setup.
 ---
 
 import Tabs from '@theme/Tabs';
@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 # Installation
 
-Weatherglass is one container with no runtime dependencies. Pick whichever of
+ProbeGlass is one container with no runtime dependencies. Pick whichever of
 the three routes below matches how you run the rest of your homelab.
 
 ## Requirements
@@ -19,7 +19,7 @@ the three routes below matches how you run the rest of your homelab.
 - `NET_RAW` **only** if you want ICMP ping sensors. Everything else works
   unprivileged.
 
-Weatherglass speaks plain HTTP on port 8080. It expects to sit behind your
+ProbeGlass speaks plain HTTP on port 8080. It expects to sit behind your
 existing reverse proxy if you need TLS — see
 [Running behind a reverse proxy](/operations/reverse-proxy). That page also
 explains why this must **not** be reachable from outside your network yet.
@@ -31,7 +31,7 @@ up serving the same binary on port 8080.
 
 :::note Which tag to pull
 The image lives on the GitHub Container Registry as
-`ghcr.io/j000k3r/weatherglass`. It is public, so pulling it needs no account and
+`ghcr.io/j000k3r/probeglass`. It is public, so pulling it needs no account and
 no `docker login`.
 
 For now there is one moving tag, **`dev`**, and the commands below use it. Every
@@ -47,12 +47,12 @@ The repository ships a `docker-compose.yml` with the volume, the port, and the
 `NET_RAW` capability already set up:
 
 ```bash
-git clone https://github.com/j000k3r/weatherglass.git
-cd weatherglass
+git clone https://github.com/j000k3r/probeglass.git
+cd probeglass
 docker compose up -d
 ```
 
-The compose file pins `ghcr.io/j000k3r/weatherglass:dev`. For a reproducible
+The compose file pins `ghcr.io/j000k3r/probeglass:dev`. For a reproducible
 deployment, replace that with a specific version tag once you have decided
 which one you are on.
 
@@ -61,17 +61,17 @@ which one you are on.
 
 ```bash
 docker run -d \
-  --name weatherglass \
+  --name probeglass \
   --restart unless-stopped \
   -p 8080:8080 \
-  -v weatherglass-data:/data \
+  -v probeglass-data:/data \
   --cap-add NET_RAW \
-  ghcr.io/j000k3r/weatherglass:dev
+  ghcr.io/j000k3r/probeglass:dev
 ```
 
 Notes on the flags:
 
-- `-v weatherglass-data:/data` — the whole state is one SQLite file in here.
+- `-v probeglass-data:/data` — the whole state is one SQLite file in here.
   Backing up this volume backs up everything; see [Backup](/operations/backup).
   A bind mount instead of a named volume is fine too: the container starts as root,
   takes the folder over and drops to `PUID:PGID`, so a host folder that root created is
@@ -83,7 +83,7 @@ Notes on the flags:
 - `--restart unless-stopped` — the image ships a `HEALTHCHECK`, so Docker knows
   the difference between "running" and "working" and can restart it if needed.
 
-If you would rather not hand-write the command, `weatherglass doctor` tells you
+If you would rather not hand-write the command, `probeglass doctor` tells you
 what a running installation is actually configured with — including a warning
 when ping is listed as a problem and the capability is missing.
 
@@ -94,8 +94,8 @@ Requires Go 1.27 or newer. There is no frontend build step; the dashboard is
 embedded from `internal/web/assets` at compile time.
 
 ```bash
-git clone https://github.com/j000k3r/weatherglass.git
-cd weatherglass
+git clone https://github.com/j000k3r/probeglass.git
+cd probeglass
 make run          # builds the binary and serves :8080, data in ./data
 ```
 
@@ -112,7 +112,7 @@ make help         # everything else
 To cross-compile for a Raspberry Pi without a Docker build:
 
 ```bash
-GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -o weatherglass ./cmd/weatherglass
+GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -o probeglass ./cmd/probeglass
 ```
 
 `CGO_ENABLED=0` is not optional — the SQLite driver is a pure-Go translation,
@@ -138,9 +138,9 @@ user, which is what makes a first install work without a `chown`. The default is
 it is spent that way.
 
 That drop is also why the `HEALTHCHECK` invokes the binary itself
-(`weatherglass healthcheck`) instead of `curl`. It also means
+(`probeglass healthcheck`) instead of `curl`. It also means
 `docker exec ... sh` will not work — there is no shell to give you. The binary
-is still there, so `docker exec -u 500:500 weatherglass weatherglass doctor` does:
+is still there, so `docker exec -u 500:500 probeglass probeglass doctor` does:
 the `-u` is the user `doctor` should measure the installation against, since `exec`
 starts a new process as root.
 
@@ -167,7 +167,7 @@ The first request to a fresh database redirects the dashboard to a setup screen:
 
 <img
   src="/img/setup.png"
-  alt="The setup screen: the Weatherglass mark, a Username field, a Password field with a strength bar, a Repeat password field and a Continue button."
+  alt="The setup screen: the ProbeGlass mark, a Username field, a Password field with a strength bar, a Repeat password field and a Continue button."
   width="1600"
 />
 
@@ -188,13 +188,13 @@ More accounts, their roles and their second factors are managed under
 role may do.
 
 To skip the interactive step in an automated deployment, set
-`WEATHERGLASS_ADMIN_PASSWORD` before the first start:
+`PROBEGLASS_ADMIN_PASSWORD` before the first start:
 
 ```bash
-docker run -d --name weatherglass -p 8080:8080 \
-  -v weatherglass-data:/data \
-  -e WEATHERGLASS_ADMIN_PASSWORD='correct horse battery staple' \
-  ghcr.io/j000k3r/weatherglass:dev
+docker run -d --name probeglass -p 8080:8080 \
+  -v probeglass-data:/data \
+  -e PROBEGLASS_ADMIN_PASSWORD='correct horse battery staple' \
+  ghcr.io/j000k3r/probeglass:dev
 ```
 
 This creates an account called **`admin`** with that password. It is read **only
