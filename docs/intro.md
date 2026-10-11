@@ -35,7 +35,8 @@ account, then choose whether you want the simple or the advanced interface. Four
 example sensors are created for you — with a week of invented history behind them, so
 the sparklines, the uptime bars and the 24h/7d/30d columns are populated, and a red
 stretch in the chart shows what an outage looks like — and a guided tour offers to walk
-you through them.
+you through them. They stand at two example places, a homelab and a server somewhere
+else, so the map has something to draw on the first day too.
 
 <img
   src="/img/tour.png"

@@ -327,7 +327,7 @@ The whole procedure, both directions, and what the two scopes are for, is in
 
 | Method | Path | Purpose | Role |
 |---|---|---|---|
-| `GET` | `/api/examples` | `{"sensors":n,"results":n,"incidents":n}` — what the setup and `seed --demo` left behind | viewer |
+| `GET` | `/api/examples` | `{"sensors":n,"results":n,"incidents":n,"sites":n}` — what the setup and `seed --demo` left behind | viewer |
 | `POST` | `/api/examples` | Load the sample data back, with an invented week of history. Answer is the `GET` shape | admin |
 | `DELETE` | `/api/examples` | Remove exactly those sensors, and their history with them | admin |
 
@@ -336,7 +336,10 @@ the one destructive bulk operation in the product, and a number is easier to tru
 than "done".
 
 Only sensors marked as sample data are touched. A sensor you created is never
-removed, whatever it is called.
+removed, whatever it is called. The invented places go too, but only the ones the
+removal leaves empty — a place that has since been given a sensor of your own is in
+use and stays, and the `sites` count says how many would go before anything is
+deleted.
 
 The `POST` is the way back from the `DELETE`, and it deliberately loads the
 **richer** dataset — more sensors than the setup writes, in their groups, with a

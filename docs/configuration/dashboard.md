@@ -752,9 +752,10 @@ simple mode on the kitchen tablet while another keeps the full one open.
 
 A new installation comes with a few invented sensors so that there is something to
 look at — four of them, carrying a week of invented history, so the cards are not
-empty and nothing is grey — and `probeglass seed --demo` adds more. Both are marked
-in the database as **sample data**, and Settings has a panel that says how much of it
-there is.
+empty and nothing is grey, and standing at two invented places so that the map has
+something to draw — and `probeglass seed --demo` adds more. Both are marked in the
+database as **sample data**, and Settings has a panel that says how much of it there
+is.
 
 <img
   src="/img/dashboard.png"
@@ -769,14 +770,16 @@ screenshot as much as it does at your desk.
 
 <img
   src="/img/example-data.png"
-  alt="The sample-data panel in Settings: how many example sensors, results and incidents there are, and the button that removes them."
+  alt="The sample-data panel in Settings: how many example sensors, results, incidents and places there are, and the button that removes them."
   width="1600"
 />
 
 Removing the sample data deletes exactly the sensors that were marked, and their
 history goes with them — results and incidents belong to a sensor and go when it
-goes. It cannot be undone, so the button asks first. Sensors you created yourself
-are never touched, however they are named.
+goes. The invented places go the same way, but only the ones the removal leaves
+empty: a place you have since put a sensor of your own at is one you are using, and
+it stays. It cannot be undone, so the button asks first. Sensors you created
+yourself are never touched, however they are named.
 
 **And the same panel loads it back.** Once there is nothing left to remove, the
 panel offers to load the sample data instead, and the answer is the fuller

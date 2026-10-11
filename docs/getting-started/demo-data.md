@@ -143,12 +143,13 @@ everything.
 ## Starting over for real
 
 If you seeded into a volume you actually want to keep, the demo sensors are now
-in it — and the four that setup created are beside them. Both are marked as **sample
-data**, so a single button under **Settings → Monitoring → Example data** removes the whole lot:
+in it — and the four that setup created are beside them, on the same two places the
+demo uses. Both are marked as **sample data**, so a single button under
+**Settings → Monitoring → Example data** removes the whole lot, places included:
 
 <img
   src="/img/example-data.png"
-  alt="The Example data panel: a sentence saying the sensors the dashboard started with are examples, a row of counts for example sensors, stored probes and incidents, and a red Remove all example data button."
+  alt="The Example data panel: a sentence saying the sensors the dashboard started with are examples, a row of counts for example sensors, stored probes, incidents and places, and a red Remove all example data button."
   width="1492"
 />
 

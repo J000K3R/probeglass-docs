@@ -180,7 +180,8 @@ The first request to a fresh database redirects the dashboard to a setup screen:
    it can be changed later.
 4. You are signed in as the installation's first **administrator**. Four example
    sensors are created with it, carrying a week of invented history so the dashboard has
-   something to show before you have added anything. Add your first sensor —
+   something to show before you have added anything, and standing at two example
+   places so that the map is not the one screen left blank. Add your first sensor —
    see [Your first sensor](/getting-started/first-sensor).
 
 More accounts, their roles and their second factors are managed under
