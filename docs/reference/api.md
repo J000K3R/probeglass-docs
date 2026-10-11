@@ -363,7 +363,7 @@ rows it does not declare is how two sources of truth begin to disagree.
 | `POST` | `/api/sites` | `{"name":"…","kind":"local","lat":48.1372,"lon":11.5756}` | admin |
 | `PUT` | `/api/sites/{name}` | Rename or move one. A rename is carried into every sensor pointing at it | admin |
 | `DELETE` | `/api/sites/{name}` | Delete. **`409`** while sensors are still on it — add `?unassign=1` to delete it and leave those sensors without a site | admin |
-| `PUT` | `/api/map` | `{"tile_url":"…","attribution":"…"}` — the installation-wide tile source; empty `tile_url` means "fetch nothing" | admin |
+| `PUT` | `/api/map` | `{"tile_url":"…","attribution":"…","borders":"on"}` — the installation-wide tile source and whether the map draws its borders and names; empty `tile_url` means "fetch nothing" | admin |
 
 ```bash
 curl -X POST -H "X-API-Key: $WG_KEY" -H 'Content-Type: application/json' \
@@ -405,6 +405,17 @@ writes the calling account's own preferences. Saving a tile URL takes effect
 without a restart — the origin is folded into the content security policy at once,
 which is what lets the browser actually fetch the tiles; clearing the field takes it
 back out. See [Security](/concepts/security#map-tiles).
+
+`borders` is `"on"` (the default) or `"off"` and decides whether the map draws the
+country and province borders and their names, or only the coastlines. Anything else
+is a `400`. It is a **pointer**, which is the one asymmetry in this payload: leaving
+the field out keeps the stored value instead of clearing it, so a script that only
+wants to set a tile address — or a client written before this field existed, since
+unknown fields are refused — cannot switch the layer off by saying nothing about it.
+With `"off"` the two data files that carry the borders and the names are not sent to
+the browser at all, so the setting saves bytes as well as strokes. It is read back
+as `borders` from `GET /api/settings`, and the small map widget on the dashboard
+follows it too.
 
 Sensors carry a **`site`** field like any other: a string on `POST /api/sensors`
 and `PUT /api/sensors/{id}`, empty to clear it. A name that does not exist is a

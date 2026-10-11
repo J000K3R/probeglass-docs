@@ -358,12 +358,12 @@ Within that limit, Weatherglass does the parts it can:
 
 ## 🗺️ The map draws itself, and fetches nothing by default {#map-tiles}
 
-The map view draws the world's land out of the binary — coastlines from a
-public-domain dataset, decoded in the browser — and **out of the box nothing about it
-leaves the machine**. No request is made to any server to draw the map, so there is
-nobody to disclose anything to: not your IP address, not your browser, and not the part
-of the world you are looking at. The daemon never contacts a map server either, by
-default or otherwise.
+The map view draws the world out of the binary — coastlines, the country and province
+borders, and the names of both, all from public-domain datasets decoded in the browser —
+and **out of the box nothing about it leaves the machine**. No request is made to any
+server to draw the map, so there is nobody to disclose anything to: not your IP address,
+not your browser, and not the part of the world you are looking at. The daemon never
+contacts a map server either, by default or otherwise.
 
 An administrator can still enter a raster-tile URL under **Settings → Look → Map**, and
 that is a real decision with a real cost, so it is stated plainly rather than buried:
@@ -396,8 +396,10 @@ server is same-origin, which `'self'` already covers.
 
 What that does not protect you from: the tile server's own logs, once you have named
 one; anything else served from that origin, since the policy allows the origin you
-name; and the coarseness of the bundled data — 1:110m outlines are recognisable to about
-zoom 6 and are straight lines between distant points in a city.
+name; and the coarseness of the bundled data — the 1:50m coastlines are recognisable to
+about zoom 6 and are straight lines between distant points in a city, and the borders
+and the names are the same public data at their own scales, drawn locally without a
+request either.
 
 ### How the tile origin reaches the content security policy {#csp-tiles}
 

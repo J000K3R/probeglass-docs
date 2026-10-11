@@ -330,7 +330,7 @@ available before you start moving things about.
 | **Recent incidents** | the last few incidents with the sensor, how long ago and what was wrong; a click opens the sensor |
 | **Slowest sensors** | the five sensors with the highest average latency, worst first |
 | **Most outages** | the five sensors with the worst 30-day uptime — the same figure the cards show, so the list cannot disagree with them |
-| **Map** | a small map of your sites; clicking a pin opens the sensor, and the layout switcher has the full map |
+| **Map** | a small map of your sites, coastlines and borders included; clicking a pin opens the sensor, and the layout switcher has the full map |
 | **Shortcuts** | buttons for the places you go often: incidents, alerts, Settings, live on and off — plus a new sensor, for an administrator |
 
 The five that a fresh account starts with are exactly the header the dashboard has
@@ -346,6 +346,12 @@ tile has been given its size and then only has its pins recoloured, so a refresh
 never moves the viewport or reloads the tiles under you. It also gives up the
 keyboard: the small map is a picture, its pins are clickable, and it is not a tab
 stop that swallows the arrow keys on the way past.
+
+The small map obeys the **Map** switch under Settings → Look for its coastlines and
+its borders, so it cannot show a different world from the full map — but it never
+draws the names. 150 pixels of map in a strip of widgets has no room for a place
+name, and a word there would sit on top of the marker it is naming rather than
+beside it.
 
 ## 👀 Five views {#views}
 
@@ -393,8 +399,10 @@ The heartbeat covers the **last 40 checks**, which is roughly forty minutes at a
 one-minute interval and about three and a half hours at five. The heading says
 "recent checks" rather than "the last hour" for exactly that reason.
 
-**Map** (`map`) draws the places that have coordinates on a map of the world.
-Homelab and external sites are told apart by **shape** as well as
+**Map** (`map`) draws the places that have coordinates on a map of the world, which
+Weatherglass draws itself: the coastlines, the country and province borders, and the
+names of the countries and provinces. Homelab and external sites are told apart by
+**shape** as well as
 colour — a filled disc against a hollow diamond — because the colour of a marker is
 the worst status of the sensors on it, and two meanings on one channel would be one
 too many. Everything else is ordinary map behaviour: drag to pan, scroll to zoom on
@@ -402,14 +410,23 @@ the point under the pointer, and buttons for the ones who prefer them.
 
 <img
   src="/img/dashboard-map.png"
-  alt="The map view: the world's coastlines drawn by Weatherglass itself — Europe, Africa, Greenland, and the coast of North America — with two markers, Homelab in the north-east and Rented server in the south-west, and a legend in the bottom left corner."
+  alt="The map view: the world's coastlines and borders drawn by Weatherglass itself — Europe, Greenland and the coast of North America — with the countries named (Norway, the United Kingdom, Germany, Poland, Spain and others), two markers, Homelab in the north-east and Rented server in the south-west, and a legend in the bottom left corner."
+  width="1600"
+/>
+
+Zoomed in, the provinces, states and Bundesländer appear with their names — the map
+below is the same dashboard with the wheel turned on Berlin, where the homelab sits:
+
+<img
+  src="/img/dashboard-map-provinces.png"
+  alt="The same map zoomed in on Germany: the borders of the Bundesländer as thin lines, the names Niedersachsen, Nordrhein-Westfalen, Sachsen, Sachsen-Anhalt, Thüringen, Hessen, Brandenburg, Bremen and Hamburg, the neighbouring countries named Germany, Belgium, Luxembourg and Czechia, and the Homelab marker with its label at Berlin."
   width="1600"
 />
 
 **If a tile server is configured and cannot be reached, the markers stay where they
 are.** They are placed by arithmetic, not by the pictures behind them, so the places
-are correctly arranged and one line says the tiles are missing; the coastlines are
-still drawn underneath them. That is a deliberate trade: a dashboard that lies about
+are correctly arranged and one line says the tiles are missing; the coastlines and the
+borders are still drawn underneath them. That is a deliberate trade: a dashboard that lies about
 where things are would be worse than one that admits it has no tiles.
 
 ## 📍 Sites {#sites}
@@ -438,12 +455,18 @@ or a cloud — and optional coordinates. Three things are worth knowing:
   dialog then offers to remove it *and* leave those sensors without a site, which
   is the honest way to say the same thing.
 - **A site can be made while the sensor is made.** The sensor form's place picker
-  ends with **New site…**; choosing it brings up a name and a kind, and the place is
-  made together with the sensor. Making a sensor is usually the moment somebody
-  first knows where the thing stands, and a trip to Settings and back would cost
-  them the half-filled form. The place is made **on save**, not when the entry was
-  chosen: a form closed again leaves nothing behind, and a name that already exists
-  is used rather than made a second time.
+  ends with **New site…**, and choosing it opens **the same window Settings → Sites
+  opens** — name, kind and coordinates, with the sensor form still standing behind
+  it, untouched, saying so at the top. That is not a tidier route to the same field:
+  the old one had no coordinates, so the place somebody knew the position of could
+  not be given one until they had saved the sensor and gone to Settings. Making a
+  sensor is usually the moment somebody first knows where the thing stands.
+  Two things follow from it being the real dialog. The place is made **when the site
+  window is saved**, not when the sensor is — so a sensor form abandoned afterwards
+  leaves the place behind, which is the price of one dialog rather than two. And the
+  name you save is put straight into the sensor's place picker, so the sensor still
+  saves onto the place you just made. A name that already exists is used rather than
+  made a second time.
 
 Coordinates are all-or-nothing: both or neither. A site with a latitude and no
 longitude has no position — `0, 0` is a real place in the Gulf of Guinea and is
@@ -457,21 +480,59 @@ rather than accepted and quietly undone by the next start.
 
 ## 🗺️ The map {#map-tiles}
 
-The map draws itself, out of the binary, and **fetches nothing by default**. The land
-and the coastlines come from a public-domain outline — Natural Earth 1:110m, simplified
-and quantised, about 30 KB of the web assets — decoded in the browser and drawn as one
-SVG path in the map's own world coordinates. There is no request to make and nothing to
-leave your network for, so out of the box the browser talks to nobody at all.
+The map draws itself, out of the binary, and **fetches nothing by default**. Four
+public-domain data sets are baked into the program at build time and decoded in the
+browser:
 
-The data is coarse on purpose: continents are recognisable to about zoom 6, and in a
-city the coastline is straight lines between distant points. It exists so that the map
-has something honest underneath its markers, and so that a machine with no route to the
-internet still shows the places in the right position relative to each other.
+| Layer | Comes from | Drawn as |
+|---|---|---|
+| Land and coastlines | Natural Earth 1:50m land | one filled SVG path, ~1400 rings |
+| Country and province borders | Natural Earth 1:10m admin-1 boundary lines | nine SVG paths, one per zoom band |
+| Country names | Natural Earth 1:110m countries | 177 names |
+| Province names | Natural Earth 1:10m admin-1 label points | 4550 names — the states, provinces and Bundesländer |
+
+There is no request to make and nothing to leave your network for, so out of the box
+the browser talks to nobody at all.
+
+**The borders and the names arrive with the zoom**, because that is what the data
+says: each line and each name carries the zoom Natural Earth itself first draws it at.
+At a world view you get the coastlines, the country borders and the country names; as
+you come closer the provinces follow, and their names come in a little later again —
+**from about zoom 5 for their borders and about zoom 7 for their names**, which is
+roughly a country filling the screen. At world scale there are more than four thousand
+of them, and all of them at once would be a grey texture rather than a map.
+
+**The names never overlap.** A name that would land on one that is already placed is
+dropped, so the map shows fewer names than the data holds — a map with half the names
+on it is a map, and one with all of them is a smear that names nothing. Country names
+win over province names, and both are placed most important first.
+
+The data is deliberately coarse: the coastlines are Natural Earth's 1:50m set, which
+is honest to about zoom 6 and, in a city, straight lines between distant points. It
+exists so that the map has something truthful underneath its markers, and so that a
+machine with no route to the internet still shows the places in the right position
+relative to each other. If you want real imagery, run a tile server — see below.
+
+**The names are the data's own, in the data's language.** Natural Earth keeps a name
+per place rather than a translation per interface language, and those names are what
+is drawn: "Niedersachsen" rather than "Lower Saxony", "Germany" rather than
+"Deutschland". The rest of the interface is English, so this is a small
+inconsistency — it is the price of not shipping a name table of our own for every
+language, and of names that are actually where the map says they are.
+
+**Settings → Look → Map has a switch for the borders and the names.** With it off,
+the map draws the coastlines and nothing else, and the two files that carry the
+borders and the names are not fetched at all — a switch that saved drawing but still
+downloaded a megabyte would not be a switch. The header's small map follows the same
+setting, but never draws the names: it is 150 pixels of map in a strip of widgets, and
+a place name on it is a word laid over the thing it names.
 
 **The map opens on the closest zoom that holds every marker.** One place opens on its
 own town, with the outline off the picture — that is the case the tile field is for.
-Places on different continents open on the world, and there the coastlines are the
-ground under the pins.
+Places on different continents open on the world, and there the coastlines and
+borders are the ground under the pins.
+
+### Using somebody else's tiles {#third-party-tiles}
 
 If you want detailed imagery, run a tile server and put its address in
 **Settings → Look → Map**. The field takes an ordinary raster-tile URL:
@@ -489,8 +550,8 @@ and is a licence obligation rather than decoration; whatever the tile server's l
 requires belongs there. Nothing is fetched for an empty attribution line, and the whole
 attribution line disappears when no tile URL is set.
 
-Tiles are drawn **above** the coastlines, so a tile server that answers covers them
-completely, and one that does not answer leaves the coastlines visible.
+Tiles are drawn **above** the coastlines and the borders, so a tile server that answers
+covers them completely, and one that does not answer leaves them visible.
 
 :::warning The tile server sees your browser
 Once you name one, the tiles are fetched by the browser, so whoever runs that server
@@ -505,6 +566,24 @@ That is also why Weatherglass no longer defaults to OpenStreetMap: their
 permit use by third-party applications, and a dashboard that pointed there was shown a
 block notice instead of a map.
 
+**OpenStreetMap.** The public tile servers are not available to this dashboard, or to
+any other application, under that policy — so there is no address to paste in, and
+none is suggested. The data itself is open: if you want OpenStreetMap's map, run a
+tile server of your own from their data (or a rendering of it) inside your network and
+put its address in the field, exactly as with any other server:
+
+```
+http://osm.lan/{z}/{x}/{y}.png
+```
+
+**Google Maps.** Google's tiles are **not** usable through this field, and this is not
+a limitation that a setting could lift: Google licenses its maps through the Maps
+JavaScript API with a key of your own, and its tile endpoints are an internal detail
+of that product rather than a service it promises to answer. Weatherglass embeds no
+third-party scripts and stores no API keys by design, so the honest answer is that a
+Google basemap means a different map library. If you want imagery behind your pins,
+run your own tile server; that is what the field is for.
+
 For anything more than a homelab, run a tile server inside your own network and put
 its address in the field. Nothing about the map needs the public internet: with your
 own server the browser fetches tiles from an address it could already reach, and the
@@ -515,19 +594,34 @@ privacy would end up the same.
 
 ### Regenerating the coastline data {#coastlines}
 
-The committed outline is generated, not hand-drawn, and the command that made it is
-written in the file's own header together with the source URL and the SHA-256 of the
-input. To reproduce or refine it:
+The committed data is generated, not hand-drawn, and the command that made each file
+is written in that file's own header together with the source URL and the SHA-256 of
+the input. To reproduce all of it:
 
 ```bash
-curl -LO https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_land.geojson
-go run ./cmd/worldgen -in ne_110m_land.geojson
+curl -LO https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_land.geojson
+curl -LO https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_1_states_provinces_lines.geojson
+curl -LO https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson
+curl -LO https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_1_label_points.geojson
+
+go run ./cmd/worldgen -kind land    -in ne_50m_land.geojson                          -out internal/web/assets/world.js
+go run ./cmd/worldgen -kind borders -in ne_10m_admin_1_states_provinces_lines.geojson -tol 0.02 -out internal/web/assets/borders.js
+go run ./cmd/worldgen -kind labels  -in ne_110m_admin_0_countries.geojson             -out internal/web/assets/labels.js
+go run ./cmd/worldgen -kind regions -in ne_10m_admin_1_label_points.geojson          -out internal/web/assets/regions.js
 ```
 
-`-tol` sets the Douglas-Peucker tolerance in degrees and defaults to `0.02`, which is
-what keeps the file near 30 KB. Dropping it to `0.005` roughly matches Natural Earth's
-1:50m set at about four times the size. `cmd/worldgen` never fetches anything itself;
-it reads the file you hand it, so the download is yours to make and yours to check.
+`-tol` sets the Douglas-Peucker tolerance in degrees and defaults to `0.02`. The
+province lines are simplified with the same figure; the coastline is not, because it
+is already the simplified 1:50m set and simplifying it twice is how a coastline turns
+into a polygon. `-kind` picks the reader (rings, open lines, or named points), so the
+four files are one program rather than four. `-out` is required for every kind except
+`land`, whose default is the coastline: an accidental run that overwrote `world.js`
+with provinces would be a map that lost its land. Every file is written
+deterministically — same input, same bytes — and says so in its header.
+
+`cmd/worldgen` never fetches anything itself; it reads the file you hand it, so the
+download is yours to make and yours to check. The four inputs are 29 MB together, and
+the four outputs are 988 KB, which is the whole of what shipping the map costs.
 
 See [Security](/concepts/security#map-tiles) for how the tile origin reaches the
 dashboard's content security policy.
