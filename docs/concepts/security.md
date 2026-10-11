@@ -168,9 +168,58 @@ sender removes the token from error messages before they reach a log line or the
 UI. Bot tokens end up in bug reports and pasted into chat rooms more often than
 anyone would like.
 
-**The image is minimal.** Distroless, no shell, no package manager, running as
-uid 500. There is no interpreter in the container to pivot to, and
-`docker exec ... sh` does not work because there is no shell.
+**The image is minimal.** Distroless, no shell, no package manager. There is no
+interpreter in the container to pivot to, and `docker exec ... sh` does not work because
+there is no shell.
+
+## 🔐 Privileges: root for a moment, then never again {#privileges}
+
+The container starts as **root** and stops being root before it opens the database or
+binds a port. That is a decision with a real cost, so it is written out here rather than
+left in a Dockerfile comment.
+
+**Why it is necessary.** The data directory is normally a bind mount, and on the hosts
+Weatherglass is installed on — the MOS Hub, and anything with a template that mounts an
+appdata folder — the *platform* creates that folder, as root, before the container starts.
+A process that is not root cannot write in it, and cannot repair it either: only root may
+change who owns a file. Every comparable image on those hosts starts as root, claims its
+folder and drops; that is the whole reason their installs work without a `chown`, and why
+Weatherglass's first install used to need one.
+
+**What root is used for**, in this order, before anything else happens: `umask` is set to
+`UMASK`; the data directory is created if it is missing; the directory and its contents are
+`lchown`ed to `PUID:PGID` (`lchown`, so a symlink planted in that folder cannot point the
+chown at `/etc/shadow`); then `setgroups`, `setgid` and `setuid` make the process that user,
+and `geteuid` is checked afterwards. If the change did not take, the daemon exits rather
+than continue as root.
+
+**What it costs.** For those few milliseconds the process is root. Nothing has been read
+from the network, no request has arrived, and no path has come from a request — the data
+directory is the one from the configuration — so what is reachable in that window is the
+startup code itself. That is small, and it is not zero, and pretending otherwise would be
+the kind of reassurance this page exists to avoid.
+
+**Afterwards it is permanent.** A privileged `setuid` sets the saved uid too, so nothing
+running later — including Weatherglass's own code — can return to root. Go applies `setuid`
+to every OS thread, so no thread is left behind as root either. `CAP_NET_RAW`, which ICMP
+ping needs, is deliberately carried across the drop; if that fails, the daemon logs which
+capability it lost and keeps running, because a ping sensor that falls back is a smaller
+problem than a watchdog that refuses to start.
+
+**The knobs are `PUID`, `PGID` and `UMASK`** — 500, 500 and 022 by default, the identity
+every other image on those hosts uses. They have no effect when the container does not
+start as root: with `--user`, with `user:` in compose, or on a rootless runtime, the daemon
+says in one log line that they are being ignored rather than applying them in silence.
+`PUID=0` keeps root for the whole run: supported, logged loudly, and not recommended,
+because it gives up the property that everything a sensor or a request can reach runs
+unprivileged.
+
+**If you would rather it never be root at all**, start it with `--user 500:500` and give
+the folder to that user yourself, once. The daemon then runs unprivileged from the first
+instruction, and logs that `PUID`, `PGID` and `UMASK` cannot take effect — which is true.
+
+`no-new-privileges: true`, as in the example compose file, does not get in the way: it
+forbids *gaining* privileges, not giving them away.
 
 ## 💾 The backup file carries secrets in the clear {#backup-secrets}
 

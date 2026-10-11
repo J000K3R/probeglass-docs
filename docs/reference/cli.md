@@ -142,12 +142,12 @@ their timeouts allow, and report a passing network blip as an installation fault
 A healthy installation:
 
 ```bash
-$ docker exec weatherglass weatherglass doctor
+$ docker exec -u 500:500 weatherglass weatherglass doctor
 weatherglass doctor
 
 ok    build             weatherglass 0.1.0 (4a1c2e7) built 2026-11-02T09:14:03Z
 ok    config            /data/weatherglass.yaml (3 sensors, 1 channel)
-ok    data dir          /data (writable, uid 500)
+ok    data dir          /data (writable by uid 500)
 ok    database          /data/weatherglass.db, 1.2 MiB, 40213 probes
 ok    integrity         quick_check ok
 ok    schema            version 3
@@ -158,6 +158,12 @@ ok    icmp              an ICMP socket can be opened
 
 0 warnings, 0 failures
 ```
+
+Run it as the user the daemon actually runs as — `-u 500:500`, or whatever `PUID` is set
+to. `docker exec` starts a new process as the image's user, which is root, and several
+checks answer questions about the user running them; as root, `data dir` reports that root
+can write, which says nothing about whether the daemon can. Run as root and the line says
+so instead: `ok data dir /data (writable as root; the daemon runs as uid 500)`.
 
 | Flag | Default | Meaning |
 |---|---|---|

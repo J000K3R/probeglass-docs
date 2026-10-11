@@ -9,7 +9,7 @@ description: What to look at when the container will not stay up, the dashboard 
 Start here: what the process is doing, and what it thinks is wrong.
 
 ```bash
-docker exec weatherglass weatherglass doctor
+docker exec -u 500:500 weatherglass weatherglass doctor
 ```
 
 That is the fastest answer, and inside a container it is the only one — the image
@@ -17,6 +17,12 @@ is distroless, so there is no shell and no `curl` to fall back on. `doctor` repo
 what is wrong with the installation and changes nothing, which is why it is safe
 to run against a database you are worried about. See
 [Command line](/reference/cli#doctor) for what each line means.
+
+The `-u 500:500` is worth the extra word: the image starts as root and becomes
+`PUID:PGID` a moment later, but `docker exec` starts a *new* process as the image's user,
+which is root. `doctor` answers questions about the user it is running as, so without the
+flag it tests the data directory as root and reports a uid the daemon never has. On a
+compose file with a different `PUID`, use that number instead.
 
 When you want the raw log instead:
 
@@ -28,9 +34,14 @@ curl -s http://localhost:8080/healthz
 At `info` level a healthy start looks like this:
 
 ```
-level=INFO msg="starting weatherglass" version=0.1.0 listen=:8080 data_dir=/data config=""
+level=INFO msg="starting weatherglass" version=0.1.0-dev listen=:8080 data_dir=/data config="" database=/data/weatherglass.db uid=500 gid=500
 level=INFO msg="dashboard listening" url=http://localhost:8080
 ```
+
+The `uid` and `gid` on the first line are read from the running process, not from what was
+asked for, so they are the answer to "as whom is this actually running?" — which is not a
+question the image can be asked any other way, since there is no shell in it. A container
+that was told to become 500 and did not would show it here.
 
 For the detail behind a single request — which endpoint, how long it took — run
 with debug logging:
@@ -69,34 +80,41 @@ append which of those it actually is:
 
 ```
 weatherglass: ping database /data/weatherglass.db: unable to open database file (14); /data is
-not writable by uid 500, the user this process runs as. A bind mount keeps the ownership of the
-host folder rather than taking the image's, so hand that folder to it once and start again:
-chown -R 500:500 <host folder>
+not writable by uid 500, the user this process runs as. In a container the daemon starts as
+root, takes the data directory over and then drops to PUID:PGID, so this means it did not start
+as root — drop --user, or set PUID and PGID to whoever owns the folder, or hand it over
+yourself: chown -R 500:500 <host folder>
 ```
 
 If your line carries no such hint, the cause is one of the others — check the free
 space on the volume, and see [Backup](/operations/backup) for what else the
 container expects to be able to write.
 
-### The bind mount kept the host's ownership
+### "not writable by uid …" — the container never became root
 
-This is the cause almost every time, and it catches people who did nothing wrong.
+This was the standard first-install failure once, and it should not happen any more, so
+seeing it means something is stopping the daemon from claiming the directory at all.
 
-The image runs as uid **500** (see [the image](/getting-started/install#the-image)),
-which is the uid the appdata folders on those hosts are usually created with.
-A **named volume** is created by Docker from the image's own `/data`, so it
-inherits 500 and simply works — that is what the install instructions and the
-compose example use. A **bind mount** (`-v /host/path:/data`) does not: the host
-folder keeps whatever owner it already had, and if that owner is `root` or a
-desktop user account, uid 500 cannot create a database inside it. Docker starts
-the container anyway, which is why the failure arrives one line later rather than
-at startup.
+The container starts as **root** on purpose, `lchown`s `/data` and everything inside it to
+**`PUID:PGID`** — 500:500 by default — and only then becomes that user. Only root may
+change who owns a file, so that is the one moment the process needs root, and it is over
+before the database is opened. It is how every other image on those hosts works: the
+platform creates the appdata folder itself, as root, and hands it to the container; the
+container takes it over and leaves root. Bind mount and named volume both end up writable
+that way.
 
-A platform template is a bind mount even when it does not look like one. The
-MOS template, for instance, mounts `/mnt/cache/appdata/weatherglass` — the
-folder it just created — into `/data`. If that platform creates appdata as a
-different uid than the one it runs containers with, this is the line you will
-see on the very first start.
+So this line means the drop never ran. Which of these it is:
+
+- **`--user` on the container, or `user:` in compose.** The runtime picks the uid before
+  the process starts, so the process is not root, cannot claim the folder, and ignores
+  `PUID`, `PGID` and `UMASK` — the daemon says exactly that in its own log on startup. Drop
+  the override and let the image start as root, or keep it and name a user that already
+  owns the folder.
+- **A platform or orchestrator that will not run a container as root** — a rootless
+  runtime, Podman with `--userns=keep-id`, a hardened Kubernetes policy. Same answer: hand
+  the folder over once, on the host.
+- **The hint names an unexpected uid**, because `PUID` is set to something else. Then it is
+  the folder that is out of step, not the daemon.
 
 Find out what the container is actually mounting, rather than trusting the
 compose file to say what you think it says:
@@ -111,16 +129,36 @@ Then look at the owner of that `Source` path **on the host**:
 ls -ln /path/from/above
 ```
 
-The third column is the numeric uid. If it is not `500`, that is the problem:
+The third column is the numeric uid. If it is not the one the message names, that is the
+mismatch, and either side can change:
 
 ```bash
-sudo chown -R 500:500 /path/from/above
+sudo chown -R 500:500 /path/from/above   # give the folder to the user the daemon runs as
 docker restart weatherglass
 ```
+
+or set `PUID` and `PGID` in the compose file to whoever owns the folder and restart — that
+works only as long as the container still starts as root, because it is the daemon that
+does the chowning.
 
 The same applies to the directories above it: a path has to be walkable, so every
 parent needs its execute bit. A folder that is `700` and owned by root is
 unreadable at any depth, no matter who owns the last component.
+
+### "not writable even as root" — the mount, not the owner
+
+A different line, with a different answer:
+
+```
+weatherglass: ping database /data/weatherglass.db: unable to open database file (14);
+/data is not writable even as root: permission denied
+```
+
+Root writes into almost anything, so when root cannot, ownership is not the question. It is
+the filesystem that is not taking writes: a read-only mount (`:ro` in the volume spec), a
+full disk (`df -h` on the host at that path), or a bind mount whose source is on a share
+that has gone away. `chown`, `PUID` and `PGID` change nothing here — the volume line or the
+disk has to.
 
 ### When that does not hold
 
@@ -151,11 +189,13 @@ docker run -d --name weatherglass \
 ```
 
 Nothing inside the container needs a particular host path — the whole state is one
-SQLite file and its write-ahead log. A named volume is created with the right owner
-from the start, and `docker volume inspect weatherglass-data` still tells you where
-it lives when you want to copy it out. The one thing to know is that a bind mount
-is what you want if you already have a backup routine pointed at an appdata
-folder; in that case keep the bind mount and fix the ownership.
+SQLite file and its write-ahead log. A named volume is created from the image's own
+`/data`, which is owned by the default `PUID`, and the daemon corrects the owner to
+`PUID` anyway on the first start, so it is writable either way. `docker volume inspect
+weatherglass-data` still tells you where it lives when you want to copy it out. The one
+thing to know is that a bind mount is what you want if you already have a backup routine
+pointed at an appdata folder; in that case keep the bind mount, which needs no fixing at
+all.
 
 ## 🚪 The dashboard will not load {#the-dashboard-will-not-load}
 

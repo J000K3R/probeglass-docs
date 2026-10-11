@@ -270,10 +270,14 @@ elsewhere, because the markup never contains user-facing strings.
 `--platform=$BUILDPLATFORM` and uses `TARGETOS`/`TARGETARCH`, so a multi-arch build
 cross-compiles rather than emulating: the arm64 image for a Pi builds at native
 speed. This requires BuildKit. The runtime stage is
-`gcr.io/distroless/static-debian12:nonroot` — no shell, no package manager, uid
-500. Because there is no shell, the image's `HEALTHCHECK` runs the binary itself
-(`weatherglass healthcheck`), which makes a `GET /healthz` and exits non-zero on
-failure.
+`gcr.io/distroless/static-debian12:nonroot`, with `USER 0:0` on top of it — no shell, no
+package manager. It starts as root for exactly as long as it takes to hand the data
+directory to `PUID:PGID` and become that user (`internal/privdrop`), because that
+directory is a bind mount whose owner only root can change; after that it is
+unprivileged and cannot go back. See
+[Privileges](/concepts/security#privileges). Because there is no shell, the image's
+`HEALTHCHECK` runs the binary itself (`weatherglass healthcheck`), which makes a
+`GET /healthz` and exits non-zero on failure.
 
 Multi-arch publishing and the release archives are driven from
 `.github/workflows/release.yml`, with the version, commit, and build date stamped

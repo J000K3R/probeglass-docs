@@ -73,10 +73,9 @@ Notes on the flags:
 
 - `-v weatherglass-data:/data` — the whole state is one SQLite file in here.
   Backing up this volume backs up everything; see [Backup](/operations/backup).
-  Prefer a named volume as above over `-v /host/path:/data`. A bind mount keeps the
-  host folder's owner, the image runs as uid 500, and a folder that root created
-  is one the daemon cannot write its database into — the container then exits a
-  second after it starts. See
+  A bind mount instead of a named volume is fine too: the container starts as root,
+  takes the folder over and drops to `PUID:PGID`, so a host folder that root created is
+  made writable before the database is opened. See
   [Troubleshooting](/operations/troubleshooting#the-container-starts-and-stops-again).
 - `--cap-add NET_RAW` — needed for ICMP ping. Without it, ping sensors fall back
   to an unprivileged UDP ping, and if that is unavailable too the sensor result
@@ -127,18 +126,23 @@ which is exactly what makes the static cross-build possible.
 Available architectures: `linux/amd64`, `linux/arm64`, `linux/arm/v7`.
 
 The runtime stage is `gcr.io/distroless/static-debian12:nonroot`: no shell, no
-package manager, running as uid 500. 500 rather than distroless's own 65532,
-because the platforms this gets installed on — MOS, Unraid, and the compose files
-people write on top of them — create an appdata folder as 500:500. A folder the
-process does not own is a container that exits a second after it starts, so
-matching them means a first install works with no `chown`. If you need a
-different uid, it is set where the runtime reads it, not by an environment
-variable: `user:` in compose, `--user` for `docker run`.
+package manager, and `USER 0:0` on top of it. It starts as root for one reason, and
+gives it up again before it opens anything: a bind mount keeps the ownership of the
+host folder, the platforms this gets installed on — MOS, Unraid, and the compose files
+people write on top of them — create that appdata folder as root, and only root can
+hand it to somebody else. So the daemon `lchown`s `/data` to `PUID:PGID` and becomes that
+user, which is what makes a first install work without a `chown`. The default is
+500:500, the identity every other image on those hosts uses; the three knobs are
+`PUID`, `PGID` and `UMASK`, and
+[Security](/concepts/security#privileges) sets out what the root moment costs and why
+it is spent that way.
 
-That uid is also why the `HEALTHCHECK` invokes the binary itself
+That drop is also why the `HEALTHCHECK` invokes the binary itself
 (`weatherglass healthcheck`) instead of `curl`. It also means
 `docker exec ... sh` will not work — there is no shell to give you. The binary
-is still there, so `docker exec weatherglass weatherglass doctor` does.
+is still there, so `docker exec -u 500:500 weatherglass weatherglass doctor` does:
+the `-u` is the user `doctor` should measure the installation against, since `exec`
+starts a new process as root.
 
 ## Building the container image
 
