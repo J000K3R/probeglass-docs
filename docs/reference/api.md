@@ -339,12 +339,12 @@ Only sensors marked as sample data are touched. A sensor you created is never
 removed, whatever it is called.
 
 The `POST` is the way back from the `DELETE`, and it deliberately loads the
-**richer** dataset — five sensors across two groups with a week of invented
-history — rather than the four bare sensors a fresh installation starts with.
-Somebody who has just deleted everything and asked for it back wants to see what
-the dashboard looks like with something on it, curves and all. The answer is the
-table's new totals rather than what this call created, because "5 example
-sensors" is what the panel is about.
+**richer** dataset — more sensors than the setup writes, in their groups, with a
+week of invented history — rather than the four bare sensors a fresh installation
+starts with. Somebody who has just deleted everything and asked for it back wants
+to see what the dashboard looks like with something on it, curves and all. The
+answer is the table's new totals rather than what this call created, because
+"example sensors" is what the panel is about.
 
 Running it twice is harmless. A name already in the table is left alone, so the
 second call creates nothing and invents nothing — the uniqueness constraint on a

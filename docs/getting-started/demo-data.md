@@ -1,7 +1,7 @@
 ---
 title: Try it with demo data
 sidebar_label: Demo data
-description: Fill a throwaway database with five sensors and a synthetic week of history to evaluate the dashboard without configuring anything.
+description: Fill a throwaway database with invented sensors and a synthetic week of history to evaluate the dashboard without configuring anything.
 ---
 
 # Try it with demo data

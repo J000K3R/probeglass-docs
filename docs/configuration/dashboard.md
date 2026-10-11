@@ -536,10 +536,11 @@ are never touched, however they are named.
 
 **And the same panel loads it back.** Once there is nothing left to remove, the
 panel offers to load the sample data instead, and the answer is the fuller
-dataset: five sensors across two groups with an invented week of history, so the
-charts and the uptime bars have something in them the moment the page reloads.
-That is deliberately more than the four bare sensors a fresh installation starts
-with — you pressed a button to see a populated dashboard, not an empty one.
+dataset: more sensors than the setup writes, in their groups, with an invented
+week of history, so the charts and the uptime bars have something in them the
+moment the page reloads. That is deliberately more than the four bare sensors a
+fresh installation starts with — you pressed a button to see a populated
+dashboard, not an empty one.
 
 Loading is safe to do twice: a name that is already taken is left alone, so the
 second press creates nothing and invents nothing. On an installation whose sensors
