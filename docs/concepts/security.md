@@ -358,12 +358,24 @@ Within that limit, Weatherglass does the parts it can:
 
 ## 🗺️ The map draws itself, and fetches nothing by default {#map-tiles}
 
-The map view draws the world out of the binary — coastlines, the country and province
-borders, and the names of both, all from public-domain datasets decoded in the browser —
+The map view draws the world out of the binary — coastlines, the water, the country,
+district and province
+borders, and the names of all three, almost all of it from public-domain datasets decoded
+in the browser —
 and **out of the box nothing about it leaves the machine**. No request is made to any
 server to draw the map, so there is nobody to disclose anything to: not your IP address,
 not your browser, and not the part of the world you are looking at. The daemon never
 contacts a map server either, by default or otherwise.
+
+**One dataset on that map is not public domain, and it is the only obligation this
+project passes on.** The district borders are Austria's and come from Statistik Austria
+under **[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)**, which asks to be
+named when the work is shown. Everything else the map draws — Natural Earth's coastlines,
+water, countries, provinces and city names — is public domain and asks for nothing.
+Whoever runs a map with the Austrian districts on it should name Statistik Austria; the
+same sentence is in `SECURITY.md` in the repository and in the header of
+`internal/web/assets/districts.js`, and it is also why that one source URL carries a year
+and has to be kept up to date.
 
 An administrator can still enter a raster-tile URL under **Settings → Look → Map**, and
 that is a real decision with a real cost, so it is stated plainly rather than buried:
@@ -396,10 +408,11 @@ server is same-origin, which `'self'` already covers.
 
 What that does not protect you from: the tile server's own logs, once you have named
 one; anything else served from that origin, since the policy allows the origin you
-name; and the coarseness of the bundled data — the 1:50m coastlines are recognisable to
-about zoom 6 and are straight lines between distant points in a city, and the borders
-and the names are the same public data at their own scales, drawn locally without a
-request either.
+name; and the coarseness of the bundled data — the 1:10m coastlines and water are
+simplified to about two kilometres, which is under a pixel to about zoom 6 and visible
+by about zoom 10, so a city is straight lines between distant points. The borders,
+the districts and the names are the same kind of public data at their own scales, drawn
+locally without a request either.
 
 ### How the tile origin reaches the content security policy {#csp-tiles}
 
