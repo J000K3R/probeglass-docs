@@ -400,7 +400,8 @@ one-minute interval and about three and a half hours at five. The heading says
 "recent checks" rather than "the last hour" for exactly that reason.
 
 **Map** (`map`) draws the places that have coordinates on a map of the world, which
-Weatherglass draws itself: the coastlines, the country and province borders, and the
+Weatherglass draws itself: the coastlines, the lakes and rivers, the country and
+province borders, and the
 names of the countries and provinces. Homelab and external sites are told apart by
 **shape** as well as
 colour — a filled disc against a hollow diamond — because the colour of a marker is
@@ -414,7 +415,8 @@ the point under the pointer, and buttons for the ones who prefer them.
   width="1600"
 />
 
-Zoomed in, the provinces, states and Bundesländer appear with their names — the map
+Zoomed in, the provinces, states and Bundesländer appear with their names, and the
+rivers and inland lakes come with them — the map
 below is the same dashboard with the wheel turned on Berlin, where the homelab sits:
 
 <img
@@ -425,7 +427,8 @@ below is the same dashboard with the wheel turned on Berlin, where the homelab s
 
 **If a tile server is configured and cannot be reached, the markers stay where they
 are.** They are placed by arithmetic, not by the pictures behind them, so the places
-are correctly arranged and one line says the tiles are missing; the coastlines and the
+are correctly arranged and one line says the tiles are missing; the coastlines, the
+water and the
 borders are still drawn underneath them. That is a deliberate trade: a dashboard that lies about
 where things are would be worse than one that admits it has no tiles.
 
@@ -480,23 +483,35 @@ rather than accepted and quietly undone by the next start.
 
 ## 🗺️ The map {#map-tiles}
 
-The map draws itself, out of the binary, and **fetches nothing by default**. Four
+The map draws itself, out of the binary, and **fetches nothing by default**. Seven
 public-domain data sets are baked into the program at build time and decoded in the
 browser:
 
 | Layer | Comes from | Drawn as |
 |---|---|---|
-| Land and coastlines | Natural Earth 1:50m land | one filled SVG path, ~1400 rings |
-| Country and province borders | Natural Earth 1:10m admin-1 boundary lines | nine SVG paths, one per zoom band |
+| Land and coastlines | Natural Earth 1:50m land | one filled SVG path, 1393 rings |
+| Lakes | Natural Earth 1:50m lakes | filled SVG paths, six zoom bands |
+| Rivers | Natural Earth 1:50m rivers and lake centrelines, rank 1–3 | SVG lines, two zoom bands |
+| Country borders | Natural Earth 1:50m admin-0 boundary lines | SVG lines, two zoom bands |
+| Province borders | Natural Earth 1:10m admin-1 boundary lines | nine SVG paths, one per zoom band |
 | Country names | Natural Earth 1:110m countries | 177 names |
-| Province names | Natural Earth 1:10m admin-1 label points | 4550 names — the states, provinces and Bundesländer |
+| Province names | Natural Earth 1:10m admin-1 label points | 4552 names — the states, provinces and Bundesländer |
+
+**They are stacked in that order, and the order is the design.** The coastlines
+first, then the water inside them, then the country borders, then the provinces, then
+any tiles you configured, then the names, then the pins. A lake is a filled shape and
+a river is a line, which is the whole difference between water and a border — and the
+country borders are drawn a little brighter than the province borders, because a
+country ending and a county ending are not the same kind of line.
 
 There is no request to make and nothing to leave your network for, so out of the box
 the browser talks to nobody at all.
 
-**The borders and the names arrive with the zoom**, because that is what the data
-says: each line and each name carries the zoom Natural Earth itself first draws it at.
-At a world view you get the coastlines, the country borders and the country names; as
+**Everything but the coastlines arrives with the zoom**, because that is what the data
+says: each line, each lake and each name carries the zoom Natural Earth itself first
+draws it at.
+At a world view you get the coastlines, the water, the country borders and the country
+names; as
 you come closer the provinces follow, and their names come in a little later again —
 **from about zoom 5 for their borders and about zoom 7 for their names**, which is
 roughly a country filling the screen. At world scale there are more than four thousand
@@ -521,9 +536,13 @@ inconsistency — it is the price of not shipping a name table of our own for ev
 language, and of names that are actually where the map says they are.
 
 **Settings → Look → Map has a switch for the borders and the names.** With it off,
-the map draws the coastlines and nothing else, and the two files that carry the
+the map draws the coastlines and the water and nothing else, and the four files that
+carry the
 borders and the names are not fetched at all — a switch that saved drawing but still
-downloaded a megabyte would not be a switch. The header's small map follows the same
+downloaded a megabyte would not be a switch. **The water is not behind that switch**:
+it is the ground, and a country whose lakes and rivers disappeared when somebody turned
+the borders off would be a map that drew a different world without being asked to. The
+header's small map follows the same
 setting, but never draws the names: it is 150 pixels of map in a strip of widgets, and
 a place name on it is a word laid over the thing it names.
 
@@ -550,7 +569,8 @@ and is a licence obligation rather than decoration; whatever the tile server's l
 requires belongs there. Nothing is fetched for an empty attribution line, and the whole
 attribution line disappears when no tile URL is set.
 
-Tiles are drawn **above** the coastlines and the borders, so a tile server that answers
+Tiles are drawn **above** the coastlines, the water and the borders, so a tile server
+that answers
 covers them completely, and one that does not answer leaves them visible.
 
 :::warning The tile server sees your browser
@@ -592,7 +612,7 @@ does not proxy tiles through the daemon — a proxy would make the server an
 outbound fetcher with an interesting attack surface and a cache to manage, and the
 privacy would end up the same.
 
-### Regenerating the coastline data {#coastlines}
+### Regenerating the map data {#coastlines}
 
 The committed data is generated, not hand-drawn, and the command that made each file
 is written in that file's own header together with the source URL and the SHA-256 of
@@ -600,28 +620,39 @@ the input. To reproduce all of it:
 
 ```bash
 curl -LO https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_land.geojson
+curl -LO https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_boundary_lines_land.geojson
 curl -LO https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_1_states_provinces_lines.geojson
+curl -LO https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_lakes.geojson
+curl -LO https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_rivers_lake_centerlines.geojson
 curl -LO https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson
 curl -LO https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_1_label_points.geojson
 
-go run ./cmd/worldgen -kind land    -in ne_50m_land.geojson                          -out internal/web/assets/world.js
-go run ./cmd/worldgen -kind borders -in ne_10m_admin_1_states_provinces_lines.geojson -tol 0.02 -out internal/web/assets/borders.js
-go run ./cmd/worldgen -kind labels  -in ne_110m_admin_0_countries.geojson             -out internal/web/assets/labels.js
-go run ./cmd/worldgen -kind regions -in ne_10m_admin_1_label_points.geojson          -out internal/web/assets/regions.js
+go run ./cmd/worldgen -kind land      -in ne_50m_land.geojson                          -out internal/web/assets/world.js
+go run ./cmd/worldgen -kind countries -in ne_50m_admin_0_boundary_lines_land.geojson   -out internal/web/assets/countries.js
+go run ./cmd/worldgen -kind borders   -in ne_10m_admin_1_states_provinces_lines.geojson -tol 0.02 -out internal/web/assets/borders.js
+go run ./cmd/worldgen -kind lakes     -in ne_50m_lakes.geojson                         -out internal/web/assets/lakes.js
+go run ./cmd/worldgen -kind rivers    -in ne_50m_rivers_lake_centerlines.geojson       -out internal/web/assets/rivers.js
+go run ./cmd/worldgen -kind labels    -in ne_110m_admin_0_countries.geojson            -out internal/web/assets/labels.js
+go run ./cmd/worldgen -kind regions   -in ne_10m_admin_1_label_points.geojson          -out internal/web/assets/regions.js
 ```
 
 `-tol` sets the Douglas-Peucker tolerance in degrees and defaults to `0.02`. The
-province lines are simplified with the same figure; the coastline is not, because it
+lines, the lakes and the rivers are simplified with the same figure; the coastline is
+not, because it
 is already the simplified 1:50m set and simplifying it twice is how a coastline turns
-into a polygon. `-kind` picks the reader (rings, open lines, or named points), so the
-four files are one program rather than four. `-out` is required for every kind except
+into a polygon. `-kind` picks the reader and the writer (rings, open lines, or named
+points), so the
+seven files are one program rather than seven. `-out` is required for every kind except
 `land`, whose default is the coastline: an accidental run that overwrote `world.js`
-with provinces would be a map that lost its land. Every file is written
+with provinces would be a map that lost its land. `-max-rank 3` is the default for
+`rivers` and is why the Rhine and the Elbe are not in the file — they are rank 4 and 5,
+a country map's rivers, and this is a map of the world. Raising it is one number, and
+the header of the file says which one was used. Every file is written
 deterministically — same input, same bytes — and says so in its header.
 
 `cmd/worldgen` never fetches anything itself; it reads the file you hand it, so the
-download is yours to make and yours to check. The four inputs are 29 MB together, and
-the four outputs are 988 KB, which is the whole of what shipping the map costs.
+download is yours to make and yours to check. The seven inputs are 29 MB together, and
+the seven outputs are 1.1 MB, which is the whole of what shipping the map costs.
 
 See [Security](/concepts/security#map-tiles) for how the tile origin reaches the
 dashboard's content security policy.
