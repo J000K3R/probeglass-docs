@@ -345,9 +345,11 @@ they are specific rather than generic.
 | `body does not contain …` | The service answered, but not with what you expect |
 
 A sensor that has failed once but not reached its `retries` threshold shows as
-**Unknown**, not Down. That is deliberate — the honest answer at that moment is
-"we do not know yet" — and it means a single failed probe is not a problem to
-investigate.
+**Flaky** — a yellow pill, not red and not green. That is deliberate: the honest
+answer at that moment is "the last probe failed, and not often enough yet to call it
+down", and it means a single failed probe is not a problem to investigate. Flaky
+opens no incident and sends no alert, so it never wakes you; it is there so that a
+sensor which does this every hour is visible instead of reading green forever.
 
 **Run now** executes the sensor immediately and shows the result, without waiting
 for the next tick, without opening an incident, and without sending an alert.

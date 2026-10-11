@@ -146,7 +146,7 @@ data**, so a single button under **Settings → Monitoring → Example data** re
 
 <img
   src="/img/example-data.png"
-  alt="The Example data panel: a sentence saying the sensors the dashboard started with are examples, a line reading 13 example sensors, 26208 stored probes and 11 incidents, and a red Remove all example data button."
+  alt="The Example data panel: a sentence saying the sensors the dashboard started with are examples, a row of counts for example sensors, stored probes and incidents, and a red Remove all example data button."
   width="1492"
 />
 

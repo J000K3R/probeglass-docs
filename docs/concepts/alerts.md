@@ -156,7 +156,7 @@ event:
 | Variable | |
 |---|---|
 | `.Name` `.Type` `.Target` `.Group` | The sensor |
-| `.Status` | `up`, `down`, `unknown`, `paused` |
+| `.Status` | `up`, `down`, `warn`, `unknown`, `paused` |
 | `.Message` | The probe's own message — `HTTP 503 Service Unavailable` |
 | `.LatencyMS` `.StatusCode` | From the most recent probe |
 | `.DownSince` `.DownFor` | When the outage started, and how long it has lasted |

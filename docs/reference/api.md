@@ -340,11 +340,12 @@ removed, whatever it is called.
 
 The `POST` is the way back from the `DELETE`, and it deliberately loads the
 **richer** dataset — more sensors than the setup writes, in their groups, with a
-week of invented history — rather than the four bare sensors a fresh installation
-starts with. Somebody who has just deleted everything and asked for it back wants
-to see what the dashboard looks like with something on it, curves and all. The
-answer is the table's new totals rather than what this call created, because
-"example sensors" is what the panel is about.
+week of invented history — rather than the four sensors a fresh installation starts
+with, which carry a shorter but real history of their own. Somebody who has just
+deleted everything and asked for it back wants to see what the dashboard looks like
+with a whole homelab on it, curves and all. The answer is the table's new totals
+rather than what this call created, because "example sensors" is what the panel is
+about.
 
 Running it twice is harmless. A name already in the table is left alone, so the
 second call creates nothing and invents nothing — the uniqueness constraint on a
@@ -362,7 +363,7 @@ rows it does not declare is how two sources of truth begin to disagree.
 | `POST` | `/api/sites` | `{"name":"…","kind":"local","lat":48.1372,"lon":11.5756}` | admin |
 | `PUT` | `/api/sites/{name}` | Rename or move one. A rename is carried into every sensor pointing at it | admin |
 | `DELETE` | `/api/sites/{name}` | Delete. **`409`** while sensors are still on it — add `?unassign=1` to delete it and leave those sensors without a site | admin |
-| `PUT` | `/api/map` | `{"tile_url":"…","attribution":"…"}` — the installation-wide tile source | admin |
+| `PUT` | `/api/map` | `{"tile_url":"…","attribution":"…"}` — the installation-wide tile source; empty `tile_url` means "fetch nothing" | admin |
 
 ```bash
 curl -X POST -H "X-API-Key: $WG_KEY" -H 'Content-Type: application/json' \
@@ -395,12 +396,15 @@ curl -X DELETE -H "X-API-Key: $WG_KEY" 'localhost:8080/api/sites/Rack%20A?unassi
 ```
 
 `tile_url` must be `http` or `https` and must contain `{z}`, `{x}` and `{y}`;
-`{s}` is optional and cycles through `a`, `b` and `c`. `PUT /api/map` is
+`{s}` is optional and cycles through `a`, `b` and `c`. **An empty `tile_url` is
+accepted and is not validated**, because it is the way to turn tile fetching off:
+the map then draws the coastlines bundled with the binary and the browser requests
+nothing. There is no default tile URL to fall back to. `PUT /api/map` is
 **installation-wide and administrator-only**, unlike `PUT /api/settings`, which
 writes the calling account's own preferences. Saving a tile URL takes effect
 without a restart — the origin is folded into the content security policy at once,
-which is what lets the browser actually fetch the tiles. See
-[Security](/concepts/security#map-tiles).
+which is what lets the browser actually fetch the tiles; clearing the field takes it
+back out. See [Security](/concepts/security#map-tiles).
 
 Sensors carry a **`site`** field like any other: a string on `POST /api/sensors`
 and `PUT /api/sensors/{id}`, empty to clear it. A name that does not exist is a

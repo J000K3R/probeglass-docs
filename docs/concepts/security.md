@@ -356,22 +356,35 @@ Within that limit, Weatherglass does the parts it can:
 - Only what the operator asked for is read: one OID, judged against a substring or
   a numeric range the operator wrote down.
 
-## 🗺️ Map tiles are fetched by the browser {#map-tiles}
+## 🗺️ The map draws itself, and fetches nothing by default {#map-tiles}
 
-The map view draws its background from ordinary raster tiles, and **the browser
-fetches them directly from the tile server**. Weatherglass does not proxy them.
-The daemon never talks to a tile server, and no tile ever passes through it.
+The map view draws the world's land out of the binary — coastlines from a
+public-domain dataset, decoded in the browser — and **out of the box nothing about it
+leaves the machine**. No request is made to any server to draw the map, so there is
+nobody to disclose anything to: not your IP address, not your browser, and not the part
+of the world you are looking at. The daemon never contacts a map server either, by
+default or otherwise.
 
-That is a deliberate choice with a privacy cost, so it is stated plainly rather
-than buried: whoever runs the tile server sees the **IP address** of the person
-looking at the dashboard, their **browser's user agent**, and the **approximate
-part of the map** they have panned to — which, on a dashboard folded by place, is
-close to "where their homelab is". On a phone away from home that is a third party
-learning that this dashboard exists.
+An administrator can still enter a raster-tile URL under **Settings → Look → Map**, and
+that is a real decision with a real cost, so it is stated plainly rather than buried:
+once a server is named, **the browser fetches tiles directly from it**. Weatherglass
+does not proxy them. Whoever runs that server then sees the **IP address** of the person
+looking at the dashboard, their **browser's user agent**, and the **approximate part of
+the map** they have panned to — which, on a dashboard folded by place, is close to
+"where their homelab is". On a phone away from home that is a third party learning that
+this dashboard exists.
 
-The default is OpenStreetMap, which needs no account and no key and is run as a
-public service. That is the right trade for a homelab on a home network. It is not
-the right trade for a fleet of sites somebody else owns.
+**This is also why the default is no longer OpenStreetMap.** Their
+[tile usage policy](https://operations.osmfoundation.org/policies/tiles/) does not permit
+use by third-party applications, and their answer to one is not an error: it is an
+`HTTP 200` carrying a picture that says the app is blocked. A dashboard that pointed
+there was showing a block notice instead of a map, so the field starts empty — the
+coastlines in the binary are what an installation with no tile server draws.
+
+The empty field is the off switch, and it is the default: no tile server means no
+request and no disclosure at all. That is the right trade for a homelab on a home
+network *and* for a dashboard reachable from outside. Naming a server is a deliberate
+act, and for anything beyond a homelab it is a server you run.
 
 :::warning
 If the map's subject is somebody else's infrastructure, or if the dashboard is
@@ -381,18 +394,25 @@ dashboard's content security policy does not need to be widened at all — the
 server is same-origin, which `'self'` already covers.
 :::
 
+What that does not protect you from: the tile server's own logs, once you have named
+one; anything else served from that origin, since the policy allows the origin you
+name; and the coarseness of the bundled data — 1:110m outlines are recognisable to about
+zoom 6 and are straight lines between distant points in a city.
+
 ### How the tile origin reaches the content security policy {#csp-tiles}
 
 The dashboard is served with a content security policy that restricts images to
-`'self'` and `data:`. A remote tile server would therefore be blocked **silently**:
-the map would simply be empty, with nothing in the console pointing at the cause.
-So the origin of the configured tile URL is appended to the policy's `img-src`.
+`'self'` and `data:`. An address that is entered is appended to the policy's `img-src`,
+because a remote tile server would otherwise be blocked **silently**: the map would
+simply be empty, with nothing in the console pointing at the cause. With no address
+entered there is nothing to append, so the policy names no third party at all — which is
+the property that can be checked from outside the dashboard.
 
 The origin is resolved **once** — at start-up, and again whenever the tile URL is
 saved — and cached on the server rather than read from the database per request.
-Saving a new tile URL therefore takes effect without a restart, and serving a page
-never costs a database read. A same-origin tile URL adds nothing to the policy,
-because `'self'` already allows it.
+Saving a new tile URL therefore takes effect without a restart, clearing the field takes
+the origin back out, and serving a page never costs a database read. A same-origin tile
+URL adds nothing to the policy, because `'self'` already allows it.
 
 Two consequences worth knowing:
 

@@ -49,12 +49,17 @@ Daily rollups are kept forever, so a range of a year or more is already answerab
 mid-resolution data survives; `retention.raw` controls the fine detail. See
 [History and uptime](/concepts/history).
 
-## Why is a failed probe shown as "Unknown" and not "Down"?
+## Why is a failed probe shown as "Flaky" and not "Down"?
 
-Because at that moment the honest answer is "we do not know yet". With
-`retries: 3`, one failed probe is a blip. Calling it Down would be a lie, and
-calling it Up would be a bigger one. It becomes Down when the failure streak
-reaches the threshold, and that is when the incident opens.
+Because at that moment the honest answer is "the last probe failed, and it has not
+failed often enough yet to call it down". With `retries: 3`, one failed probe is a
+blip. Calling it Down would be a lie, and calling it Up would be a bigger one — it
+would hide a sensor that is starting to go. It becomes Down when the failure streak
+reaches the threshold, and that is when the incident opens and the alert goes out.
+
+Flaky is a yellow pill and nothing else: no incident, no alert. **Unknown** is the
+state a sensor wears before its very first probe, and it is the one that means "we
+have never heard from this at all".
 
 ## An alert says "was down for 0s". Is that a bug?
 

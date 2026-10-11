@@ -321,7 +321,7 @@ available before you start moving things about.
 
 | Widget | Shows |
 |---|---|
-| **Status** | the ring and the counts: how many sensors are up, down, paused or unknown |
+| **Status** | the ring and the counts: how many sensors are up, down, Flaky, paused or unknown |
 | **Uptime 24h** | the mean 24-hour uptime over all sensors |
 | **Latency** | the average latency across all sensors |
 | **Probes 24h** | the number of probes taken in the last 24 hours |
@@ -393,8 +393,8 @@ The heartbeat covers the **last 40 checks**, which is roughly forty minutes at a
 one-minute interval and about three and a half hours at five. The heading says
 "recent checks" rather than "the last hour" for exactly that reason.
 
-**Map** (`map`) draws the places that have coordinates on a real map. Homelab and
-external sites are told apart by **shape** as well as
+**Map** (`map`) draws the places that have coordinates on a map of the world.
+Homelab and external sites are told apart by **shape** as well as
 colour — a filled disc against a hollow diamond — because the colour of a marker is
 the worst status of the sensors on it, and two meanings on one channel would be one
 too many. Everything else is ordinary map behaviour: drag to pan, scroll to zoom on
@@ -402,15 +402,15 @@ the point under the pointer, and buttons for the ones who prefer them.
 
 <img
   src="/img/dashboard-map.png"
-  alt="The map view: OpenStreetMap tiles of central Europe with two markers, Hetzner Cloud in the north-east and Homelab further south-west, a legend in the bottom left corner and the OpenStreetMap attribution in the bottom right."
+  alt="The map view: the world's coastlines drawn by Weatherglass itself, with two markers, Hetzner Cloud in the north-east and Homelab further south-west, and a legend in the bottom left corner."
   width="1600"
 />
 
-**If the tile server cannot be reached, the markers stay where they are.** They are
-placed by arithmetic, not by the pictures behind them, so a homelab with no route to
-the internet shows a plain grid with the places correctly arranged on it and one
-line saying the tiles are missing. That is a deliberate trade: an offline dashboard
-that lies about where things are would be worse than one that admits it has no map.
+**If a tile server is configured and cannot be reached, the markers stay where they
+are.** They are placed by arithmetic, not by the pictures behind them, so the places
+are correctly arranged and one line says the tiles are missing; the coastlines are
+still drawn underneath them. That is a deliberate trade: a dashboard that lies about
+where things are would be worse than one that admits it has no tiles.
 
 ## 📍 Sites {#sites}
 
@@ -455,30 +455,50 @@ dashboard, for the same reason a sensor from the file cannot. The list says so
 instead of hiding the buttons, and a change sent past the dashboard is refused
 rather than accepted and quietly undone by the next start.
 
-## 🗺️ Map tiles {#map-tiles}
+## 🗺️ The map {#map-tiles}
 
-The map is drawn from ordinary raster tiles fetched by **your browser**, straight
-from a tile server named in Settings. The default is OpenStreetMap, which needs no
-account and no key:
+The map draws itself, out of the binary, and **fetches nothing by default**. The land
+and the coastlines come from a public-domain outline — Natural Earth 1:110m, simplified
+and quantised, about 30 KB of the web assets — decoded in the browser and drawn as one
+SVG path in the map's own world coordinates. There is no request to make and nothing to
+leave your network for, so out of the box the browser talks to nobody at all.
+
+The data is coarse on purpose: continents are recognisable to about zoom 6, and in a
+city the coastline is straight lines between distant points. It exists so that the map
+has something honest underneath its markers, and so that a machine with no route to the
+internet still shows the places in the right position relative to each other.
+
+If you want detailed imagery, run a tile server and put its address in
+**Settings → Look → Map**. The field takes an ordinary raster-tile URL:
 
 ```
-https://tile.openstreetmap.org/{z}/{x}/{y}.png
+https://tiles.example.org/{z}/{x}/{y}.png
 ```
 
 `{z}`, `{x}` and `{y}` are required and are substituted per tile; `{s}` is optional
 and cycles through `a`, `b` and `c` for servers that spread their load over
 subdomains. A URL that does not carry the three required placeholders is refused
-rather than half-working. The attribution line is a separate field, because it is a
-licence obligation rather than decoration — the OpenStreetMap default carries the
-link that the [ODbL](https://www.openstreetmap.org/copyright) requires.
+rather than half-working. **Leaving the field empty is the off switch**, not "put the
+default back" — there is no default any more. The attribution line is a separate field
+and is a licence obligation rather than decoration; whatever the tile server's licence
+requires belongs there. Nothing is fetched for an empty attribution line, and the whole
+attribution line disappears when no tile URL is set.
+
+Tiles are drawn **above** the coastlines, so a tile server that answers covers them
+completely, and one that does not answer leaves the coastlines visible.
 
 :::warning The tile server sees your browser
-The tiles are fetched by the browser, so whoever runs the tile server sees your IP
-address, your browser's user agent and roughly the part of the world you are
-looking at. That is fine for a homelab on your own network. It is not fine for a
+Once you name one, the tiles are fetched by the browser, so whoever runs that server
+sees your IP address, your browser's user agent and roughly the part of the world you
+are looking at. That is fine for a server on your own network. It is not fine for a
 fleet you monitor on behalf of somebody else, and on a phone away from home it is a
 third party learning that this dashboard exists and about where.
 :::
+
+That is also why Weatherglass no longer defaults to OpenStreetMap: their
+[tile usage policy](https://operations.osmfoundation.org/policies/tiles/) does not
+permit use by third-party applications, and a dashboard that pointed there was shown a
+block notice instead of a map.
 
 For anything more than a homelab, run a tile server inside your own network and put
 its address in the field. Nothing about the map needs the public internet: with your
@@ -487,6 +507,22 @@ dashboard's content security policy does not have to be widened at all. Weatherg
 does not proxy tiles through the daemon — a proxy would make the server an
 outbound fetcher with an interesting attack surface and a cache to manage, and the
 privacy would end up the same.
+
+### Regenerating the coastline data {#coastlines}
+
+The committed outline is generated, not hand-drawn, and the command that made it is
+written in the file's own header together with the source URL and the SHA-256 of the
+input. To reproduce or refine it:
+
+```bash
+curl -LO https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_land.geojson
+go run ./cmd/worldgen -in ne_110m_land.geojson
+```
+
+`-tol` sets the Douglas-Peucker tolerance in degrees and defaults to `0.02`, which is
+what keeps the file near 30 KB. Dropping it to `0.005` roughly matches Natural Earth's
+1:50m set at about four times the size. `cmd/worldgen` never fetches anything itself;
+it reads the file you hand it, so the download is yours to make and yours to check.
 
 See [Security](/concepts/security#map-tiles) for how the tile origin reaches the
 dashboard's content security policy.
@@ -509,8 +545,10 @@ simple mode on the kitchen tablet while another keeps the full one open.
 ## 🧪 Sample data {#sample-data}
 
 A new installation comes with a few invented sensors so that there is something to
-look at, and `weatherglass seed --demo` adds more. Both are marked in the database
-as **sample data**, and Settings has a panel that says how much of it there is.
+look at — four of them, carrying a week of invented history, so the cards are not
+empty and nothing is grey — and `weatherglass seed --demo` adds more. Both are marked
+in the database as **sample data**, and Settings has a panel that says how much of it
+there is.
 
 <img
   src="/img/dashboard.png"
@@ -538,9 +576,9 @@ are never touched, however they are named.
 panel offers to load the sample data instead, and the answer is the fuller
 dataset: more sensors than the setup writes, in their groups, with an invented
 week of history, so the charts and the uptime bars have something in them the
-moment the page reloads. That is deliberately more than the four bare sensors a
-fresh installation starts with — you pressed a button to see a populated
-dashboard, not an empty one.
+moment the page reloads. That is deliberately more than the four sensors a fresh
+installation starts with — you pressed a button to see a populated dashboard, not an
+empty one.
 
 Loading is safe to do twice: a name that is already taken is left alone, so the
 second press creates nothing and invents nothing. On an installation whose sensors

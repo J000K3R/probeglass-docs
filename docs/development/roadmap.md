@@ -47,7 +47,9 @@ is the source of truth — this page mirrors it.
 - **Field help as `?` popovers** instead of paragraphs under the forms.
 - **A password strength indicator** at setup and at password change — advisory only;
   the server's minimum stays at eight characters.
-- **Four example sensors** on a fresh installation, attached to no channel.
+- **Four example sensors** on a fresh installation, attached to no channel and carrying
+  a week of invented five-minute history — including a closed outage and one sensor
+  reading **Flaky** — so the first dashboard is neither an empty grid nor a wall of grey.
 - **Accounts with roles.** A fresh installation asks for a username and a password,
   and that first account is an administrator. Everyone else is added under
   Settings → Users as an **operator** or a **viewer**. A viewer reads everything and
@@ -80,7 +82,8 @@ is the source of truth — this page mirrors it.
   button, and offers to go deeper into sensors, incidents or alerts at the end.
 - **Five views of one dashboard.** Cards and list as before, plus a foldable **tree**
   by site and group, a **wall** of tiles carrying the last forty checks as a
-  heartbeat, and a **map** of your sites on real tiles. They are one setting, not
+  heartbeat, and a **map** of your sites, drawn from coastlines that ship in the
+  binary. They are one setting, not
   five pages, and the switcher in the top bar is one click wide.
 - **Sites.** A named place — the cellar rack, the VPS at a hoster — with a kind and
   optional coordinates. Sensors point at one by name, which is what lets the

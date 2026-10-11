@@ -46,18 +46,24 @@ Every sensor runs one small state machine:
 
 ```
 unknown --first success-------> up
-unknown --N consecutive fails-> down   (N = retries, at least 1)
-up      --N consecutive fails-> down   opens an incident, sends "down"
+unknown --first failure-------> warn   no incident, no alert
+up      --first failure-------> warn   no incident, no alert
+warn    --(N-1) more fails----> down   opens an incident, sends "down"
+warn    --success-------------> up
 down    --success-------------> up     closes the incident, sends "up"
 down    --every reminder_every->        sends "reminder", stays down
 ```
 
 Two details are deliberate:
 
-**Below the threshold, the status is Unknown, not Down.** With `retries: 3`,
+**Below the threshold, the status is Flaky, not Down.** With `retries: 3`,
 a sensor that has failed once is not down — and calling it up would be a lie.
-Unknown is the honest third answer, and it is visible on the dashboard rather
-than hidden.
+**Flaky** is the honest third answer, it is visible on the dashboard as a yellow
+pill rather than hidden, and it is the state that makes a flapping sensor
+noticeable before it becomes an outage. It deliberately opens no incident and sends
+no alert: the incident log is for outages, and a message per dropped packet would
+be noise. A sensor that recovers from Flaky closes nothing, because nothing was
+opened.
 
 **Reminders only fire while an incident stays open**, at most once every
 `reminder_every` seconds. They are a nudge, not a paging loop; setting

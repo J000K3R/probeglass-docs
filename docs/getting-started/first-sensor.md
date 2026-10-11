@@ -77,9 +77,10 @@ Each sensor gets a card:
 └──────────────────────────────────────────────────┘
 ```
 
-- **The status pill** says Up, Down, Unknown, or Paused. Green means the last
+- **The status pill** says Up, Down, Flaky, Pending, or Paused. Green means the last
   probe succeeded, red means the sensor has failed its retry threshold and an
-  incident is open.
+  incident is open, and yellow means the last probe failed but the threshold is not
+  reached yet — see [About retries](/concepts/sensors#about-retries).
 - **The sparkline** is recent response time. It is drawn from raw samples, and a
   gap in it means Weatherglass did not probe — not that the probe failed.
 - **The three percentages** are uptime over 24 hours, 7 days, and 30 days,
@@ -118,9 +119,10 @@ wall while your laptop stays on cards.
 - **Wall** is a tile per sensor with a **heartbeat** — one small rectangle for each
   of the last forty checks, green or red. It answers "has this been flapping?"
   faster than any chart.
-- **Map** draws the sites that have coordinates, and tells you which ones it
-  cannot draw. If the tile server is unreachable the markers stay exactly where
-  they belong and only the background is missing.
+- **Map** draws the sites that have coordinates on the world's coastlines, which
+  Weatherglass draws itself, and tells you which ones it cannot draw. If a tile
+  server is configured and unreachable the markers stay exactly where they belong
+  and only the tiles are missing.
 
 The full description, including the map's tile source and what it sees, is in
 [Dashboard settings](/configuration/dashboard#views).

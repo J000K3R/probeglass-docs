@@ -32,8 +32,10 @@ docker run -d --name weatherglass --restart unless-stopped \
 
 Open [http://localhost:8080](http://localhost:8080), create the administrator
 account, then choose whether you want the simple or the advanced interface. Four
-example sensors are created for you, so there is something on the screen to look
-at, and a guided tour offers to walk you through them.
+example sensors are created for you — with a week of invented history behind them, so
+the sparklines, the uptime bars and the 24h/7d/30d columns are populated, and a red
+stretch in the chart shows what an outage looks like — and a guided tour offers to walk
+you through them.
 
 <img
   src="/img/tour.png"

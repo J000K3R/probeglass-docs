@@ -48,8 +48,16 @@ service that goes down at 12:00:20 is reported at 12:02:20, and a single dropped
 packet at 03:00 never wakes you up.
 
 While a sensor is in the failure streak but below the threshold, its status is
-**Unknown**, not Down. That is deliberate: the honest answer to "is it up?" at
-that moment is "we do not know yet", and showing green would be a lie.
+**Flaky** — a yellow pill, not a green one and not a red one. That is deliberate:
+the honest answer to "is it up?" at that moment is "the last probe failed and it
+has not failed often enough to say it is down", and showing green would be a lie.
+Flaky opens no incident and sends no alert: the incident log is for outages, and a
+message per dropped packet is noise. It is still on the dashboard, so a sensor that
+flaps without ever reaching its threshold is visible rather than silent.
+
+**Pending** is the fourth thing the pill can say and means something narrower: the
+sensor has never been probed, so there is nothing to report yet. That is what a
+freshly created sensor reads for the seconds before its first probe.
 
 ## 🌐 `http` {#http}
 

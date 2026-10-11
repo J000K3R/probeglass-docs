@@ -178,8 +178,10 @@ The first request to a fresh database redirects the dashboard to a setup screen:
 3. Answer the one question about how much interface to show — this is the
    [simple or advanced mode](/configuration/dashboard#simple-and-advanced), and
    it can be changed later.
-4. You are signed in as the installation's first **administrator**. Add your first
-   sensor — see [Your first sensor](/getting-started/first-sensor).
+4. You are signed in as the installation's first **administrator**. Four example
+   sensors are created with it, carrying a week of invented history so the dashboard has
+   something to show before you have added anything. Add your first sensor —
+   see [Your first sensor](/getting-started/first-sensor).
 
 More accounts, their roles and their second factors are managed under
 **Settings → Access → Users**; [Security](/concepts/security#accounts) describes what each
