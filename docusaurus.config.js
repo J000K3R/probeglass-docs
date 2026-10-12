@@ -51,6 +51,30 @@ const config = {
     ],
   ],
 
+  // The search box, in the navbar. The index is built here, at build time, out of
+  // the rendered pages, and the search itself runs in the visitor's browser — no
+  // account, no third-party server, and the whole of it works on a machine with no
+  // route out. `hashed` puts the index under a content-addressed filename so a
+  // returning visitor is not served a stale one from the CDN, and `language` is the
+  // docs' own language: a second one here would ship a stemmer for a language no
+  // page on this site is written in.
+  themes: [
+    [
+      require.resolve('@easyops-cn/docusaurus-search-local'),
+      /** @type {import('@easyops-cn/docusaurus-search-local').PluginOptions} */
+      ({
+        hashed: true,
+        language: ['en'],
+        docsRouteBasePath: '/',
+        indexBlog: false,
+        highlightSearchTermsOnTargetPage: true,
+        searchResultLimits: 8,
+        searchResultContextMaxLength: 60,
+        explicitSearchResultPath: true,
+      }),
+    ],
+  ],
+
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({

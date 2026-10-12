@@ -360,21 +360,25 @@ Within that limit, ProbeGlass does the parts it can:
 
 The map view draws the world out of the binary — coastlines, the water, the country,
 district and province
-borders, and the names of all three, almost all of it from public-domain datasets decoded
+borders, and the names of the countries, provinces, cities and towns, almost all of it
+from public-domain datasets decoded
 in the browser —
 and **out of the box nothing about it leaves the machine**. No request is made to any
 server to draw the map, so there is nobody to disclose anything to: not your IP address,
 not your browser, and not the part of the world you are looking at. The daemon never
 contacts a map server either, by default or otherwise.
 
-**One dataset on that map is not public domain, and it is the only obligation this
+**Two datasets on that map are not public domain, and they are the only obligation this
 project passes on.** The district borders are Austria's and come from Statistik Austria
-under **[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)**, which asks to be
+under **[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)**; the town names come
+from GeoNames under the same licence, which asks to be
 named when the work is shown. Everything else the map draws — Natural Earth's coastlines,
 water, countries, provinces and city names — is public domain and asks for nothing.
-Whoever runs a map with the Austrian districts on it should name Statistik Austria; the
+Whoever runs a map with the Austrian districts or the GeoNames towns on it should name
+Statistik Austria and GeoNames; the
 same sentence is in `SECURITY.md` in the repository and in the header of
-`internal/web/assets/districts.js`, and it is also why that one source URL carries a year
+`internal/web/assets/districts.js` and `internal/web/assets/towns.js`, and it is also
+why the Austrian source URL carries a year
 and has to be kept up to date.
 
 An administrator can still enter a raster-tile URL under **Settings → Look → Map**, and
@@ -409,8 +413,8 @@ server is same-origin, which `'self'` already covers.
 What that does not protect you from: the tile server's own logs, once you have named
 one; anything else served from that origin, since the policy allows the origin you
 name; and the coarseness of the bundled data — the 1:10m coastlines and water are
-simplified to about two kilometres, which is under a pixel to about zoom 6 and visible
-by about zoom 10, so a city is straight lines between distant points. The borders,
+simplified to about 550 metres, which is under a pixel to about zoom 8 and visible
+by about zoom 12, so a city is straight lines between distant points. The borders,
 the districts and the names are the same kind of public data at their own scales, drawn
 locally without a request either.
 

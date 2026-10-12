@@ -367,7 +367,7 @@ the red one.
 
 <img
   src="/img/dashboard.png"
-  alt="The dashboard on sample data: five invented sensors in two groups, one of them down, each with a sample badge, a sparkline and 24-hour, 7-day and 30-day figures."
+  alt="The dashboard on the demo data set: thirteen invented sensors in four groups, one of them down and five paused, each with a badge saying Example, a sparkline and 24-hour, 7-day and 30-day figures."
   width="1600"
 />
 
@@ -379,7 +379,7 @@ their sparkline, their 24-hour uptime and their buttons.
 
 <img
   src="/img/dashboard-tree.png"
-  alt="The tree view: two places, Homelab and Rented server, each folded open into its groups and sensors, with a third heading for the sensors that have no place yet."
+  alt="The tree view: three places, Homelab marked local with its four paused sensors, Rented server marked external with one of its two down, and Frankfurt marked external with its seven, each folded open into its groups and sensors."
   width="1600"
 />
 
@@ -402,8 +402,8 @@ one-minute interval and about three and a half hours at five. The heading says
 **Map** (`map`) draws the places that have coordinates on a map of the world, which
 ProbeGlass draws itself: the coastlines, the lakes and rivers, the country, district
 and
-province borders, and the names of the countries, the provinces and the larger
-cities. Homelab and external sites are told apart by
+province borders, and the names of the countries, the provinces, the districts, the
+cities and the towns. Homelab and external sites are told apart by
 **shape** as well as
 colour — a filled disc against a hollow diamond — because the colour of a marker is
 the worst status of the sensors on it, and two meanings on one channel would be one
@@ -412,7 +412,7 @@ the point under the pointer, and buttons for the ones who prefer them.
 
 <img
   src="/img/dashboard-map.png"
-  alt="The map view: the world's coastlines and borders drawn by ProbeGlass itself — Europe, Greenland and the coast of North America — with the countries named (Norway, the United Kingdom, Germany, Poland, Spain and others), two markers, Homelab in the north-east and Rented server in the south-west, and a legend in the bottom left corner."
+  alt="The map view: the world's coastlines and borders drawn by ProbeGlass itself — Europe, Greenland and the coast of North America — with the countries named (Norway, the United Kingdom, Germany, Poland, Spain and others), three markers in the three pin colours, Homelab in the north-east, Frankfurt in the middle of Germany and Rented server in the south-west, and a legend in the bottom left corner."
   width="1600"
 />
 
@@ -442,7 +442,7 @@ of its own under **Settings → Monitoring → Sites**.
 
 <img
   src="/img/settings-sites.png"
-  alt="The Sites panel in Settings: two rows, Homelab marked local with coordinates and Rented server marked external, each with its sensor count, plus the button that adds another."
+  alt="The Sites panel in Settings: three rows, Homelab marked local with coordinates, and Rented server and Frankfurt marked external, each with its sensor count, plus the button that adds another."
   width="1600"
 />
 
@@ -485,25 +485,26 @@ rather than accepted and quietly undone by the next start.
 
 ## 🗺️ The map {#map-tiles}
 
-The map draws itself, out of the binary, and **fetches nothing by default**. Eleven
+The map draws itself, out of the binary, and **fetches nothing by default**. Twelve
 data sets are baked into the program at build time and decoded in the browser — ten of
-them from Natural Earth, and one from Statistik Austria. That last one is the single
-exception in this project and the only file on this map that carries a condition; it is
-marked in the table and explained below it.
+them from Natural Earth, one from GeoNames and one from Statistik Austria. Those last
+two are the only files on this map that carry a condition; they are marked in the table
+and explained below it.
 
 | Layer | Comes from | Drawn as |
 |---|---|---|
-| Land and coastlines | Natural Earth 1:10m land | one filled SVG path, 3932 rings |
-| Lakes | Natural Earth 1:10m lakes | filled SVG paths, seven zoom bands, 1521 lakes |
+| Land and coastlines | Natural Earth 1:10m land | one filled SVG path, 5848 rings |
+| Lakes | Natural Earth 1:10m lakes | filled SVG paths, seven zoom bands, 1366 lakes |
 | Lakes, Europe | Natural Earth 1:10m lakes, Europe | filled SVG paths, two zoom bands — the finer copy: the Zürichsee, the Walensee |
 | Rivers | Natural Earth 1:10m rivers and lake centrelines, rank 1–4 | SVG lines, four zoom bands, 472 rivers |
 | Rivers, Europe | Natural Earth 1:10m rivers, Europe, rank 10–11 | SVG lines, two zoom bands — the finer copy: the Salzach, the Enns, the Traun |
 | Country borders | Natural Earth 1:10m admin-0 boundary lines | SVG lines, two zoom bands, 7693 lines |
-| **Districts, Austria** | **Statistik Austria political districts, CC BY 4.0** | stroked rings, one zoom band, 117 districts — the Bezirke and the statutory cities |
+| **Districts, Austria** | **Statistik Austria political districts, CC BY 4.0** | dimly filled and stroked rings, one zoom band, 117 districts — the Bezirke and the statutory cities |
 | Province borders | Natural Earth 1:10m admin-1 boundary lines | nine SVG paths, one per zoom band, 45098 lines |
 | Country names | Natural Earth 1:110m countries | 177 names |
 | Province names | Natural Earth 1:10m admin-1 label points | 4552 names — the states, provinces and Bundesländer |
 | City names | Natural Earth 1:10m populated places | 7295 names, from large cities down to small towns |
+| **Town names** | **GeoNames cities5000, CC BY 4.0** | **41 850 names — the towns Natural Earth leaves out, from about 10 000 people upwards** |
 
 **They are stacked in that order, and the order is the design.** The coastlines
 first, then the water inside them, then the country borders, then the districts, then
@@ -511,8 +512,11 @@ the provinces, then any tiles you configured, then the names, then the pins. A l
 a filled shape and a river is a line, which is the whole difference between water and a
 border; the country borders are drawn a little brighter than the province borders,
 because a country ending and a county ending are not the same kind of line; and the
-districts are dimmer than both, because they sit inside a Bundesland and are only on
-screen from zoom 8.
+districts are dimmer than both and carry a faint grey fill, because they sit inside a
+Bundesland and are only on
+screen from zoom 8. Their names are drawn in the same dim grey at half the opacity of
+the rest, so that a Bezirk reads as a name lying on a patch of ground rather than as a
+label laid over it.
 
 **The water is in two copies, and not as two layers.** Natural Earth publishes Europe a
 second time at a finer scale, with the middle-sized lakes and rivers in it that the
@@ -532,14 +536,15 @@ no zoom of its own, so the generator chose 8 — deep enough that Vorarlberg's f
 districts and Vienna's one city are separately readable — and before zoom 8 the file
 draws nothing, so a country view is the picture it was before this layer existed.
 
-:::warning Districts are the one layer with a licence condition
+:::warning The districts and the towns are the two layers with a licence condition
 Statistik Austria publishes the district boundaries under
-**[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)**, which asks to be named
-when the work is shown. Everything else this map draws is public domain and asks for
-nothing, so this is the one obligation the project passes on to you: **whoever shows a
-ProbeGlass map with the Austrian districts on it should name Statistik Austria** —
-in the footer, in the attribution field next to a tile server, or wherever the page
-already says where its data came from.
+**[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)**, and GeoNames publishes
+the town names under the same licence. Both ask to be named when the work is shown.
+Everything else this map draws is public domain and asks for nothing, so this is the
+one obligation the project passes on to you: **whoever shows a ProbeGlass map with the
+Austrian districts or the GeoNames towns on it should name Statistik Austria and
+GeoNames** — in the footer, in the attribution field next to a tile server, or
+wherever the page already says where its data came from.
 :::
 
 There is no request to make and nothing to leave your network for, so out of the box
@@ -555,22 +560,26 @@ you come closer the provinces follow, and their names come in a little later aga
 roughly a country filling the screen. At world scale there are more than four thousand
 of them, and all of them at once would be a grey texture rather than a map. The finer
 half of the water arrives at about zoom 6, the cities somewhere between zoom 3 and
-zoom 10 depending on how big they are, and **Austria's districts at zoom 8**, which is
+zoom 10 depending on how big they are, the towns from about zoom 4 down to 11 the same
+way, and **Austria's districts at zoom 8**, which is
 where a Bundesland stops filling the screen.
 
 **The names never overlap.** A name that would land on one that is already placed is
 dropped, so the map shows fewer names than the data holds — a map with half the names
-on it is a map, and one with all of them is a smear that names nothing. The three
-lists are placed in order of who wins a collision: a country name first, then a
-province, then a city. Within each list the most important name goes first.
+on it is a map, and one with all of them is a smear that names nothing. The lists are
+placed in order of who wins a collision: a country name first, then a province, then a
+city, then a town. Within each list the most important name goes first. The districts
+are the one list drawn last rather than in its zoom order, so that a district name
+cannot be pushed off the screen by the town it is named after.
 
 The data is a good deal finer than it was — the coastline and the water are Natural
 Earth's 1:10m sets, and the lakes carry four times the detail they used to — but it is
-still simplified, to a tolerance of 0.02° or about two kilometres. That is under a
-pixel up to about **zoom 6** and visibly angular by about **zoom 10**, which is the
-honest limit of this map: fine enough that a country looks like that country, and not
+still simplified, to a tolerance of 0.005° or about 550 metres. That is under a
+pixel up to about **zoom 8** and visibly angular by about **zoom 12**, which is the
+honest limit of this map: fine enough that a country still looks like that country when
+you zoom into it, and not
 a substitute for imagery. The districts are the exception and are simplified harder,
-to 0.002°, because they are only ever drawn at zoom 8 and a two-kilometre wobble on a
+to 0.002°, because they are only ever drawn at zoom 8 and a 550-metre wobble on a
 line around a Bezirk 20 kilometres across is a visible one. It exists so that the map
 has something truthful underneath its markers, and so that a machine with no route to
 the internet still shows the places in the right position relative to each other. If
@@ -580,16 +589,17 @@ you want real imagery, run a tile server — see below.
 countries and provinces Natural Earth keeps a name in the place's own language rather
 than a translation per interface language, and those names are what is drawn:
 "Niedersachsen" rather than "Lower Saxony", "Germany" rather than "Deutschland". The
-city names are the one exception, and not a quiet one: Natural Earth keeps "Zürich"
-with its umlaut and calls Vienna "Vienna" and Munich "Munich". Nothing here renames
+city and town names are the one exception, and not a quiet one: Natural Earth keeps
+"Zürich" with its umlaut and calls Vienna "Vienna" and Munich "Munich", and GeoNames
+files a romanized preferred spelling in the same habit. Nothing here renames
 either list, because a map that invented its own name for a place is a map that is
 wrong about the place. The rest of the interface is English, so this is a small
 inconsistency — it is the price of not shipping a name table of our own for every
 language, and of names that are actually where the map says they are.
 
 **Settings → Look → Map has a switch for the borders and the names.** With it off,
-the map draws the coastlines and the water and nothing else, and the six data files
-that carry the borders and the names — the three border files and the three name
+the map draws the coastlines and the water and nothing else, and the seven data files
+that carry the borders and the names — the three border files and the four name
 files — are not fetched at all; a switch that saved drawing but still
 downloaded a megabyte would not be a switch. **The water is not behind that switch**:
 it is the ground, and a country whose lakes and rivers disappeared when somebody turned
@@ -597,7 +607,8 @@ the borders off would be a map that drew a different world without being asked t
 header's small map follows the same
 setting, but never draws the names: it is 150 pixels of map in a strip of widgets, and
 a place name on it is a word laid over the thing it names. With the switch off it
-costs the browser 220 KB less, which is the city names and the labels together.
+costs the browser about 2 MB less, which is the borders and the names together, of the
+3.9 MB the whole map's data comes to.
 
 **The map opens on the closest zoom that holds every marker.** One place opens on its
 own town, with the outline off the picture — that is the case the tile field is for.
@@ -683,6 +694,9 @@ curl -LO $ne/ne_10m_rivers_europe.geojson
 curl -LO $ne/ne_10m_populated_places_simple.geojson
 curl -LO $ne/ne_110m_admin_0_countries.geojson
 curl -LO $ne/ne_10m_admin_1_label_points.geojson
+# GeoNames, CC BY 4.0 — the towns Natural Earth leaves out. A zip of a tab-separated
+# text file rather than GeoJSON.
+curl -LO https://download.geonames.org/export/dump/cities5000.zip && unzip -o cities5000.zip
 # Austria's districts, Statistik Austria, CC BY 4.0 — the URL carries the year of the
 # register and is the one source link in this project that has to be kept up to date.
 curl -o bezirke.geojson 'https://www.statistik.at/gs-open/GEODATA/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=GEODATA:STATISTIK_AUSTRIA_POLBEZ_20260101&srsName=EPSG:4326&outputFormat=application/json'
@@ -695,18 +709,21 @@ go run ./cmd/worldgen -kind lakes     -in ne_10m_lakes_europe.geojson -minus ne_
 go run ./cmd/worldgen -kind rivers    -in ne_10m_rivers_lake_centerlines.geojson        -out internal/web/assets/rivers.js
 go run ./cmd/worldgen -kind rivers    -in ne_10m_rivers_europe.geojson -minus ne_10m_rivers_lake_centerlines.geojson -out internal/web/assets/rivers_europe.js
 go run ./cmd/worldgen -kind cities    -in ne_10m_populated_places_simple.geojson        -out internal/web/assets/cities.js
+go run ./cmd/worldgen -kind towns     -in cities5000.txt
 go run ./cmd/worldgen -kind labels    -in ne_110m_admin_0_countries.geojson             -out internal/web/assets/labels.js
 go run ./cmd/worldgen -kind regions   -in ne_10m_admin_1_label_points.geojson           -out internal/web/assets/regions.js
 go run ./cmd/worldgen -kind districts -in bezirke.geojson
 ```
 
-`-tol` sets the Douglas-Peucker tolerance in degrees and defaults to `0.02`. The
-lines, the lakes and the rivers are simplified with the same figure; the coastline is
-not, because a
-coastline simplified twice is a polygon rather than a coast. `-kind` picks the reader
-and the writer (rings, open lines, named points, or the two files the water arrives in
+`-tol` sets the Douglas-Peucker tolerance in degrees and defaults to `0.005` for every
+layer but the districts, which get `0.002`. The
+lines, the lakes and the rivers are simplified with the same figure as the coastline,
+because they are drawn as one picture and a coast and the border meeting it have to
+agree. `-kind` picks the reader
+and the writer (rings, open lines, named points, a tab-separated place file, or the two
+files the water arrives in
 twice), so the
-eleven outputs are one program rather than eleven, and the two Europe files are the
+twelve outputs are one program rather than twelve, and the two Europe files are the
 same kinds as the world ones. `-minus <geojson>` is what keeps the two copies of the
 water from being drawn on top of each other: shapes whose name is already in the file
 you hand it are dropped, and the header of the output says how many were. It takes the
@@ -714,20 +731,27 @@ world file's *input*, not its output, because the names are in the source. An em
 name never matches, which matters — 610 of the world's lakes have no name, and a rule
 that matched those would drop them all.
 
-`-out` is required for every kind except `land` and `districts`, whose defaults are the
+`-out` is required for every kind except `land`, `towns` and `districts`, whose
+defaults are the
 files they belong to: an accidental run that overwrote `world.js` with provinces would
 be a map that lost its land. `-max-rank` is the river cut and its default belongs to the
 file rather than to the program — **4** for the world, which is why the Rhine and the
 Elbe are in `rivers.js` and the Salzach and the Enns are not, and **11** for Europe,
 whose ranks run 10 to 12 rather than 0 to 10, so a cut that would make sense in one file
-would empty the other. The districts are simplified harder than the rest, to `0.002`,
-because they are only ever drawn at zoom 8 and two kilometres of error on a Bezirk
+would empty the other. It is refused for `towns`, which is cut by `-min-population`
+instead — GeoNames publishes a population and no rank, so a rank cut there would drop
+nothing while the file's header claimed it had been applied. `-only` on `towns` takes
+the two-letter ISO 3166-1 code (`AT`), not the three-letter one the Natural Earth files
+take (`AUT`); the wrong one is refused rather than answered with an empty file. The
+districts are simplified harder than the rest, to `0.002`,
+because they are only ever drawn at zoom 8 and 550 metres of error on a Bezirk
 20 kilometres wide is a visible one. Every file is written
 deterministically — same input, same bytes — and says so in its header.
 
 `cmd/worldgen` never fetches anything itself; it reads the file you hand it, so the
-download is yours to make and yours to check. The eleven inputs are 81 MB together, and
-the eleven outputs are 2.0 MB, which is the whole of what shipping the map costs.
+download is yours to make and yours to check. The twelve inputs are about 95 MB
+together, and
+the twelve outputs are 3.9 MB, which is the whole of what shipping the map costs.
 Nothing is fetched at run time, and the daemon has no route out for any of it.
 
 See [Security](/concepts/security#map-tiles) for how the tile origin reaches the
@@ -755,11 +779,12 @@ look at — four of them, carrying a week of invented history, so the cards are 
 empty and nothing is grey, and standing at two invented places so that the map has
 something to draw — and `probeglass seed --demo` adds more. Both are marked in the
 database as **sample data**, and Settings has a panel that says how much of it there
-is.
+is. The picture below is of the demo set rather than of a fresh installation, so it
+is the fuller of the two: thirteen sensors at three places.
 
 <img
   src="/img/dashboard.png"
-  alt="The dashboard on sample data: five invented sensors in two groups, one of them down, each with a sample badge, a sparkline and 24-hour, 7-day and 30-day figures."
+  alt="The dashboard on the demo data set: thirteen invented sensors in four groups, one of them down and five paused, each with a badge saying Example, a sparkline and 24-hour, 7-day and 30-day figures."
   width="1600"
 />
 

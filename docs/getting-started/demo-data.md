@@ -55,44 +55,64 @@ is exercised too.
 
 ## What the demo set contains
 
-Thirteen sensors covering all six types, in three groups and at two sites:
+Thirteen sensors covering all six types, in four groups and at three places:
 
-| Sensor | Type | What it exercises |
-|---|---|---|
-| Example website | `http` | `expected_status` as a range, certificate warning |
-| Public resolver | `dns` | A record lookup by hostname |
-| Internet ping | `ping` | Three echo requests per probe |
-| Resolver port | `tcp` | A plain connection to `host:port` |
-| Example website TLS | `tls` | Handshake with a `server_name` override |
-| Package mirror | `http` | A second public HTTP target, a mirror that redirects |
-| DNS over TLS | `tls` | Certificate expiry read out of the reply |
-| Router: ping | `ping` | Paused — the homelab's own gateway |
-| NAS: SSH | `tcp` | Paused — a NAS, by port |
-| NAS: web interface | `http` | Paused — the same NAS, over HTTP |
-| Printer: ink level | `snmp` | Paused — an SNMP walk |
-| Rented server: SSH | `tcp` | Paused — a machine somewhere else |
-| Rented server: web | `http` | Paused — the same machine, over HTTPS |
+| Sensor | Type | Place | What it exercises |
+|---|---|---|---|
+| Example website | `http` | Frankfurt | `expected_status` as a range, certificate warning |
+| Public resolver | `dns` | Frankfurt | A record lookup by hostname |
+| Internet ping | `ping` | Frankfurt | Three echo requests per probe |
+| Resolver port | `tcp` | Frankfurt | A plain connection to `host:port` |
+| Example website TLS | `tls` | Frankfurt | Handshake with a `server_name` override |
+| Package mirror | `http` | Frankfurt | A second public HTTP target, a mirror that redirects |
+| DNS over TLS | `tls` | Frankfurt | Certificate expiry read out of the reply |
+| Router: ping | `ping` | Homelab | Paused — the homelab's own gateway |
+| NAS: SSH | `tcp` | Homelab | Paused — a NAS, by port |
+| NAS: web interface | `http` | Homelab | Paused — the same NAS, over HTTP |
+| Printer: ink level | `snmp` | Homelab | Paused — an SNMP walk |
+| Rented server: SSH | `tcp` | Rented server | Paused — a machine somewhere else |
+| Rented server: web | `http` | Rented server | Enabled, and failing on purpose — the red pin |
 
-Seven of them are **enabled**, and every enabled target is a public service.
-These are real sensors that the scheduler really probes: the history above them
-is a week of green, and a sensor that started failing a minute after it was
-seeded would contradict it.
+Seven of them are **enabled** and reach a public service. These are real sensors
+that the scheduler really probes: the history above them is a week of green, and
+a sensor that started failing a minute after it was seeded would contradict it.
+They all stand on **Frankfurt**.
 
-The other six are the homelab's own addresses, and they arrive **paused**.
+Four are the homelab's own addresses, and they arrive **paused**.
 `192.168.1.10` does not answer on anybody else's network, so they place pins on
 the map and fill the wall without claiming anything about a network this
 installation cannot see. Turning one on is a click.
 
-The two places, **Homelab** and **Rented server**, carry coordinates. That is what
-gives the map its markers; without them the map tab has nothing to draw. They are also
-an ocean apart, so the map opens with the world on it and the coastlines showing — which
-two places in one country would not give.
+The thirteenth is the odd one, and it is there to show what a failure looks
+like. **Rented server: web** points at `vps.example.net` — a name in the range
+reserved for documentation, so it genuinely does not resolve — and its invented
+history ends in a ninety-minute outage that has not finished. Restoring that
+history therefore leaves the sensor **down** rather than up, and the map draws
+its place red. Nothing is staged: an installation of this running on a real
+network will fail that target in exactly the same way.
+
+:::caution It is the one example that acts on its own
+Because that sensor is enabled and failing, a real installation will open an
+incident for it and — if you have configured an alert channel — send you a
+message about it. The example data is one click from gone under
+**Settings → Monitoring → Example data**; see
+[Starting over for real](#starting-over-for-real) below. If you would rather it
+stayed quiet, pause the sensor.
+:::
+
+The three places, **Homelab**, **Rented server** and **Frankfurt**, carry
+coordinates, and the map colours each pin by the worst sensor standing on it.
+That is what gives the map its markers: Frankfurt green, Homelab grey (everything
+on it is paused), Rented server red. They are also far apart — Berlin, Virginia
+and Frankfurt — so the map opens with the world on it and the coastlines showing,
+which three places in one country would not give.
 
 The synthetic week is written at five-minute spacing: plausible latencies with a
 slow hourly drift, so the min/max band on the charts is not a flat line, and
 eleven outages between 3 and 60 minutes long — enough that the uptime percentages
 differ between the 24-hour, 7-day, and 30-day columns, and enough that the
-Incidents tab has a real history rather than one row.
+Incidents tab has a real history rather than one row. One more, of ninety minutes,
+is the one on Rented server: web that is still running — twelve in all.
 
 The generator is **deterministic** — it seeds itself from the sensor ID — so the
 same command produces the same dashboard. That makes it usable for screenshots
@@ -143,8 +163,8 @@ everything.
 ## Starting over for real
 
 If you seeded into a volume you actually want to keep, the demo sensors are now
-in it — and the four that setup created are beside them, on the same two places the
-demo uses. Both are marked as **sample data**, so a single button under
+in it — and the four that setup created are beside them, on two of the three
+places the demo knows. Both are marked as **sample data**, so a single button under
 **Settings → Monitoring → Example data** removes the whole lot, places included:
 
 <img
