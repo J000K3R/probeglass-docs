@@ -24,7 +24,7 @@ same time.
 | `ui.accent` | `azure`, `violet`, `emerald`, `amber`, `rose`, `slate` | `azure` |
 | `ui.density` | `compact`, `comfortable` | `comfortable` |
 | `ui.layout` | `grid`, `list`, `tree`, `wall`, `map` | `grid` |
-| `ui.language` | `en` | `en` |
+| `ui.language` | `en`, `de` | `en` |
 | `ui.live` | `on`, `off` | `on` |
 | `ui.widgets` | a comma-separated list of widget names | `status,uptime,latency,probes,since` |
 
@@ -39,10 +39,15 @@ same time.
   forty sensors, it roughly doubles how many fit on a screen.
 - **Layout** — which of the five views the dashboard is drawn in. See
   [Views](#views).
-- **Language** — English is the only catalogue so far. Adding another is a
-  dictionary in `i18n.js` and one entry in the allowed list; the markup contains
-  no user-facing strings, so nothing else changes. See the
-  [roadmap](/development/roadmap).
+- **Language** — every word the dashboard draws comes out of a message catalogue,
+  so a language is a dictionary file and one entry in the list of languages the
+  interface offers, and no code at all. English and German ship today. Each
+  language is named in its own language in the list — **Deutsch**, not "German" —
+  because the reader who needs that entry is the one who cannot read the rest of
+  the list. The choice covers the whole interface, not only its words: dates and
+  numbers are written in it too. A word missing from a dictionary falls back to
+  English rather than to a blank. See the [roadmap](/development/roadmap) for the
+  next dictionaries.
 - **Live** — whether the dashboard subscribes to the event stream at all. See
   [Live updates](#live).
 
