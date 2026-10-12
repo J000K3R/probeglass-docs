@@ -34,10 +34,13 @@ The image lives on the GitHub Container Registry as
 `ghcr.io/j000k3r/probeglass`. It is public, so pulling it needs no account and
 no `docker login`.
 
-For now there is one moving tag, **`dev`**, and the commands below use it. Every
-image also carries the commit it was built from (`sha-4a1c2e7`), which is the tag
-to pin if you want a build that never changes under you. Once 0.1.0 is released
-there will be a version tag per release, and that is what the commands will name.
+Every release carries three tags. **`0.1.0`** is the exact version and never
+changes under you; `0.1` follows the 0.1.x patch releases; `latest` follows the
+newest release of all. The commands below pull `0.1.0`, so the version changes
+when you edit that line rather than when a container restarts. Each image also
+carries the commit it was built from (`sha-4a1c2e7`), which is the tag to pin if
+you want one exact build. Development builds of whatever is in the tree today
+are published as `dev`, the one tag that moves on its own.
 :::
 
 <Tabs groupId="install-method">
@@ -52,9 +55,9 @@ cd probeglass
 docker compose up -d
 ```
 
-The compose file pins `ghcr.io/j000k3r/probeglass:dev`. For a reproducible
-deployment, replace that with a specific version tag once you have decided
-which one you are on.
+The compose file pins `ghcr.io/j000k3r/probeglass:0.1.0`. Change that line to
+`0.1` or `latest` if you would rather it followed the patch releases or the
+newest release; the deployment stays reproducible either way.
 
 </TabItem>
 <TabItem value="docker" label="docker run">
@@ -66,7 +69,7 @@ docker run -d \
   -p 8080:8080 \
   -v probeglass-data:/data \
   --cap-add NET_RAW \
-  ghcr.io/j000k3r/probeglass:dev
+  ghcr.io/j000k3r/probeglass:0.1.0
 ```
 
 Notes on the flags:
@@ -195,7 +198,7 @@ To skip the interactive step in an automated deployment, set
 docker run -d --name probeglass -p 8080:8080 \
   -v probeglass-data:/data \
   -e PROBEGLASS_ADMIN_PASSWORD='correct horse battery staple' \
-  ghcr.io/j000k3r/probeglass:dev
+  ghcr.io/j000k3r/probeglass:0.1.0
 ```
 
 This creates an account called **`admin`** with that password. It is read **only

@@ -60,26 +60,23 @@ fresh start, which is why the data file comes first.
    will show the issuer as `ProbeGlass` from the next enrolment onwards; an entry
    added earlier keeps showing the old name, and keeps working.
 
-While the project is in development there is one moving tag, `dev`:
+Every release is published under three tags: `0.1.0`, which is the exact version
+and never changes under you; `0.1`, which follows the 0.1.x patch releases; and
+`latest`, which follows the newest release of all. Pin the one you mean and move
+it when you choose to:
 
 ```bash
-docker pull ghcr.io/j000k3r/probeglass:dev
+docker pull ghcr.io/j000k3r/probeglass:0.1.0
 
 docker stop probeglass && docker rm probeglass
 docker run -d --name probeglass --restart unless-stopped \
   -p 8080:8080 -v probeglass-data:/data --cap-add NET_RAW \
-  ghcr.io/j000k3r/probeglass:dev
+  ghcr.io/j000k3r/probeglass:0.1.0
 ```
 
-Once 0.1.0 is released, every version is published as its own tag — `0.1.0`,
-`0.1`, and `latest` — so pin the one you mean and change it when you choose to:
-
-```bash
-docker pull ghcr.io/j000k3r/probeglass:0.1.0
-```
-
-With Compose, change the tag and `docker compose up -d`. The volume is untouched
-by both.
+With Compose, change the tag in `docker-compose.yml` and `docker compose up -d`.
+The volume is untouched by both. `dev` is still published — it is a build of
+whatever is in the tree today, and the one tag that moves without you asking.
 
 ## Before you upgrade
 

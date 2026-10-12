@@ -130,7 +130,7 @@ not replace one.
 ```yaml
 services:
   probeglass:
-    image: ghcr.io/j000k3r/probeglass:dev
+    image: ghcr.io/j000k3r/probeglass:0.1.0
     labels:
       traefik.enable: "true"
       traefik.http.routers.probeglass.rule: "Host(`probeglass.lan`)"

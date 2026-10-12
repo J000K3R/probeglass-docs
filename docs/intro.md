@@ -27,7 +27,7 @@ sorts to the top of its group.*
 ```bash
 docker run -d --name probeglass --restart unless-stopped \
   -p 8080:8080 -v probeglass-data:/data --cap-add NET_RAW \
-  ghcr.io/j000k3r/probeglass:dev
+  ghcr.io/j000k3r/probeglass:0.1.0
 ```
 
 Open [http://localhost:8080](http://localhost:8080), create the administrator

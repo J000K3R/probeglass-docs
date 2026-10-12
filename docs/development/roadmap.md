@@ -29,8 +29,6 @@ is the source of truth — this page mirrors it.
   with race tests, lint, and a build for every platform.
 - Test suite across store, config, probe engines, notifications, and the API.
 
-## Done — unreleased
-
 - `probeglass doctor` — one command that reports what is wrong with an installation
   and changes nothing: the configuration, the data directory, the database's size,
   integrity and schema, whether the stored sensors and channels still validate, and
