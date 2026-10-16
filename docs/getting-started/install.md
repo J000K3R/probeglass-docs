@@ -39,8 +39,7 @@ changes under you; `0.2` follows the 0.2.x patch releases; `latest` follows the
 newest release of all. The commands below pull `0.2.1`, so the version changes
 when you edit that line rather than when a container restarts. Each image also
 carries the commit it was built from (`sha-4a1c2e7`), which is the tag to pin if
-you want one exact build. Development builds of whatever is in the tree today
-are published as `dev`, the one tag that moves on its own.
+you want one exact build.
 :::
 
 <Tabs groupId="install-method">
@@ -162,6 +161,31 @@ Without it, the legacy builder fails with `failed to parse platform : "" is an
 invalid OS component`, which is a confusing way of saying "BuildKit is not
 installed". You can always use `make run`, which builds and serves the same
 binary natively.
+
+## Trying the newest build {#dev}
+
+Everything that has landed since the last release is published as `dev`, rebuilt on
+every push to `main`:
+
+```bash
+docker pull ghcr.io/j000k3r/probeglass:dev
+```
+
+It is not a release and it is not supported — but it is a real build of the real
+tree, so it is what to reach for if you want to try something before it is in a
+version, or to check that a fix works on your hardware before it is tagged. There is
+also `sha-<commit>` for the same builds, which is what to name if one of them turns
+out to be the one that broke something.
+
+What it reports about itself says which build it is:
+
+```bash
+docker exec -u 500:500 probeglass probeglass version
+# probeglass 0.2.1-4-g9c1f0ab (9c1f0ab) built 2026-10-17T08:12:44Z
+```
+
+That is the release the build follows, how many commits past it, and the commit —
+the same string `make build` produces in a working tree.
 
 ## First run {#first-run}
 
