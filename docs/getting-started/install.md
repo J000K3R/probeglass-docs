@@ -185,7 +185,9 @@ docker exec -u 500:500 probeglass probeglass version
 ```
 
 That is the release the build follows, how many commits past it, and the commit —
-the same string `make build` produces in a working tree.
+the same string `make build` produces in a working tree. The line under it names the
+channel, which is the same thing **Settings → Help and maintenance → About** shows and
+is what tells two containers on one machine apart.
 
 ## First run {#first-run}
 

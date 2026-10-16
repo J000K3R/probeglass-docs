@@ -50,9 +50,23 @@ with debug logging:
 docker run -d --name probeglass -e PROBEGLASS_LOG_LEVEL=debug ...
 ```
 
-**Settings → Help and maintenance → About** shows the version, the base URL, the data directory, the
-configuration file actually loaded, and the log level. That panel answers "is it
-running the file I think it is running?" in one look.
+**Settings → Help and maintenance → About** shows which **channel** the build came from,
+the version, the base URL, the data directory, the configuration file actually loaded,
+and the log level. That panel answers "what is this, and is it running the file I think
+it is running?" in one look.
+
+<img
+  src="/img/settings-about.png"
+  alt="The About panel: a Channel row reading local with the sentence Built from a working tree, not published anywhere, then Version, Built, Base URL, Data directory, Configuration file and Log level."
+  width="1600"
+/>
+
+The channel is the one fact a container cannot work out for itself. Docker does not tell
+a container which tag it was pulled by, so an installation on `latest` and one on `dev`
+look identical from the inside — the same version, the same commit, the same date
+whenever both follow the same push. **release** came from a `v*` tag, **dev** is a build
+of the branch under development published as `:dev`, and **local** was built from a
+working tree. It is written into the image at build time, by whichever workflow made it.
 
 ## 🛑 The container starts and stops again {#the-container-starts-and-stops-again}
 
