@@ -25,9 +25,11 @@ is the source of truth — this page mirrors it.
 - First-run setup, bcrypt passwords, hardened session cookies, API key, and cross-site
   protection for cookie-authenticated writes.
 - Sensors and channels declared in YAML, re-applied on every start.
-- Multi-arch container image (amd64, arm64, armv7), seven static binary targets, CI
-  with race tests, lint, and a build for every platform.
-- Test suite across store, config, probe engines, notifications, and the API.
+- Multi-arch container image (amd64, arm64, armv7), CI with race tests, lint, and a
+  test suite across store, config, probe engines, notifications and the API. The
+  image is the only thing that ships; the cross-compiled archives for darwin,
+  windows and freebsd that 0.1.0 also published were removed in 0.2.0 — they
+  promised a way to run this that nothing documented.
 
 - `probeglass doctor` — one command that reports what is wrong with an installation
   and changes nothing: the configuration, the data directory, the database's size,

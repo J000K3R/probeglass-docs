@@ -112,14 +112,13 @@ make seed         # fill ./data with demo data
 make help         # everything else
 ```
 
-To cross-compile for a Raspberry Pi without a Docker build:
-
-```bash
-GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -o probeglass ./cmd/probeglass
-```
+`make build` builds for the machine you are on, which is what you want while
+working on the code. It is not a second way to deploy: the container image is the
+only thing ProbeGlass publishes, and this is where the Pi's `linux/arm64` and
+`linux/arm/v7` come from.
 
 `CGO_ENABLED=0` is not optional — the SQLite driver is a pure-Go translation,
-which is exactly what makes the static cross-build possible.
+which is exactly what lets the image be built for a Pi with no C toolchain in it.
 
 </TabItem>
 </Tabs>

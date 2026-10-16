@@ -67,8 +67,9 @@ thing is to say so here rather than in a support ticket later.
 ## How it is written today {#how-it-is-written-today}
 
 **Language and dependencies.** Go, with the dashboard embedded in the binary.
-SQLite through a pure-Go driver, so the binary is static and cross-compiles with
-`CGO_ENABLED=0` to seven platforms. The frontend is plain ES modules: no framework,
+SQLite through a pure-Go driver, so the binary is static and `CGO_ENABLED=0` holds
+— which is what lets one container image be built for amd64 and for a Raspberry Pi
+alike. The frontend is plain ES modules: no framework,
 no bundler, no npm, no CDN, no build step at all — editing a `.js` file and
 reloading the page is the entire frontend toolchain. That is a deliberate choice
 about a decade of maintenance rather than about download size: a build step is

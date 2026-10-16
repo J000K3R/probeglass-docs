@@ -17,15 +17,16 @@ in a table.
 
 ## Does it need a database server?
 
-No. It uses SQLite, through a pure-Go translation of it, so the binary is static
-and cross-compiles to a Raspberry Pi with `CGO_ENABLED=0`. The database is one
-file you can copy.
+No. It uses SQLite, through a pure-Go translation of it, so there is nothing to
+install alongside it. The database is one file you can copy.
 
 ## Can I run it on a Raspberry Pi?
 
-Yes. The image is published for `linux/arm64` and `linux/arm/v7`, and the Go
-toolchain cross-compiles to both. The arm64 image is cross-compiled rather than
-emulated, so it builds at native speed.
+Yes. The image is published for `linux/arm64` and `linux/arm/v7`. The arm64 image
+is cross-compiled rather than emulated, so it builds at native speed.
+
+There is no separate binary for a Pi: the container image is the only thing
+ProbeGlass publishes.
 
 ## Why does it not need `NET_RAW` for most things?
 

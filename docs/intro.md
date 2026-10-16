@@ -79,7 +79,6 @@ the opposite bet:
 | Runtime dependencies | none (static binary) | Node.js, a JVM, or a full stack |
 | Frontend build | none — plain ES modules, embedded in the binary | npm, a bundler, a CDN |
 | Dependencies | pure Go, including SQLite (no CGO) | native modules |
-| Cross-compiles to | linux/amd64, arm64, armv7, darwin, windows, freebsd | usually amd64 only |
 | Data | one SQLite file you can copy | a database server, or a volume full of JSON |
 
 The whole program is a Go binary with the dashboard baked in via `embed.FS`.
