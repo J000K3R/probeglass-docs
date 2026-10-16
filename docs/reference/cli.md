@@ -45,7 +45,7 @@ Flags use Go's `flag` package, so `-listen` and `--listen` are the same thing.
 
 ```bash
 $ probeglass version
-probeglass 0.2.0 (4a1c2e7) built 2026-11-02T09:14:03Z
+probeglass 0.2.1 (4a1c2e7) built 2026-11-02T09:14:03Z
 ```
 
 The commit and build date are stamped in by the release workflow. A local
@@ -145,7 +145,7 @@ A healthy installation:
 $ docker exec -u 500:500 probeglass probeglass doctor
 probeglass doctor
 
-ok    build             probeglass 0.2.0 (4a1c2e7) built 2026-11-02T09:14:03Z
+ok    build             probeglass 0.2.1 (4a1c2e7) built 2026-11-02T09:14:03Z
 ok    config            /data/probeglass.yaml (3 sensors, 1 channel)
 ok    data dir          /data (writable by uid 500)
 ok    database          /data/probeglass.db, 1.2 MiB, 40213 probes
@@ -153,7 +153,7 @@ ok    integrity         quick_check ok
 ok    schema            version 3
 ok    users             3 accounts, 1 active administrator
 ok    contents          3 sensors, 1 channel, 3 enabled
-ok    daemon            running on 127.0.0.1:8080, version 0.2.0, up 4h12m
+ok    daemon            running on 127.0.0.1:8080, version 0.2.1, up 4h12m
 ok    icmp              an ICMP socket can be opened
 
 0 warnings, 0 failures

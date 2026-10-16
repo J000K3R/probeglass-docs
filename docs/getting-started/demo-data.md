@@ -42,11 +42,11 @@ database you can poke at, in a volume you can throw away:
 docker volume create probeglass-demo
 
 docker run --rm -v probeglass-demo:/data \
-  ghcr.io/j000k3r/probeglass:0.2.0 seed --demo --days 7
+  ghcr.io/j000k3r/probeglass:0.2.1 seed --demo --days 7
 
 docker run -d --name probeglass-demo -p 8080:8080 \
   -v probeglass-demo:/data --cap-add NET_RAW \
-  ghcr.io/j000k3r/probeglass:0.2.0
+  ghcr.io/j000k3r/probeglass:0.2.1
 ```
 
 Open [http://localhost:8080](http://localhost:8080) and create the administrator

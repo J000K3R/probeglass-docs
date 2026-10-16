@@ -51,7 +51,7 @@ This is the intended way to deploy ProbeGlass unattended:
 ```yaml
 services:
   probeglass:
-    image: ghcr.io/j000k3r/probeglass:0.2.0
+    image: ghcr.io/j000k3r/probeglass:0.2.1
     restart: unless-stopped
     ports: ["8080:8080"]
     volumes: ["probeglass-data:/data"]
@@ -112,7 +112,7 @@ The practical consequences:
 ```yaml
 services:
   probeglass:
-    image: ghcr.io/j000k3r/probeglass:0.2.0
+    image: ghcr.io/j000k3r/probeglass:0.2.1
     volumes: ["/srv/appdata/probeglass:/data"]
     cap_add: ["NET_RAW"]
     environment:
