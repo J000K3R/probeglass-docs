@@ -34,7 +34,7 @@ curl -s http://localhost:8080/healthz
 At `info` level a healthy start looks like this:
 
 ```
-level=INFO msg="starting probeglass" version=0.1.0 listen=:8080 data_dir=/data config="" database=/data/probeglass.db uid=500 gid=500
+level=INFO msg="starting probeglass" version=0.2.0 listen=:8080 data_dir=/data config="" database=/data/probeglass.db uid=500 gid=500
 level=INFO msg="dashboard listening" url=http://localhost:8080
 ```
 
@@ -185,7 +185,7 @@ docker run -d --name probeglass \
   -v probeglass-data:/data \
   --cap-add NET_RAW \
   --restart unless-stopped \
-  ghcr.io/j000k3r/probeglass:0.1.0
+  ghcr.io/j000k3r/probeglass:0.2.0
 ```
 
 Nothing inside the container needs a particular host path — the whole state is one

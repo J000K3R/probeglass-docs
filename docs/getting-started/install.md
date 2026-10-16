@@ -34,9 +34,9 @@ The image lives on the GitHub Container Registry as
 `ghcr.io/j000k3r/probeglass`. It is public, so pulling it needs no account and
 no `docker login`.
 
-Every release carries three tags. **`0.1.0`** is the exact version and never
-changes under you; `0.1` follows the 0.1.x patch releases; `latest` follows the
-newest release of all. The commands below pull `0.1.0`, so the version changes
+Every release carries three tags. **`0.2.0`** is the exact version and never
+changes under you; `0.2` follows the 0.2.x patch releases; `latest` follows the
+newest release of all. The commands below pull `0.2.0`, so the version changes
 when you edit that line rather than when a container restarts. Each image also
 carries the commit it was built from (`sha-4a1c2e7`), which is the tag to pin if
 you want one exact build. Development builds of whatever is in the tree today
@@ -55,7 +55,7 @@ cd probeglass
 docker compose up -d
 ```
 
-The compose file pins `ghcr.io/j000k3r/probeglass:0.1.0`. Change that line to
+The compose file pins `ghcr.io/j000k3r/probeglass:0.2.0`. Change that line to
 `0.1` or `latest` if you would rather it followed the patch releases or the
 newest release; the deployment stays reproducible either way.
 
@@ -69,7 +69,7 @@ docker run -d \
   -p 8080:8080 \
   -v probeglass-data:/data \
   --cap-add NET_RAW \
-  ghcr.io/j000k3r/probeglass:0.1.0
+  ghcr.io/j000k3r/probeglass:0.2.0
 ```
 
 Notes on the flags:
@@ -197,7 +197,7 @@ To skip the interactive step in an automated deployment, set
 docker run -d --name probeglass -p 8080:8080 \
   -v probeglass-data:/data \
   -e PROBEGLASS_ADMIN_PASSWORD='correct horse battery staple' \
-  ghcr.io/j000k3r/probeglass:0.1.0
+  ghcr.io/j000k3r/probeglass:0.2.0
 ```
 
 This creates an account called **`admin`** with that password. It is read **only

@@ -8,7 +8,7 @@ description: nginx, Caddy, and Traefik configurations, with the two settings tha
 
 :::danger Do not expose this to the internet yet
 
-ProbeGlass is at version 0.1.0 and is not ready to be reachable from outside
+ProbeGlass is at version 0.2.0 and is not ready to be reachable from outside
 your own network. A reverse proxy is for TLS, a hostname and an IP allowlist
 **inside a LAN**. It is not a way to make this safe to publish.
 
@@ -30,7 +30,7 @@ What is missing, concretely:
 
 An IP allowlist narrows who can reach it. It does not fix any of the above, and
 it is one misconfigured rule away from being no protection at all. When the
-project leaves 0.1.0, this page will say what changed and what to review first.
+project leaves 0.x, this page will say what changed and what to review first.
 
 :::
 
@@ -130,7 +130,7 @@ not replace one.
 ```yaml
 services:
   probeglass:
-    image: ghcr.io/j000k3r/probeglass:0.1.0
+    image: ghcr.io/j000k3r/probeglass:0.2.0
     labels:
       traefik.enable: "true"
       traefik.http.routers.probeglass.rule: "Host(`probeglass.lan`)"

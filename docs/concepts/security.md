@@ -464,7 +464,7 @@ be one.
 ## ⚠️ What is not protected {#what-is-not-protected}
 
 :::danger This is not ready for the internet
-Everything below is a boundary of a version 0.1.0 installation, and taken together
+Everything below is a boundary of a version 0.2.0 installation, and taken together
 they mean ProbeGlass must not be reachable from outside your own network yet. A
 reverse proxy with TLS and an allowlist is for a LAN; it is not a way to publish
 this. See [Running behind a reverse proxy](/operations/reverse-proxy) for the
