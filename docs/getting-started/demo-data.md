@@ -160,6 +160,22 @@ docker volume rm probeglass-demo
 The whole state is the single SQLite file in that volume, so removing it removes
 everything.
 
+## Removing the examples from a real installation {#removing}
+
+**Settings → Monitoring → Example data → Remove all example data** takes the example
+sensors, their history and the places invented for them out again, in one click. It
+knows which rows those are because they are marked when they are made, not because of
+their names — rename one and it is still removed.
+
+**Dependencies inside the example data go with them.** The rented server's web check
+hangs off its SSH check; both are examples, so both are removed together.
+
+**And a dependency that points at an example sensor is let go, not broken.** If you
+attach one of your own sensors behind an example one, removing the examples leaves your
+sensor in place with nothing above it — it starts reporting for itself again. The
+reference is declared `ON DELETE SET NULL` for exactly that reason, and it is checked:
+see `TestDeletingTheExampleDataLetsARealSensorGo` in `internal/store`.
+
 ## Starting over for real
 
 If you seeded into a volume you actually want to keep, the demo sensors are now

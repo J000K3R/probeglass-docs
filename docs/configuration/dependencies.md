@@ -88,6 +88,16 @@ The status stays whatever the probe found. A sensor behind a down router is **re
 because it really is not answering — what the badge beside it says is that this is a
 consequence rather than a fault of its own.
 
+<img
+  src="/img/dependencies-cards.png"
+  alt="The Rented server group on the dashboard: a paused ping, an SSH check that is down and holds the one ongoing incident, and a web check behind it that is down with a blue Dependent badge and a blue ring around its card."
+  width="1600"
+/>
+
+The group above shows it as it looks in the example data: the rented server is away,
+so its SSH check is **Down** and holds the incident — and the web check behind it is
+**Down** with the **Dependent** badge, and no incident of its own.
+
 Blue rather than the violet of a maintenance window: the two say different things — "I
 arranged this" and "this happened to me" — and a dashboard where they looked the same
 would lose the distinction this feature exists to draw.
