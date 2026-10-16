@@ -23,6 +23,21 @@ pause: the probe still goes out, and a box that comes back early shows up in the
 chart as having come back. What a window suppresses is the claim that somebody needs
 to do something about it — not the measurement.
 
+## What it looks like
+
+Two of these cards are inside a window and two are not. The status pill is the same
+on all four — a box that answers is up, and a window does not change that — and the
+second pill is the one that says the difference:
+
+<img
+  src="/img/maintenance-cards.png"
+  alt="Four sensor cards in a row. Two of them carry a violet Maintenance badge beside the green Up pill and a violet ring around the card; the other two carry neither."
+  width="1600"
+/>
+
+The ring is what makes a grid readable without reading it: at a glance, the cards
+somebody arranged to be quiet are the ones in violet.
+
 ## Making one
 
 **Settings → Monitoring → Maintenance windows**, then **New window**. Anything the
@@ -59,6 +74,12 @@ other outage. The new incident is dated from after the window, not from before i
 
 **The sensor comes back inside the window.** Nothing is sent. No "down" ever went
 out, so an "up" would be a message about a problem you were never told about.
+
+<img
+  src="/img/maintenance-panel.png"
+  alt="The Maintenance windows panel: a heading, a sentence of explanation, an empty list and a New window button."
+  width="1600"
+/>
 
 ## What the dashboard shows
 
