@@ -488,6 +488,20 @@ dashboard, for the same reason a sensor from the file cannot. The list says so
 instead of hiding the buttons, and a change sent past the dashboard is refused
 rather than accepted and quietly undone by the next start.
 
+## 🧰 Maintenance windows {#maintenance}
+
+The other thing on the Monitoring tab is the list of periods in which a sensor is
+expected to be down. A window opens no incident and sends no alert for the checks
+that fail inside it, and those checks do not count against the sensor's uptime —
+but the probe keeps running and the result is still recorded, so a box that comes
+back early shows up in its chart as having come back.
+
+It is worth keeping apart from **pausing** a sensor, which is the switch on the
+card. Pausing stops the checks: the sensor reads *paused* and nothing is measured.
+A window lets them run and only silences what they would have said.
+
+It has [a page of its own](/configuration/maintenance).
+
 ## 🗺️ The map {#map-tiles}
 
 The map draws itself, out of the binary, and **fetches nothing by default**. Twelve

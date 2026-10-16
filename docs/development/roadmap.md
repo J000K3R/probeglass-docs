@@ -141,6 +141,12 @@ is the source of truth — this page mirrors it.
   purpose: the [watchdog page](/operations/troubleshooting#the-dashboard-will-not-load),
   `doctor`, and the channel types and recipes the server sends as its own text.
 
+- **Maintenance windows.** Silence a sensor or a group for a defined period —
+  expected downtime should not open an incident and should not count against the
+  uptime figure. The check keeps running and the result is recorded; what it is spared
+  is the incident, the alert and the arithmetic. Recurring weekly or a single stretch
+  of time, in the zone the person creating it is in.
+
 ## Next — 0.2.x
 
 Ordered by value per unit of work.
@@ -148,8 +154,6 @@ Ordered by value per unit of work.
 - **More sensor types.** SSH banner, SMTP/IMAP greeting, UDP port, an ICMP TTL/hop
   sensor, and an HTTP sensor that follows a redirect chain and reports what it found.
   Each is one file in `internal/sensor`.
-- **Maintenance windows.** Silence a sensor or a group for a defined period — expected
-  downtime should not open an incident and should not count against the uptime figure.
 - **Dependencies between sensors.** Mark the router as a parent of everything behind
   it, so one power cut produces one incident and one alert instead of thirty.
 - **Dashboard polish.** Pin a sensor to the top, per-group colours, and
@@ -186,8 +190,8 @@ Ordered by value per unit of work.
 
 - **Agents and infrastructure discovery.** ProbeGlass watches what you tell it to
   watch; it is not a service-discovery or inventory tool.
-- **Windows and macOS service installation.** The binary builds for both, but the
-  packaging target is a Linux container.
+- **Windows and macOS at all.** The container is the only thing that ships; there
+  is no archive to unpack on a desktop.
 - **A full SNMP poller.** ProbeGlass reads single OIDs over v2c, because that is what
   a switch, a router or a NAS is asked for. What stays out is the rest of it: a MIB walk,
   trap receivers, v3 with its authentication and privacy protocols, and the

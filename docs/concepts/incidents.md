@@ -123,9 +123,16 @@ whatever that sensor currently has open. That last one answers **409** when
 nothing is down, rather than quietly doing nothing.
 
 :::info Maintenance windows are a different feature
-Acknowledging is per-outage and manual. Scheduled windows — "it is allowed to be
-down between 02:00 and 04:00 on Sunday" — are on the roadmap for 0.2.x and are
-not what this does.
+Acknowledging is per-outage and manual: somebody decides, each time, that this
+particular outage does not need chasing. A [maintenance
+window](/configuration/maintenance) is decided in advance and applies to every
+outage that falls inside it — no incident is opened and no alert is sent at all.
+:::
+
+:::tip An outage that a window closed
+If a window begins while an outage is open, the outage is closed with a note saying
+so. That is not a recovery — if the box stays away, a new outage opens once it has
+failed its way past the retries again, dated from after the window.
 :::
 
 ## Restarts
