@@ -129,6 +129,12 @@ window](/configuration/maintenance) is decided in advance and applies to every
 outage that falls inside it — no incident is opened and no alert is sent at all.
 :::
 
+:::tip An outage that something else caused
+A sensor that sits behind another one — the NAS behind the router — is
+[excused](/configuration/dependencies) while that parent is down: no incident of its
+own, no alert. One power cut is one outage and not thirty.
+:::
+
 :::tip An outage that a window closed
 If a window begins while an outage is open, the outage is closed with a note saying
 so. That is not a recovery — if the box stays away, a new outage opens once it has

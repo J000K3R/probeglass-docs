@@ -500,7 +500,10 @@ It is worth keeping apart from **pausing** a sensor, which is the switch on the
 card. Pausing stops the checks: the sensor reads *paused* and nothing is measured.
 A window lets them run and only silences what they would have said.
 
-It has [a page of its own](/configuration/maintenance).
+It has [a page of its own](/configuration/maintenance). The other thing on that tab
+next to it, in the sensor editor, is **Depends on**: a sensor that sits behind another
+one is [excused](/configuration/dependencies) while that parent is down — the same
+silence, for a reason that happened rather than one you arranged.
 
 ## 🗺️ The map {#map-tiles}
 

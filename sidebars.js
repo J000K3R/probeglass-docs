@@ -43,6 +43,7 @@ const sidebars = {
         'configuration/environment',
         'configuration/dashboard',
         'configuration/maintenance',
+        'configuration/dependencies',
       ],
     },
     {
