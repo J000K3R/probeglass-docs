@@ -13,7 +13,7 @@ same time.
 
 <img
   src="/img/settings-look.png"
-  alt="The Settings screen: a tab strip of five named categories across the top with Look selected, and below it the appearance controls for interface mode, theme, accent, density, layout and language."
+  alt="The Settings screen: a tab strip of six named categories across the top with Look selected, and below it the appearance controls for interface mode, theme, accent, density, layout and language."
   width="1600"
 />
 
@@ -211,21 +211,22 @@ accessible than one that does not.
 ## 🗂️ How the settings page is laid out {#arrangement}
 
 The settings used to be ten identical blocks in a column, and finding **Backup**
-meant scrolling past **Accent**. They are now five named categories with a **tab**
+meant scrolling past **Accent**. They are now six named categories with a **tab**
 each, and **only the chosen category is on screen** — the others are not further
 down the page, they are not on it at all.
 
 | Category | Holds |
 |---|---|
 | ◐ **Look** | Appearance, Map |
-| ◉ **Monitoring** | Dashboard defaults, Sites, Sample data |
+| ▦ **Widgets** | Header widgets, and how the clock is written |
+| ◉ **Monitoring** | Dashboard defaults, Sites, Groups, Maintenance windows, Example data |
 | ⚿ **Access** | Access, Users |
 | ⛃ **Backup** | Backup and restore |
 | ⓘ **Help and maintenance** | Getting started, Diagnostics, About |
 
 <img
   src="/img/settings-monitor.png"
-  alt="The settings page on the Monitoring tab: five tabs along the top with Monitoring chosen, and below them the Dashboard defaults, Sites and Sample data panels — and nothing from the other four categories."
+  alt="The settings page on the Monitoring tab: six tabs along the top with Monitoring chosen, and below them the Dashboard defaults panel with the counts, the retention figures and the dates — and nothing from the other five categories."
   width="1600"
 />
 
@@ -316,8 +317,8 @@ arrow clicks, away. There are no dashed placeholders in the strip itself: a tile
 that is not a widget is a tile that has to be explained, and a real tile already
 says what it would be.
 
-The same list is also in **Settings → Monitoring → Dashboard defaults**, as rows
-with a checkbox, the two arrows and a **Reset to the default header** button. Two
+The same list is in **Settings → Widgets**, as rows with a checkbox, the two arrows
+and a **Reset to the default header** button, with the clock's format above it. Two
 views of one setting, and they cannot disagree: switch a widget off there and it
 leaves the strip when you press it. That side is also the place to read what is
 available before you start moving things about.

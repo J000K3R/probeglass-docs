@@ -111,7 +111,7 @@ is the source of truth — this page mirrors it.
   field does not go in behind the `⋮`, because a search box that has to be unfolded
   out of a menu is a search box nobody on a phone uses. One line from 320 pixels to
   2400, with less on it.
-- **Settings in five tabs** with icons, one category on screen at a time instead of
+- **Settings in named tabs** with icons, one category on screen at a time instead of
   ten identical panels in a column. See
   [How the settings page is laid out](/configuration/dashboard#arrangement).
 - **A header made of widgets.** The strip at the top of the dashboard — the status
@@ -154,6 +154,16 @@ is the source of truth — this page mirrors it.
   Chains work; circles and unknown parents are refused. The same mechanism as a
   maintenance window, with a second reason.
 
+- **Symbols on sensors, places and groups.** Twenty-six drawings ship in the binary
+  and any image can be uploaded to the database instead — PNG, JPEG or GIF, never
+  SVG, because a document that may carry script does not belong on the dashboard's own
+  origin. A group's heading can wear one too, along with a colour from the same six the
+  accent setting offers, which is the half of "per-group colours" that used to be a
+  roadmap line of its own. Uploaded images are bytes in the one SQLite file rather than
+  files beside it, so copying that file is still the whole backup, and an image
+  something still points at cannot be deleted without saying so. See
+  [Symbols](/configuration/icons).
+
 ## Next — 0.2.x
 
 Ordered by value per unit of work.
@@ -161,10 +171,11 @@ Ordered by value per unit of work.
 - **More sensor types.** SSH banner, SMTP/IMAP greeting, UDP port, an ICMP TTL/hop
   sensor, and an HTTP sensor that follows a redirect chain and reports what it found.
   Each is one file in `internal/sensor`.
-- **Dashboard polish.** Pin a sensor to the top, per-group colours, and
-  drag-to-arrange groups. (The side-by-side comparison view this item used to
-  promise is the **tree**, the **wall** and the **map**, which shipped in the
-  section above.)
+- **Drag-to-arrange groups.** A group's colour and symbol are in; its order is still a
+  number typed in the editor, which works and is not a thing anybody wants to do twice.
+  (The side-by-side comparison view this item used to promise is the **tree**, the
+  **wall** and the **map**, which shipped in the section above, and pinning a sensor to
+  the top is the [header you build out of widgets](/configuration/dashboard#widgets).)
 - **Escalation.** A second channel that only fires when an incident is still open
   after N minutes.
 - **Import and export, for the configuration file.** The dashboard can already write
