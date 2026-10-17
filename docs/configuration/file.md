@@ -127,6 +127,7 @@ are simple and worth reading twice:
 | `enabled` | bool | Default true |
 | `group` | string | Free-text label |
 | `site` | string | The **name** of a site, grouping the dashboard by place |
+| `icon` | string | A symbol beside the name: `builtin:router`, or `upload:7` for an image uploaded here. See [Symbols](/configuration/icons) |
 | `tags` | list of strings | |
 | `reminder_every` | duration | Repeat alerts while down; 0 disables |
 | `options` | map | Type-specific, see below |
@@ -151,7 +152,8 @@ sensors:
     site: Rack A          # created if it is not there yet
 ```
 
-A site that is worth describing properly goes in a list of its own:
+A site that is worth describing properly goes in a list of its own — and it takes an
+`icon` in the same two forms a sensor's does:
 
 ```yaml
 sites:
@@ -159,6 +161,7 @@ sites:
     kind: local          # local (default) or external
     lat: 48.1372         # optional, but both coordinates or neither
     lon: 11.5756
+    icon: builtin:server
 
   - name: Hetzner Cloud
     kind: external       # no coordinates: it groups, but is not on the map
@@ -170,6 +173,7 @@ sites:
 | `kind` | string | `local` (the homelab, the default) or `external` (a hoster or cloud) |
 | `lat` | float | −90 to 90 |
 | `lon` | float | −180 to 180 |
+| `icon` | string | `builtin:<name>` or `upload:<id>`, as on a sensor |
 
 A site written out in full is **managed** exactly like a sensor from the file: the
 file owns its name, its kind and its coordinates, and none of them can be changed

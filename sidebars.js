@@ -44,6 +44,7 @@ const sidebars = {
         'configuration/dashboard',
         'configuration/maintenance',
         'configuration/dependencies',
+        'configuration/icons',
       ],
     },
     {
