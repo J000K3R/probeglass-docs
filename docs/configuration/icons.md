@@ -70,6 +70,11 @@ and from then on it behaves exactly like one you dragged in from your own disk.
 - **It goes into the database.** Not a link to somebody else's server, not a file in a
   folder. The whole point of a search is finding a picture you did not have; the point
   of storing it is that the one SQLite file a backup copies still holds everything.
+- **It is fitted to an icon.** The catalogue's pictures are not all 512 square — a wide
+  logo is 623×512, another is 1123×512 — so an imported one is reduced to what the
+  dashboard draws, with its proportions kept. An upload of your own is still held to
+  the limits as they are: refusing a file somebody picked is honest, and shrinking it
+  behind their back is not.
 - **Every search asks the catalogue.** Its index is kept in memory and revalidated with
   a conditional request on each search — so an icon the project added since you last
   looked is found by the search that is looking for it, and the usual search costs one
