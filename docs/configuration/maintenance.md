@@ -91,6 +91,12 @@ checks out.
 A window that is running right now is marked in the list, which is the thing to check
 when a sensor goes quiet and you want to know whether you arranged it.
 
+The **example data** carries two of them: one in force on *Example website*, which is
+what puts the **Maintenance** badge on a card, and one weekly — Sunday, 02:00 to 04:00
+in Berlin — which is what the settings list shows. They are there so the feature is on
+the first dashboard somebody loads rather than only described here, and they go with
+the rest of the example data when it is removed.
+
 ## Two things it does not do
 
 **A window saves nothing for later.** It starts applying the moment you save it. The
