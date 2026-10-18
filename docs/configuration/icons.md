@@ -57,6 +57,14 @@ Three things are worth knowing about how that works:
   the bytes, and a file that is truncated or is not an image at all is refused where
   the message can still be acted on — in the dialog, next to the field.
 
+**The example data carries four of them.** A fresh installation uploads Cloudflare,
+Debian, Docker and TrueNAS for the sensors that are about them — the public resolver,
+the package mirror, the NAS's web interface and its container — so the picker offers
+both kinds of symbol from the first minute, and the demo data set shows them on the
+dashboard. They are brand marks of their projects, taken from
+[Dashboard Icons](https://dashboardicons.com/) and reduced to icon size. Removing the
+example data leaves them in the picker: an icon is a picture, not a sensor.
+
 Deleting an uploaded image that something still wears is refused, and the refusal says
 how many sensors, places and groups point at it. Confirming takes it off all of them
 and deletes it in one go. Nothing breaks if you leave a dangling reference behind: a
