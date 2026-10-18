@@ -10,10 +10,12 @@ A dashboard of names is harder to read than it looks. "Router", "Router: ping" a
 "Gateway" are three rows of text that mean three different things, and the eye has to
 read every one of them. A symbol beside the name is what lets it stop reading.
 
-Any **sensor**, any **place** and the heading of any **group** can carry one. The field
-is in the sensor editor, in the site editor, and in **Settings → Monitoring → Groups**,
-and the symbol is then drawn beside the name in every view: the cards, the list, the
-tree, the wall and the sensor's own detail dialog.
+Any **sensor**, any **place** and the heading of any **group** can carry one. In the
+sensor editor the symbol stands in the name row itself, to the left of the name, and it
+is the button that opens the picker — choosing a symbol is a click on the picture that
+will be drawn. The site editor and **Settings → Monitoring → Groups** carry a labelled
+field instead. Wherever it is set, the symbol is then drawn beside the name in every
+view: the cards, the list, the tree, the wall and the sensor's own detail dialog.
 
 <img
   src="/img/icon-picker.png"
