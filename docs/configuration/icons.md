@@ -17,7 +17,7 @@ tree, the wall and the sensor's own detail dialog.
 
 <img
   src="/img/icon-picker.png"
-  alt="The icon picker open on the sensor form: a row for No icon, then twenty-six built-in drawings with their names — Router, Switch, Server, NAS, Container, Cloud, Internet, Database — and below them the uploaded images and an Upload an image button."
+  alt="The icon picker open on the sensor form: a search field at the top labelled Search by name, a row for No icon, then twenty-six built-in drawings with their names — Router, Switch, Server, NAS, Container, Cloud, Internet, Database — and below them the uploaded images and an Upload an image button."
   width="1600"
 />
 
@@ -59,6 +59,33 @@ Deleting an uploaded image that something still wears is refused, and the refusa
 how many sensors, places and groups point at it. Confirming takes it off all of them
 and deletes it in one go. Nothing breaks if you leave a dangling reference behind: a
 symbol is a piece of text, not a link, so an image that is gone simply draws nothing.
+
+## Searching the online catalogue
+
+At the top of the picker there is a search field. Type a name — `pi-hole`, `plex`,
+`opnsense` — and the results appear with their pictures beside them. Choosing one
+**imports** it: the picture is downloaded once and stored as an ordinary uploaded image,
+and from then on it behaves exactly like one you dragged in from your own disk.
+
+- **It goes into the database.** Not a link to somebody else's server, not a file in a
+  folder. The whole point of a search is finding a picture you did not have; the point
+  of storing it is that the one SQLite file a backup copies still holds everything.
+- **Every search asks the catalogue.** Its index is kept in memory and revalidated with
+  a conditional request on each search — so an icon the project added since you last
+  looked is found by the search that is looking for it, and the usual search costs one
+  empty response rather than a megabyte.
+- **No network is a sentence, not an error.** A container that cannot reach the
+  internet says so under the search field and points at
+  [dashboardicons.com](https://dashboardicons.com/), where the icons are. The rest of
+  the picker — the built-in drawings and everything already uploaded — works as it
+  always does.
+- **Only the picture is taken.** The catalogue's index is read to answer the search;
+  the dashboard draws nothing from that host, and the browser never talks to it. The
+  previews come from this server.
+
+The icons and the catalogue are the work of
+[Dashboard Icons](https://github.com/homarr-labs/dashboard-icons), which is Apache-2.0.
+The pictures themselves are the logos of the projects they belong to.
 
 ## Groups
 
