@@ -167,6 +167,12 @@ is the source of truth — this page mirrors it.
   ICMP TTL/hop probe and an HTTP redirect chain that reports where it ends. Each is
   the smallest exchange that answers its question; see
   [Sensors](/concepts/sensors).
+- **A sensor editor that chooses.** The type is a grouped, searchable chooser;
+  group, place, tag and dependency fields use the same picker; the per-type
+  options are chips, with the default as a visible choice. Tags have settings of
+  their own — a symbol, a colour and a place in the order under Settings →
+  Monitoring → Tags — in the same shape groups have, while both remain words
+  written on a sensor.
 
 ## Next — 0.2.x
 
