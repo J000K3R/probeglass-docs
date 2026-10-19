@@ -224,8 +224,9 @@ down the page, they are not on it at all.
 | ⛃ **Backup** | Backup and restore |
 | ⓘ **Help and maintenance** | Getting started, Diagnostics, About |
 
-The group rows in **Monitoring** can be dragged into the order you want; the
-position number in the editor stays as the keyboard path.
+The group rows in **Monitoring** — or the group headings on the dashboard
+itself — can be dragged into the order you want; the position number in the
+editor stays as the keyboard path.
 
 <img
   src="/img/settings-monitor.png"

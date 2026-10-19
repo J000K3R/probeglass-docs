@@ -173,9 +173,10 @@ is the source of truth — this page mirrors it.
   their own — a symbol, a colour and a place in the order under Settings →
   Monitoring → Tags — in the same shape groups have, while both remain words
   written on a sensor.
-- **Drag-to-arrange groups.** The rows in Settings → Monitoring are dragged into
-  the order the dashboard should show them in; the whole order is written at once,
-  and the position number in the editor remains as the keyboard path. (The
+- **Drag-to-arrange groups.** The rows in Settings → Monitoring, or the group
+  headings on the dashboard itself, are dragged into the order the dashboard
+  should show them in; the whole order is written at once, and the position number
+  in the editor remains as the keyboard path. (The
   comparison view this item once promised is the **tree**, the **wall** and the
   **map**, and pinning a sensor to the top is the
   [header you build out of widgets](/configuration/dashboard#widgets).)
