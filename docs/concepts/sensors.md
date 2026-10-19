@@ -29,7 +29,9 @@ can be declared in [YAML](/configuration/file).
 In the dashboard the types are grouped as **Web**, **Network**, **Services** and
 **Infrastructure**, in a chooser with a search field rather than a long
 dropdown. The options each type adds are chips, so the choice that is switched
-off — "leave it at the default" — is visible beside the ones that are not.
+off — "leave it at the default" — is visible beside the ones that are not. The
+place and **Depends on** fields use the same kind of picker: sites grouped by
+kind, and the other sensors listed with the status each one has right now.
 
 ## ⚙️ Common settings {#common-settings}
 
