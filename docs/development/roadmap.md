@@ -20,8 +20,8 @@ is the source of truth — this page mirrors it.
   one resolution answering any range.
 - Incident lifecycle with retries before an incident opens, reminder intervals while
   it stays open, and recovery alerts.
-- Six alert channels: Telegram, Discord, Matrix, ntfy, Slack, and signed generic
-  webhooks, with custom message templates.
+- Seven alert channels: Telegram, Discord, Matrix, ntfy, Gotify, Slack, and signed
+  generic webhooks, with custom message templates.
 - First-run setup, bcrypt passwords, hardened session cookies, API key, and cross-site
   protection for cookie-authenticated writes.
 - Sensors and channels declared in YAML, re-applied on every start.

@@ -24,6 +24,7 @@ channel never delays the others, and never suppresses them.
 | Discord | `webhook_url` | `username` |
 | Matrix | `homeserver_url`, `access_token`, `room_id` | — |
 | ntfy | `topic` | `server_url`, `token`, `priority` |
+| Gotify | `server_url`, `token` | `priority` |
 | Slack | `webhook_url` | `channel` |
 | Webhook | `url` | `method`, `hmac_secret` |
 
@@ -107,6 +108,20 @@ password, and use a dedicated account if you can.
    unguessable name, or run your own server and enter its address there.
 4. Fill in an access token only if that server asks for one. `priority` takes
    `min`, `low`, `default`, `high` or `urgent`.
+
+### Gotify
+
+1. Open your Gotify server in a browser and sign in — it is the other self-hosted
+   push server a homelab tends to have, and it needs no account outside the LAN.
+2. Under **Apps**, press **Create Application**, give it a name, and copy the token
+   it shows. That token is the whole credential: it can post to its own
+   application and read nothing back, which is why it is safer to keep than an
+   account password.
+3. Paste it into **App token**, and enter the server's base address in **Server
+   URL** — `https://gotify.example.org`, without `/message` at the end.
+4. Subscribe to that application in the Gotify phone app. `priority` is Gotify's
+   own 0-to-10 scale; leave it empty and a down alert goes out at 8, a reminder at
+   6 and a recovery at 4.
 
 ### Slack
 
