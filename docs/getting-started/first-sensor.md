@@ -16,7 +16,7 @@ Click **New sensor** in the top bar and fill in four fields:
 
 <img
   src="/img/sensor-form.png"
-  alt="The sensor form: name, a Type button showing HTTP(S), URL, interval, timeout and retries, a group picker, a place picker, a Depends on picker, then a fold-out section of type options shown as clickable chips rather than dropdowns. A small question mark sits beside every label, and the one beside Expected status is open, showing a sentence about which status codes count as healthy and the example 200-299."
+  alt="The sensor form: name, a Type button showing HTTP(S), URL, interval, timeout and retries, a group picker, a tag picker, a place picker, a Depends on picker, then a fold-out section of type options shown as clickable chips rather than dropdowns. A small question mark sits beside every label, and the one beside Expected status is open, showing a sentence about which status codes count as healthy and the example 200-299."
   width="1600"
 />
 
@@ -34,9 +34,10 @@ method is one click and visible rather than a folded list of words.
   width="1600"
 />
 
-The **group** field is the same chooser. Its search box is also where a new
-group is named: type a word no existing group uses, and the panel offers to make
-it, so a group is still just a word typed on a sensor.
+The **group** and **tags** fields are the same chooser. Both carry a **New…**
+entry that opens the editor Settings uses, so a group or a tag can be named and
+given a symbol and colour before the first sensor carries it. Tags are a
+multi-select: the panel stays open while the next one is chosen.
 
 Choose a place the same way — sites are grouped by kind, and the list still
 carries the entry that makes a new one without leaving the form. **Depends on**

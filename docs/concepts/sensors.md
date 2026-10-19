@@ -44,7 +44,7 @@ These apply to every type.
 | `timeout` | 10 | 1–600 | Seconds before a probe is abandoned and counted as failed |
 | `retries` | 1 | ≥ 1 | Consecutive failures before an incident opens and alerts fire |
 | `group` | — | | Free-text label; sensors in a group are drawn together |
-| `tags` | — | | Free-text labels for filtering and search |
+| `tags` | — | | Labels for filtering and search; their symbol, colour and order are set under Settings → Monitoring → Tags |
 | `reminder_every` | 0 | ≥ 0 | Seconds between repeat alerts while a sensor stays down; 0 disables them |
 | `enabled` | true | | A disabled sensor is not probed and shows as Paused |
 | `channels` | — | | Which [alert channels](/concepts/alerts) this sensor notifies |

@@ -426,6 +426,28 @@ and `PUT /api/sensors/{id}`, empty to clear it. A name that does not exist is a
 returns the sites alongside the sensors, so a client can fold and draw the
 dashboard from the one request it already makes.
 
+### Groups and tags
+
+Groups and tags are words on a sensor, not rows a sensor points at: `group` is one
+string and `tags` is a list of them on the sensor itself. These routes carry only
+what a word cannot say — a symbol, a colour and a place in the order — and a word
+that no sensor carries yet can have settings too.
+
+| Method | Path | Purpose | Role |
+|---|---|---|---|
+| `GET` | `/api/groups` | `{"groups":[…],"accents":[…]}` — every group with `icon`, `colour`, `sort_order` and **`sensor_count`** | viewer |
+| `PUT` | `/api/groups/{name}` | `{"icon":"builtin:router","colour":"amber","sort_order":2}` — creates the settings row if this is the first | admin |
+| `DELETE` | `/api/groups/{name}` | Forget the settings; the sensors keep the word | admin |
+| `GET` | `/api/tags` | The same shape for tags | viewer |
+| `PUT` | `/api/tags/{name}` | The same body; a tag name may not contain a comma | admin |
+| `DELETE` | `/api/tags/{name}` | Forget the settings; the sensors keep the word | admin |
+
+`colour` is one of the six accent names or empty; `icon` is a `builtin:` drawing, an
+`upload:` id or empty; `sort_order` is the position, lower first. Every field is
+optional on the `PUT` and an omitted one keeps what is stored. `DELETE` answers
+`{"forgotten":"…","sensors":N}` where `N` is how many sensors still carry the word —
+the word itself is a sensor field and is not removed.
+
 ### Live
 
 | Method | Path | Purpose |
