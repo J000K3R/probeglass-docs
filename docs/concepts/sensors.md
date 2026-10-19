@@ -26,6 +26,11 @@ can be declared in [YAML](/configuration/file).
 | `docker` | a container name | The state, health and restart count of a container on this host |
 | `snmp` | a host or `host:port` | One OID from a switch, router or NAS, checked against a value you set |
 
+In the dashboard the types are grouped as **Web**, **Network**, **Services** and
+**Infrastructure**, in a chooser with a search field rather than a long
+dropdown. The options each type adds are chips, so the choice that is switched
+off — "leave it at the default" — is visible beside the ones that are not.
+
 ## ⚙️ Common settings {#common-settings}
 
 These apply to every type.
@@ -312,7 +317,7 @@ you do, and check that it is what you want.
 `expect_health` is absent above for that reason: the example watches whether the
 container is up and how often it has restarted, and asks nothing of a health check
 that may not exist. In the dashboard the same choice is the empty entry in the
-health dropdown, labelled "only check that it runs".
+health chips, the first one labelled "only check that it runs".
 
 ## 📡 `snmp` {#snmp}
 

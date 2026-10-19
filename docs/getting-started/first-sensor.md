@@ -16,7 +16,7 @@ Click **New sensor** in the top bar and fill in four fields:
 
 <img
   src="/img/sensor-form.png"
-  alt="The sensor form: name, type, URL, interval, timeout and retries, then a fold-out section of type options. A small question mark sits beside every label, and the one beside Expected status is open, showing a sentence about which status codes count as healthy and the example 200-299."
+  alt="The sensor form: name, a Type button showing HTTP(S), URL, interval, timeout and retries, then a fold-out section of type options shown as clickable chips rather than dropdowns. A small question mark sits beside every label, and the one beside Expected status is open, showing a sentence about which status codes count as healthy and the example 200-299."
   width="1600"
 />
 
@@ -24,11 +24,21 @@ Click **New sensor** in the top bar and fill in four fields:
 field is for and one example value — no paragraph of prose sitting under the
 form.*
 
+The type is not a dropdown: the button opens a grouped, searchable list of
+thirteen checks, and the options under the form are chips, so a boolean or a
+method is one click and visible rather than a folded list of words.
+
+<img
+  src="/img/sensor-type-picker.png"
+  alt="The sensor type chooser open under the Type field: a search box and four groups — Web, Network, Services and Infrastructure — each holding tiles with a symbol, a name and the shape of its target, such as HTTP(S) with URL or SSH banner with Host or host:port."
+  width="1600"
+/>
+
 | Field | What to put there |
 |---|---|
 | Name | Anything you will recognise at 3 a.m. — `Router`, `Nextcloud`, `DNS` |
-| Type | `http`, `tcp`, `tls`, `ping`, `dns`, `docker`, or `snmp` |
-| Target | A URL for `http`, `host:port` for `tcp`, a host or IP for `ping`/`dns` |
+| Type | One of thirteen checks, grouped as **Web** (`http`, `redirect`), **Network** (`tcp`, `udp`, `ping`, `hop`, `dns`), **Services** (`ssh`, `tls`, `smtp`, `imap`) and **Infrastructure** (`docker`, `snmp`) |
+| Target | A URL for `http`/`redirect`, `host:port` for `tcp`/`udp`, a host or IP for `ping`/`hop`/`dns` |
 | Interval | Seconds between probes. 60 is a good default; 30 for things you care about |
 
 Everything else has a working default, and in the **simple** interface mode the
