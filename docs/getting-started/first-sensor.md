@@ -16,7 +16,7 @@ Click **New sensor** in the top bar and fill in four fields:
 
 <img
   src="/img/sensor-form.png"
-  alt="The sensor form: name, a Type button showing HTTP(S), URL, interval, timeout and retries, a place picker, a Depends on picker, then a fold-out section of type options shown as clickable chips rather than dropdowns. A small question mark sits beside every label, and the one beside Expected status is open, showing a sentence about which status codes count as healthy and the example 200-299."
+  alt="The sensor form: name, a Type button showing HTTP(S), URL, interval, timeout and retries, a group picker, a place picker, a Depends on picker, then a fold-out section of type options shown as clickable chips rather than dropdowns. A small question mark sits beside every label, and the one beside Expected status is open, showing a sentence about which status codes count as healthy and the example 200-299."
   width="1600"
 />
 
@@ -33,6 +33,10 @@ method is one click and visible rather than a folded list of words.
   alt="The sensor type chooser open under the Type field: a search box and four groups — Web, Network, Services and Infrastructure — each holding tiles with a symbol, a name and the shape of its target, such as HTTP(S) with URL or SSH banner with Host or host:port."
   width="1600"
 />
+
+The **group** field is the same chooser. Its search box is also where a new
+group is named: type a word no existing group uses, and the panel offers to make
+it, so a group is still just a word typed on a sensor.
 
 Choose a place the same way — sites are grouped by kind, and the list still
 carries the entry that makes a new one without leaving the form. **Depends on**
