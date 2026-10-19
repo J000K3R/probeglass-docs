@@ -173,16 +173,17 @@ is the source of truth — this page mirrors it.
   their own — a symbol, a colour and a place in the order under Settings →
   Monitoring → Tags — in the same shape groups have, while both remain words
   written on a sensor.
+- **Drag-to-arrange groups.** The rows in Settings → Monitoring are dragged into
+  the order the dashboard should show them in; the whole order is written at once,
+  and the position number in the editor remains as the keyboard path. (The
+  comparison view this item once promised is the **tree**, the **wall** and the
+  **map**, and pinning a sensor to the top is the
+  [header you build out of widgets](/configuration/dashboard#widgets).)
 
 ## Next — 0.2.x
 
 Ordered by value per unit of work.
 
-- **Drag-to-arrange groups.** A group's colour and symbol are in; its order is still a
-  number typed in the editor, which works and is not a thing anybody wants to do twice.
-  (The side-by-side comparison view this item used to promise is the **tree**, the
-  **wall** and the **map**, which shipped in the section above, and pinning a sensor to
-  the top is the [header you build out of widgets](/configuration/dashboard#widgets).)
 - **Escalation.** A second channel that only fires when an incident is still open
   after N minutes.
 - **Import and export, for the configuration file.** The dashboard can already write

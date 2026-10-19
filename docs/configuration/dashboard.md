@@ -219,10 +219,13 @@ down the page, they are not on it at all.
 |---|---|
 | ◐ **Look** | Appearance, Map |
 | ▦ **Widgets** | Header widgets, and how the clock is written |
-| ◉ **Monitoring** | Dashboard defaults, Sites, Groups, Maintenance windows, Example data |
+| ◉ **Monitoring** | Dashboard defaults, Sites, Groups, Tags, Maintenance windows, Example data |
 | ⚿ **Access** | Access, Users |
 | ⛃ **Backup** | Backup and restore |
 | ⓘ **Help and maintenance** | Getting started, Diagnostics, About |
+
+The group rows in **Monitoring** can be dragged into the order you want; the
+position number in the editor stays as the keyboard path.
 
 <img
   src="/img/settings-monitor.png"
