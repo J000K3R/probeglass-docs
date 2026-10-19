@@ -13,7 +13,13 @@ can be declared in [YAML](/configuration/file).
 | Type | Target | What it does |
 |---|---|---|
 | `http` | a URL | An HTTP request, optionally asserting on the status, headers, and body |
+| `redirect` | a URL | The redirect chain and the address a URL ends on |
 | `tcp` | `host:port` | A connection, optionally a TLS handshake and a send/expect exchange |
+| `ssh` | a host or `host:port` | The SSH identification line, so sshd is told apart from any listener |
+| `smtp` | a host or `host:port` | The `220` greeting an SMTP server sends on connect |
+| `imap` | a host or `host:port` | The `* OK` or `* PREAUTH` greeting an IMAP server sends |
+| `udp` | `host:port` | One datagram, optionally waiting for a reply that contains a string |
+| `hop` | a host or IP | One ICMP echo with a chosen TTL, naming the router or destination that answers |
 | `tls` | a host or `host:port` | A TLS handshake, reporting how long the certificate is good for |
 | `ping` | a host or IP | ICMP echo requests, falling back to an unprivileged UDP ping |
 | `dns` | a hostname | A DNS lookup against a resolver you choose, asserting on the records |
@@ -100,6 +106,32 @@ configuration, not hidden in a global switch.
     body_contains: '"name":"Home Assistant"'
 ```
 
+## ↪️ `redirect` {#redirect}
+
+Target: a full URL, including the scheme.
+
+Walks the redirects itself rather than following them silently, and reports the
+codes and the address it ends on: `301 → 302 → 200 · final https://example.org/`.
+The ordinary `http` sensor either follows the chain or treats the first redirect
+as the answer; this one exists for the question where an address actually ends up,
+which is what notices a domain move or a captive portal in front of a page.
+
+| Option | Type | Default | Meaning |
+|---|---|---|---|
+| `max_hops` | int | `10` | Redirects to follow, 1–30; a longer chain fails |
+| `expected_final` | string | — | Fail unless the final URL contains this substring |
+| `expected_status` | string | `200-299` | Accepted status of the final response |
+| `insecure_skip_verify` | bool | `false` | Accept self-signed certificates |
+
+```yaml
+- name: Website redirect
+  type: redirect
+  target: https://example.org
+  interval: 15m
+  options:
+    expected_final: https://example.org/
+```
+
 ## 🔌 `tcp` {#tcp}
 
 Target: `host:port`.
@@ -123,6 +155,85 @@ The response is read until `expect` is found or the timeout expires.
   interval: 5m
   options:
     expect: "220 "
+```
+
+## 🔑 `ssh` {#ssh}
+
+Target: a hostname, or `host:port`. A bare hostname means port 22.
+
+Connects and reads the identification line an SSH server sends before any
+handshake, for example `SSH-2.0-OpenSSH_9.6p1`. That line is enough to tell "sshd
+is answering" from "something is listening on port 22". Lines some appliances send
+before the identification line are skipped, as RFC 4253 allows.
+
+| Option | Type | Meaning |
+|---|---|---|
+| `expect` | string | Fail unless the banner contains this substring, for pinning a version |
+
+```yaml
+- name: NAS SSH
+  type: ssh
+  target: nas.lan
+  interval: 5m
+  options:
+    expect: OpenSSH
+```
+
+## ✉️ `smtp` {#smtp}
+
+Target: a hostname, or `host:port`. A bare hostname means port 25.
+
+Reads the greeting an SMTP server sends on connect; RFC 5321 says it begins with
+`220`. `tls` opens the connection over implicit TLS, as port 465 does — it does
+not perform STARTTLS.
+
+| Option | Type | Default | Meaning |
+|---|---|---|---|
+| `tls` | bool | `false` | Connect over implicit TLS |
+| `server_name` | string | the target's host | SNI and verification name |
+| `insecure_skip_verify` | bool | `false` | Accept self-signed certificates when `tls` is on |
+| `expect` | string | — | Fail unless the greeting contains this substring |
+
+## 📬 `imap` {#imap}
+
+Target: a hostname, or `host:port`. A bare hostname means port 143; use `tls`
+for port 993.
+
+Reads the untagged greeting an IMAP server sends on connect. RFC 3501 allows
+`* OK` and `* PREAUTH`; `* BYE` is a failure.
+
+| Option | Type | Default | Meaning |
+|---|---|---|---|
+| `tls` | bool | `false` | Connect over implicit TLS |
+| `server_name` | string | the target's host | SNI and verification name |
+| `insecure_skip_verify` | bool | `false` | Accept self-signed certificates when `tls` is on |
+| `expect` | string | — | Fail unless the greeting contains this substring |
+
+## 📤 `udp` {#udp}
+
+Target: `host:port`.
+
+Sends one datagram and, when `expect` is set, waits for a reply containing it. UDP
+has no handshake, so without `expect` the probe can only report that the packet
+left — not that anything is listening. With it, the check is real: DNS over UDP, a
+status reply from a game server, a collector that answers.
+
+| Option | Type | Meaning |
+|---|---|---|
+| `payload` | string | Bytes to send. `\r` and `\n` are expanded; empty sends an empty datagram |
+| `expect` | string | Fail unless a reply contains this substring; empty does not wait for one |
+
+The socket is connected, so an ICMP port-unreachable is reported as a probe
+failure when a reply is awaited.
+
+```yaml
+- name: UDP echo service
+  type: udp
+  target: 192.168.1.5:9999
+  interval: 60s
+  options:
+    payload: PING
+    expect: PONG
 ```
 
 ## 🔒 `tls` {#tls}
@@ -268,6 +379,37 @@ different places: a probe that **left this host** and got nothing back says
 `no ICMP reply from … (3/3 lost)` and the network is the suspect, while a probe whose
 socket **refused to send at all** says `could not send ICMP to …` and names the
 kernel's reason — with the `NET_RAW` hint appended when that is what it was.
+
+## 🛣️ `hop` {#hop}
+
+Target: a hostname or IP address.
+
+Sends one echo request with a chosen time-to-live and reports what answered. A TTL
+of 1 asks the first router; a larger one asks the router that many hops away, and a
+packet that reaches the destination answers as itself.
+
+| Option | Type | Default | Meaning |
+|---|---|---|---|
+| `ttl` | int | `1` | Time-to-live to send with, 1–255 |
+
+A router whose TTL ran out answers with ICMP Time Exceeded, and that answer is the
+success of the probe: the hop exists and named itself. The message says either
+`hop 3 · 192.168.1.1 · time exceeded` or `hop 3 · reached 1.1.1.1`.
+
+This sensor needs a raw ICMP socket, which means `CAP_NET_RAW` in the container —
+the same capability ping sensors use. Unlike ping, it cannot fall back to an
+unprivileged datagram socket: the router's address is in the Time Exceeded message,
+and a ping socket does not hand that message over. Without the capability the probe
+says so and names it.
+
+```yaml
+- name: First hop
+  type: hop
+  target: 1.1.1.1
+  interval: 60s
+  options:
+    ttl: 1
+```
 
 ## 🧭 `dns` {#dns}
 

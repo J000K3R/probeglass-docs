@@ -163,14 +163,15 @@ is the source of truth — this page mirrors it.
   files beside it, so copying that file is still the whole backup, and an image
   something still points at cannot be deleted without saying so. See
   [Symbols](/configuration/icons).
+- **Six more sensor types.** An SSH banner, SMTP and IMAP greetings, a UDP port, an
+  ICMP TTL/hop probe and an HTTP redirect chain that reports where it ends. Each is
+  the smallest exchange that answers its question; see
+  [Sensors](/concepts/sensors).
 
 ## Next — 0.2.x
 
 Ordered by value per unit of work.
 
-- **More sensor types.** SSH banner, SMTP/IMAP greeting, UDP port, an ICMP TTL/hop
-  sensor, and an HTTP sensor that follows a redirect chain and reports what it found.
-  Each is one file in `internal/sensor`.
 - **Drag-to-arrange groups.** A group's colour and symbol are in; its order is still a
   number typed in the editor, which works and is not a thing anybody wants to do twice.
   (The side-by-side comparison view this item used to promise is the **tree**, the
