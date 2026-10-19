@@ -155,12 +155,25 @@ send somewhere else; the `#` is added for you.
 |---|---|
 | `down` | A sensor has failed `retries` times in a row and an incident opens |
 | `reminder` | A sensor has been down for `reminder_every` seconds since the last alert |
+| `escalation` | An incident is still open and unacknowledged after the sensor's `escalate_after`; sent once, to the second channel list |
 | `up` | A sensor that was down succeeded again, naming how long it was down |
 | `test` | You pressed the Test button |
 
 Nothing is sent for the individual failed probes below the retry threshold, for
 **Run now** probes, or for a sensor that was already down when ProbeGlass
 started — a container restart neither loses an outage nor re-announces one.
+
+## ⏫ Escalation {#escalation}
+
+A sensor can carry a second list of channels and a delay. The ordinary
+`channels` hear about the outage first; if it is still open and nobody has
+acknowledged it after `escalate_after`, the `escalate_channels` are told once.
+Acknowledgement stops it. The incident records that the message went out, so a
+restart cannot send it a second time, and a failed send is not retried beyond
+the dispatcher's own three attempts.
+
+Both are set in the sensor form, under **Escalation**, and in a configuration
+file as `escalate_after` and `escalate_channels`.
 
 ## ✏️ Message templates {#message-templates}
 

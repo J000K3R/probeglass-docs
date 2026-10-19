@@ -130,12 +130,20 @@ are simple and worth reading twice:
 | `icon` | string | A symbol beside the name: `builtin:router`, or `upload:7` for an image uploaded here. See [Symbols](/configuration/icons) |
 | `tags` | list of strings | |
 | `reminder_every` | duration | Repeat alerts while down; 0 disables |
+| `escalate_after` | duration | How long an incident may stay open and unacknowledged before the second list is told once; 0 disables |
+| `escalate_channels` | list of strings | Channel **names** for that second message |
 | `options` | map | Type-specific, see below |
 | `channels` | list of strings | Channel **names**, matching the `name` of a channel |
 
 A YAML file has no notion of "5 seconds or 300", so `interval: 1` is a plain
 number of seconds. If you would rather be explicit, `60s` and `5m` work and read
 better.
+
+**Writing this file from the dashboard.** The Backup panel's *Configuration file*
+button writes the sites, channels and sensors the installation holds as a
+`probeglass.yaml`, so a setup made in the browser can become the versioned one.
+Example data is left out unless it is asked for; accounts, incidents and history
+are not part of this file — the JSON backup is the document for those.
 
 ### Sites
 

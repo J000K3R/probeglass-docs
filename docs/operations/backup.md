@@ -36,7 +36,7 @@ menus and two buttons:
 
 <img
   src="/img/backup-panel.png"
-  alt="The Backup and restore panel: a menu labelled What to include, set to With history; a second labelled History of the last, set to 30 days; a Download backup button and a Restore from a file button; and, below them, a plain warning that the file holds password hashes, two-factor secrets and alert-channel credentials in plain text."
+  alt="The Backup and restore panel: a menu labelled What to include, set to With history; a second labelled History of the last, set to 30 days; a Download backup button and a Restore from a file button; below them a Configuration file section with a Download probeglass.yaml button; and a plain warning that the file holds password hashes, two-factor secrets and alert-channel credentials in plain text."
   width="1600"
 />
 
@@ -54,6 +54,15 @@ menus and two buttons:
 The two scopes exist because a copy of the database cannot express either of them.
 A backup that is "everything except the history" is a description of a
 configuration, and a file copy has no way to be that.
+
+### The configuration file {#configuration-file}
+
+Below the backup buttons, **Configuration file → Download probeglass.yaml** writes
+the sites, channels and sensors as the YAML the daemon itself reads. That is the
+other direction from a backup: it makes a setup built in the dashboard the file
+somebody can version and maintain. Accounts, incidents and history are not in it,
+and example data is left out unless it is asked for. Channel secrets are in clear
+text, as they are in the backup.
 
 ### What is in the file {#what-is-in-the-file}
 

@@ -267,6 +267,7 @@ disable themselves. Both answer `409`.
 |---|---|---|---|
 | `GET` | `/api/backup?scope=config\|history&days=7\|30\|90\|all` | Write the installation out as one JSON document | admin |
 | `POST` | `/api/restore` | Read one back in. The file **is** the request body | admin |
+| `GET` | `/api/config/export?examples=1` | Write the sites, channels and sensors as a `probeglass.yaml` | admin |
 
 `scope=config` (the default) writes the settings, the sites, the sensors, the
 channels and the accounts. `scope=history` writes all of that **plus** the
@@ -283,6 +284,12 @@ It arrives as `application/json` with
 `Content-Disposition: attachment; filename="probeglass-backup-2026-10-09.json"`
 and `Cache-Control: no-store`. The filename is built on the server from a constant
 and the date; no part of the request reaches it.
+
+`GET /api/config/export` answers the other question: it writes the
+`probeglass.yaml` the daemon reads, with the sites, channels and sensors and
+nothing else. Accounts, incidents and history are not in it, and example data is
+left out unless `examples=1`. It arrives as `application/yaml; charset=utf-8`
+with `Content-Disposition: attachment; filename="probeglass.yaml"`.
 
 :::warning The file carries secrets in clear text
 Password hashes, TOTP secrets, recovery-code hashes, the API key and every alert
