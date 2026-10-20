@@ -10,7 +10,7 @@ Dates are not promises; the ordering is what the design already supports cheaply
 The repository's [docs/ROADMAP.md](https://github.com/j000k3r/probeglass/blob/main/docs/ROADMAP.md)
 is the source of truth — this page mirrors it.
 
-## Done — 0.1.0
+## Done — through 0.2.x
 
 - HTTP, TCP (with TLS and send/expect), ICMP ping, and DNS sensors, each validated
   before it is saved.
@@ -191,12 +191,10 @@ is the source of truth — this page mirrors it.
   and history stay out; that is what the JSON backup is for. Example data is left
   out unless it is asked for.
 
-## Next — 0.2.x
+## Next — 0.3.x and beyond
 
-Nothing on the 0.2.x list is open. The next work is the 0.3.x list below, starting
-with `/metrics` and the public status page.
-
-## Later — 0.3.x and beyond
+The 0.2.x list is complete. What follows is the next body of work, ordered by value
+per unit of work.
 
 - **A `/metrics` endpoint**, so a homelab that already runs a monitoring stack can
   scrape ProbeGlass instead of duplicating the checks it already makes.
