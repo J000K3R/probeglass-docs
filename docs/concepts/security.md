@@ -100,17 +100,17 @@ Two ways in:
 
 **Session cookie.** `probeglass_session`, whose value names the account it
 belongs to and is signed with a secret generated on first start. `HttpOnly`,
-`SameSite=Strict`, and **deliberately without `Secure`** — homelab installs are
-usually plain HTTP on the LAN, and a `Secure` cookie on an HTTP origin is a cookie
-the browser silently refuses to send, which presents as "the password works but
-nothing happens".
+`SameSite=Strict`, and `Secure` whenever the request arrived over HTTPS — either
+directly or through a reverse proxy that sets `X-Forwarded-Proto: https`. A
+homelab reached over plain HTTP gets the cookie without `Secure`, because a
+browser silently refuses to send a `Secure` cookie on an HTTP origin, which
+presents as "the password works but nothing happens".
 
-:::warning
-If you terminate TLS at a reverse proxy, nothing changes: the cookie still has no
-`Secure` flag. That is intentional, so that the same build works behind HTTP and
-HTTPS — but it does mean the cookie travels in clear text on a plain-HTTP LAN.
-If that matters to you, either keep the dashboard on a trusted VLAN or put a TLS
-proxy in front and reach it only over HTTPS. See
+:::note
+Behind a TLS proxy, send `X-Forwarded-Proto: https` so the cookie is marked
+`Secure`; without the header it still works, but the cookie is then allowed over
+plain HTTP as well. Either way, keep the dashboard on a trusted VLAN if the LAN
+itself is not trusted, and reach it only over HTTPS when it is not local. See
 [Running behind a reverse proxy](/operations/reverse-proxy).
 :::
 
