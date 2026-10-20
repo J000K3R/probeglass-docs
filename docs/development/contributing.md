@@ -150,6 +150,40 @@ just that one query. This is the sharpest edge in the codebase.
 helpers in `internal/store`, and read the comment on the format before you decide it
 is over-cautious.
 
+## Security alerts
+
+CodeQL and GitHub's secret scanning run on every push. The `Security alerts`
+workflow looks at both tabs again every Monday and fails when an alert is open,
+so a finding nobody opened does not sit there unnoticed.
+
+The same check locally:
+
+```bash
+GH_TOKEN=... make security
+```
+
+The token is a fine-grained personal access token with **Code scanning alerts:
+read** and **Secret scanning alerts: read** (Metadata is added automatically).
+The Actions `GITHUB_TOKEN` can read code scanning but not secret scanning; the
+workflow uses a repository secret named `SECURITY_ALERTS_TOKEN` when it is
+configured and falls back to `GITHUB_TOKEN` for the half it can read. Without
+that secret the job says which half it could not check — it does not pretend to
+have checked both.
+
+Two findings are expected in this codebase and are dismissed with their reason
+rather than silenced:
+
+- **The HTTP and redirect sensors make a request to an address an administrator
+  chose.** That request is the sensor; refusing private addresses would make it
+  unable to watch the homelab it exists for. CodeQL calls it request forgery.
+- **The session cookie is not `Secure` on a plain-HTTP homelab.** It is
+  `Secure` whenever the request arrived over TLS, directly or through a proxy
+  sending `X-Forwarded-Proto: https`; on plain HTTP the flag would make the
+  browser drop the cookie and lock everyone out.
+
+Everything else is fixed, not dismissed. A new alert of either shape above is
+not automatically the same decision — read it first.
+
 ## Pull requests
 
 1. Branch from `main` (`feat/dns-sensor-timeout`).
