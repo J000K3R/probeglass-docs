@@ -54,8 +54,8 @@ cd probeglass
 docker compose up -d
 ```
 
-The compose file pins `ghcr.io/j000k3r/probeglass:0.2.1`. Change that line to
-`0.1` or `latest` if you would rather it followed the patch releases or the
+The compose file pins `ghcr.io/j000k3r/probeglass:0.2.3`. Change that line to
+`0.2` or `latest` if you would rather it followed the patch releases or the
 newest release; the deployment stays reproducible either way.
 
 </TabItem>
@@ -68,7 +68,7 @@ docker run -d \
   -p 8080:8080 \
   -v probeglass-data:/data \
   --cap-add NET_RAW \
-  ghcr.io/j000k3r/probeglass:0.2.1
+  ghcr.io/j000k3r/probeglass:0.2.3
 ```
 
 Notes on the flags:
@@ -223,7 +223,7 @@ To skip the interactive step in an automated deployment, set
 docker run -d --name probeglass -p 8080:8080 \
   -v probeglass-data:/data \
   -e PROBEGLASS_ADMIN_PASSWORD='correct horse battery staple' \
-  ghcr.io/j000k3r/probeglass:0.2.1
+  ghcr.io/j000k3r/probeglass:0.2.3
 ```
 
 This creates an account called **`admin`** with that password. It is read **only

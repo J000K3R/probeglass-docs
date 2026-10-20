@@ -109,7 +109,7 @@ rewritten.
   number, what you expected and what happened instead is genuinely useful, and
   so is a patch. What is not on offer is a timeline, an acknowledgement window, or
   a fix you can plan around.
-- **0.2.2 means exactly that.** The foundation works and has been run for real. The
+- **0.2.3 means exactly that.** The foundation works and has been run for real. The
   surface is still moving — a config key, a URL or a screenshot may change between
   minor versions. Pin a version or a digest if you need a deployment that does not
   move.

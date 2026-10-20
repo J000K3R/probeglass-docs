@@ -27,7 +27,7 @@ sorts to the top of its group.*
 ```bash
 docker run -d --name probeglass --restart unless-stopped \
   -p 8080:8080 -v probeglass-data:/data --cap-add NET_RAW \
-  ghcr.io/j000k3r/probeglass:0.2.2
+  ghcr.io/j000k3r/probeglass:0.2.3
 ```
 
 Open [http://localhost:8080](http://localhost:8080), create the administrator
@@ -125,7 +125,7 @@ building the image needs nothing but the Go toolchain.
 
 ## 📌 Project status {#project-status}
 
-Version 0.2.2 — the foundation is in place and works; the feature set is still
+Version 0.2.3 — the foundation is in place and works; the feature set is still
 growing. The dashboard ships in English and German. The UI is built on a message
 catalogue, so an additional language is a dictionary file and one picker entry, and
 translated documentation is a locale directory in this repository.

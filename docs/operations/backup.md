@@ -71,7 +71,7 @@ text, as they are in the backup.
   "format": "probeglass-backup",
   "format_version": 1,
   "schema_version": 3,
-  "app_version": "0.2.2",
+  "app_version": "0.2.3",
   "created_at": "2026-10-09T21:00:00Z",
   "scope": "history",
   "days": 30,

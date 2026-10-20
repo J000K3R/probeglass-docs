@@ -60,18 +60,18 @@ fresh start, which is why the data file comes first.
    will show the issuer as `ProbeGlass` from the next enrolment onwards; an entry
    added earlier keeps showing the old name, and keeps working.
 
-Every release is published under three tags: `0.2.2`, which is the exact version
+Every release is published under three tags: `0.2.3`, which is the exact version
 and never changes under you; `0.2`, which follows the 0.2.x patch releases; and
 `latest`, which follows the newest release of all. Pin the one you mean and move
 it when you choose to:
 
 ```bash
-docker pull ghcr.io/j000k3r/probeglass:0.2.2
+docker pull ghcr.io/j000k3r/probeglass:0.2.3
 
 docker stop probeglass && docker rm probeglass
 docker run -d --name probeglass --restart unless-stopped \
   -p 8080:8080 -v probeglass-data:/data --cap-add NET_RAW \
-  ghcr.io/j000k3r/probeglass:0.2.2
+  ghcr.io/j000k3r/probeglass:0.2.3
 ```
 
 With Compose, change the tag in `docker-compose.yml` and `docker compose up -d`.
@@ -132,7 +132,7 @@ docker exec probeglass probeglass version
 ```
 
 ```
-probeglass 0.2.2 (e00231c) built 2026-10-18T09:14:03Z
+probeglass 0.2.3 (e391b87) built 2026-10-20T16:31:51Z
 ```
 
 The commit and the build date are only present when they were stamped in at
