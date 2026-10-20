@@ -128,6 +128,12 @@ so is not affected by any of that. Treat it like a root password: in a secret
 store, not in a shell history, and rotated when anyone who had it leaves.
 :::
 
+**Metrics token.** A second generated credential, and a much smaller one: it can
+read `GET /metrics` and nothing else. A Prometheus scraper is another program
+reading the installation on a schedule, and handing it the API key would also hand
+it every write route. Generate, rotate and remove it under **Settings →
+Monitoring → Metrics**. It opens no `/api/` route; see [Metrics](/operations/metrics).
+
 ### Cross-site protection
 
 Cookie-authenticated **writes** are additionally checked against `Origin`,

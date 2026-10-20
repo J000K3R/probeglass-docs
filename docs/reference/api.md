@@ -82,6 +82,25 @@ pattern-matching on the status code.
 | `POST` | `/api/login/totp` | `{"challenge":"…","code":"…"}` → `{"ok":true}` |
 | `POST` | `/api/logout` | Clears the cookie |
 | `POST` | `/api/setup` | First-run only; refuses once an account exists. `{"username":"…","password":"…","mode":"simple"\|"advanced"}` |
+| `GET` | `/metrics` | Prometheus text format, guarded by the read-only [metrics token](/operations/metrics) rather than the API key. `404` until a token is generated |
+
+### Metrics
+
+`GET /metrics` answers in the Prometheus text exposition format. It is off until a
+token is generated under **Settings → Monitoring → Metrics**, and that token is the
+only credential it accepts:
+
+```bash
+curl -H "Authorization: Bearer $PG_METRICS_TOKEN" http://localhost:8080/metrics
+```
+
+A scraper that cannot set `Authorization` may send the same token as `X-API-Key`
+instead. The administrative API key does **not** open this route — the two are
+different credentials on purpose. A missing or wrong token is `401` with a
+`WWW-Authenticate: Bearer` header; no token configured at all is `404`, so an
+instance that does not use Prometheus does not advertise the endpoint.
+
+The series are listed in [Metrics](/operations/metrics#what-is-exposed).
 
 ### Sensors
 
@@ -220,6 +239,9 @@ the way.
 | `POST` | `/api/onboarding/tour` | `{"version":2}` — how far you got in the guided tour | viewer |
 | `POST` | `/api/api-key` | Rotate; returns the new key | admin |
 | `DELETE` | `/api/api-key` | Remove | admin |
+| `GET` | `/api/metrics-token` | `{"enabled":bool,"token":"…"}` — the read-only token `/metrics` uses | admin |
+| `PUT` | `/api/metrics-token` | Generate or rotate it; a scraper with the old one starts getting `401` | admin |
+| `DELETE` | `/api/metrics-token` | Remove it; `/metrics` answers `404` | admin |
 | `PUT` | `/api/password` | `{"current_password":"…","new_password":"…"}` | viewer |
 | `POST` | `/api/me/totp/start` | `{"secret":"…","uri":"otpauth://…"}` — stores it as unconfirmed | viewer |
 | `GET` | `/api/me/totp/qr` | The same secret as an `image/png` QR code, `Cache-Control: no-store` | viewer |

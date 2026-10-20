@@ -191,13 +191,20 @@ is the source of truth — this page mirrors it.
   and history stay out; that is what the JSON backup is for. Example data is left
   out unless it is asked for.
 
+## In progress — 0.3.x
+
+- **A `/metrics` endpoint.** A homelab that already runs a monitoring stack scrapes
+  ProbeGlass instead of duplicating its checks. Sensor status, the three uptime
+  windows, the last latency and the open incidents are exposed in the Prometheus
+  text format, behind a read-only token of their own: a scraper is a second program
+  on the network and has no business holding an administrator's API key. Turning
+  the token off answers `404`, so an installation that does not use Prometheus does
+  not advertise the endpoint. See [Metrics](/operations/metrics).
+
 ## Next — 0.3.x and beyond
 
-The 0.2.x list is complete. What follows is the next body of work, ordered by value
-per unit of work.
+The rest of 0.3.0, ordered by value per unit of work.
 
-- **A `/metrics` endpoint**, so a homelab that already runs a monitoring stack can
-  scrape ProbeGlass instead of duplicating the checks it already makes.
 - **Public status page.** A read-only view on its own path and its own token, safe to
   share outside the LAN, with the incidents you choose to publish.
 - **SLA reports.** Monthly uptime per sensor and per group as a printable summary,

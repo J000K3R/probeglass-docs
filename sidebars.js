@@ -55,6 +55,7 @@ const sidebars = {
         'operations/backup',
         'operations/upgrading',
         'operations/reverse-proxy',
+        'operations/metrics',
         'operations/troubleshooting',
       ],
     },
