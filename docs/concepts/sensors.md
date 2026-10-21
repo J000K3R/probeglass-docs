@@ -329,16 +329,28 @@ Target: a hostname or IP, optionally with a port — a bare host means port 161.
 | Option | Type | Default | Meaning |
 |---|---|---|---|
 | `oid` | string | — | The object to ask for, dotted. **Required** |
-| `community` | string | `public` | v2c community string. A shared secret, masked in the API |
-| `version` | string | `2c` | `2c` or `1`. v3 is not supported |
+| `community` | string | `public` | v1/v2c community string. A shared secret, masked in the API |
+| `version` | string | `2c` | `2c`, `1` or `3` |
+| `username` | string | — | v3 user name, required for version 3 |
+| `security_level` | string | `authPriv` | v3: `noAuthNoPriv`, `authNoPriv` or `authPriv` |
+| `auth_protocol` | string | `SHA` | v3: `MD5`, `SHA`, `SHA-224`, `SHA-256`, `SHA-384`, `SHA-512` |
+| `auth_pass` | string | — | v3 authentication passphrase, masked in the API |
+| `priv_protocol` | string | `AES` | v3: `DES`, `AES`, `AES-192`, `AES-256` |
+| `priv_pass` | string | — | v3 privacy passphrase, masked in the API |
+| `context_name` | string | — | v3 context, usually empty |
 | `expect` | string | — | Fail unless the value contains this substring |
 | `min`, `max` | number | — | Bounds a numeric value must lie within |
 
-This is one `GET` of **one OID**. No walk, no traps, no version 3 — a switch, a
-router or a NAS answers "how warm is the CPU", "how long has it been up" and "how
-much ink is left" with a single request each, and that is the whole job. A walk
-enumerates a device's entire MIB, which is a different tool with a different cost,
-and it is not this one.
+This is one `GET` of **one OID**. No walk and no traps — a switch, a router or a
+NAS answers "how warm is the CPU", "how long has it been up" and "how much ink is
+left" with a single request each, and that is the whole job. A walk enumerates a
+device's entire MIB, which is a different tool with a different cost, and it is not
+this one.
+
+Version 3 adds a user, authentication and, with `authPriv`, encryption. The form
+shows only the fields the chosen version and security level use; an empty version
+means 2c and an empty security level means `authPriv`, the same defaults the prober
+uses. v1 is there for equipment old enough to refuse 2c, and nothing else.
 
 You must give at least one of `expect`, `min` or `max`. That the agent answered at
 all is what a `ping` already tells you, so the value has to be judged against
@@ -352,9 +364,24 @@ than as punctuation soup, and uptime is shown as `1h 11m` as well as raw.
 
 :::warning
 SNMP v2c is unauthenticated and the community string travels in clear text. Use it
-on a trusted network only — see [SNMP v2c sends the community in clear
+on a trusted network only, and prefer v3 with `authPriv` where the device supports
+it — see [SNMP v2c sends the community in clear
 text](/concepts/security#snmp-v2c).
 :::
+
+### Device templates
+
+The sensor catalogue offers a few ready-made sets of checks: **QNAP**,
+**Synology**, **UniFi**, **APC UPS** and a generic **HOST-RESOURCES** template for
+almost anything else. Choosing one asks for the device's address and SNMP
+credentials, shows the checks it would add, and creates the ticked ones as ordinary
+sensors in one group. Nothing is hidden afterwards: every sensor has the same
+options as one made by hand, and a vendor OID that differs on your firmware is
+edited, not worked around.
+
+Vendor OIDs are a starting point, not a promise. UniFi's MIB, for example, has no
+CPU, memory or temperature objects, so that template watches uptime and
+reachability and leaves the rest to the controller.
 
 ```yaml
 - name: Switch is the model I think it is

@@ -337,26 +337,32 @@ rather than something you inherit by copying the file.
 
 ## 📡 SNMP v2c sends the community in clear text {#snmp-v2c}
 
-SNMP sensors speak v2c. v2c has **no authentication at all**: the community
-string — `public` by default, and a shared secret wherever it is set to anything
-else — travels in the clear in every packet, and the answer is neither signed nor
-encrypted. Anyone on the path can read it, and anyone holding it can ask the agent
-whatever its own access list allows. Version 3 exists to fix exactly this and is
-deliberately not implemented, so if the device needs authenticated SNMP, this
-sensor is not the one.
+SNMP sensors speak v1, v2c and v3. **v2c has no authentication at all**: the
+community string — `public` by default, and a shared secret wherever it is set to
+anything else — travels in the clear in every packet, and the answer is neither
+signed nor encrypted. Anyone on the path can read it, and anyone holding it can ask
+the agent whatever its own access list allows. v1 is older still and has the same
+problem.
+
+**Version 3 is the answer to this, and the sensor supports it.** A v3 sensor has a
+user name and a security level: `noAuthNoPriv` proves nothing, `authNoPriv` proves
+who is asking, and `authPriv` also encrypts the request and the answer. Its
+authentication and privacy passphrases are treated as credentials exactly like a
+community string.
 
 :::warning
-Use SNMP sensors on a trusted network only. A homelab LAN is the intended place;
-a routed, shared or wireless network is not. If the community matters, treat it as
-compromised the moment it crosses one.
+Use v2c sensors on a trusted network only. A homelab LAN is the intended place; a
+routed, shared or wireless network is not. If the community matters, treat it as
+compromised the moment it crosses one. Prefer v3 with `authPriv` wherever the
+device supports it.
 :::
 
 Within that limit, ProbeGlass does the parts it can:
 
-- The community is treated as a credential. It carries the `Secret` flag, so it is
-  masked in the API like a bot token and never reaches the UI, a stored result or
-  a log line. The probe's message reports the OID and the value, never the
-  community.
+- The community and both v3 passphrases are credentials. They carry the `Secret`
+  flag, so they are masked in the API like a bot token and never reach the UI, a
+  stored result or a log line. The probe's message reports the OID and the value,
+  never a credential.
 - Nothing is written to the device. The prober issues one `GET` of one OID and
   never a `SET`, and it does not walk the MIB.
 - Only what the operator asked for is read: one OID, judged against a substring or

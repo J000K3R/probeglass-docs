@@ -73,9 +73,9 @@ is the source of truth — this page mirrors it.
 - **Docker container sensors.** One `GET /containers/{name}/json` over the unix socket
   and nothing else — the probe never starts, stops or changes a container. It checks the
   running state, the `HEALTHCHECK` result where there is one, and the restart count.
-- **SNMP sensors.** A single `GET` of a single OID over v2c, checked against a substring
-  or a numeric range. Enough for a switch, a router or a NAS, and deliberately not a
-  walk, not traps and not v3.
+- **SNMP sensors.** A single `GET` of a single OID over v1, v2c or v3, checked against a
+  substring or a numeric range. Enough for a switch, a router or a NAS, and deliberately
+  not a walk and not traps.
 - **A guided tour** of the dashboard, driven by a data list of steps so a new feature
   adds a step rather than a new tour. It zooms into one example sensor and names its
   parts, says out loud that the data on screen is invented, explains the sample-data
@@ -200,6 +200,13 @@ is the source of truth — this page mirrors it.
   on the network and has no business holding an administrator's API key. Turning
   the token off answers `404`, so an installation that does not use Prometheus does
   not advertise the endpoint. See [Metrics](/operations/metrics).
+- **SNMP v3 and device templates.** The sensor speaks v1 and v2c already; v3 adds a
+  user, authentication and, with `authPriv`, encryption, and its passphrases are
+  masked like a community string. The type field becomes a searchable catalogue of
+  every sensor, and beside the individual ones are QNAP, Synology, UniFi, APC UPS and
+  generic HOST-RESOURCES templates. A template creates its ticked checks as ordinary
+  sensors in one group, in one transaction; they remain editable because vendor OIDs
+  move between firmware versions. See [Sensors](/concepts/sensors#device-templates).
 
 ## Next — 0.3.x and beyond
 
@@ -224,11 +231,11 @@ The rest of 0.3.0, ordered by value per unit of work.
   watch; it is not a service-discovery or inventory tool.
 - **Windows and macOS at all.** The container is the only thing that ships; there
   is no archive to unpack on a desktop.
-- **A full SNMP poller.** ProbeGlass reads single OIDs over v2c, because that is what
-  a switch, a router or a NAS is asked for. What stays out is the rest of it: a MIB walk,
-  trap receivers, v3 with its authentication and privacy protocols, and the
-  table-and-rate model a serious poller is built around. A homelab that needs those wants
-  a different program, and the generic webhook is the bridge.
+- **A full SNMP poller.** ProbeGlass reads single OIDs over v1, v2c or v3, because that
+  is what a switch, a router or a NAS is asked for. What stays out is the rest of it: a
+  MIB walk, trap receivers, and the table-and-rate model a serious poller is built
+  around. A homelab that needs those wants a different program, and the generic webhook
+  is the bridge.
 - **Multi-tenancy.** One instance, one homelab. Several people can have accounts on it
   with different roles, but they all see the same sensors, the same history and the same
   incidents — ProbeGlass assumes one group of people who trust each other with the

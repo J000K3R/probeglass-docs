@@ -119,7 +119,7 @@ are simple and worth reading twice:
 | Key | Type | Notes |
 |---|---|---|
 | `name` | string | Required, and the identity used to match an existing sensor |
-| `type` | string | `http`, `tcp`, `tls`, `ping`, `dns`, `docker` or `snmp` |
+| `type` | string | `http`, `redirect`, `tcp`, `ssh`, `smtp`, `imap`, `udp`, `hop`, `tls`, `ping`, `dns`, `docker` or `snmp` |
 | `target` | string | See [Sensors](/concepts/sensors) for the shape each type expects |
 | `interval` | duration | Seconds between probes; also accepts `60s`, `5m` |
 | `timeout` | duration | Seconds before the probe is abandoned |
