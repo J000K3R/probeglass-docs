@@ -145,7 +145,9 @@ send somewhere else; the `#` is added for you.
    under [Generic webhooks](#generic-webhooks).
 3. With an **HMAC secret** set, the body is signed with HMAC-SHA256 and the
    signature arrives in `X-ProbeGlass-Signature`, prefixed with `sha256=`.
-   Compare it before you act on the body.
+   Compare it before you act on the body. The field has a **Generate** button:
+   it makes 128 random bits as hex, shows the value and copies it, so the same
+   secret can go into your receiver's environment or configuration.
 4. Press **Test** before you rely on it: the test event goes through the same
    sender, the same signing and the same retries as a real outage.
 

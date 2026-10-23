@@ -352,6 +352,11 @@ shows only the fields the chosen version and security level use; an empty versio
 means 2c and an empty security level means `authPriv`, the same defaults the prober
 uses. v1 is there for equipment old enough to refuse 2c, and nothing else.
 
+The community and both v3 passphrases have a **Generate** button: it makes 128
+random bits as hex, shows the value and copies it, so it can be entered on the
+device and in the sensor in the same step. The same button appears on an HTTP
+basic-auth password and on a generic webhook's HMAC secret.
+
 You must give at least one of `expect`, `min` or `max`. That the agent answered at
 all is what a `ping` already tells you, so the value has to be judged against
 something you wrote down, or the sensor is a liveness check wearing a number.
@@ -380,8 +385,9 @@ options as one made by hand, and a vendor OID that differs on your firmware is
 edited, not worked around.
 
 Vendor OIDs are a starting point, not a promise. UniFi's MIB, for example, has no
-CPU, memory or temperature objects, so that template watches uptime and
-reachability and leaves the rest to the controller.
+CPU, memory or temperature objects, and not every firmware answers its private
+uptime object — so that template asks the standard uptime OID and adds an ICMP
+check, leaving the rest to the controller.
 
 ```yaml
 - name: Switch is the model I think it is
