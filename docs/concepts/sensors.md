@@ -423,11 +423,14 @@ in the API like every other secret.
 2. Apply the **MOS NAS OS** template, enter the NAS address (with `:998` if the API
    is on its own port) and paste the token.
 3. **Check device** reads CPU load, CPU temperature and memory, then asks MOS what
-   the box actually has: its **disks** (temperature and SMART status), **pools**
-   (mounted), **Docker and LXC containers** (CPU or running state), **VMs**
-   (running) and its **hardware sensors** (temperature, fans, voltage, power).
-   Each becomes a ticked suggestion in the same dialog; untick what you do not
-   want and apply the rest.
+   the box actually has: its **disks** (temperature where the disk reports one,
+   and SMART status), **pools** (mounted), **Docker and LXC containers** (running;
+   Docker is a status check, not a CPU one), **VMs** (running) and its **hardware
+   sensors** (temperature, fans, voltage, power). Removable and USB disks — a boot
+   stick, for example — are left out, because they answer neither a temperature nor
+   SMART. Each found part becomes a ticked suggestion in the same dialog; untick
+   what you do not want and apply the rest. The sensors are created with the icon
+   of the check that made them.
 
 The MOS checks are ordinary HTTP sensors with a JSON value: `json_path` names the
 field (`cpu.load`, `temperature.0.value`), `json_match_key`/`json_match_value`
