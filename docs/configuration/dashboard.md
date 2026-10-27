@@ -228,6 +228,11 @@ The group rows in **Monitoring** — or the group headings on the dashboard
 itself — can be dragged into the order you want; the position number in the
 editor stays as the keyboard path.
 
+Deleting a group asks what should happen to its sensors: **keep them** and remove
+only the label, **delete selected** ones, or **delete all** of them. Sensors
+declared in `probeglass.yaml` are refused, because only the file may remove those.
+
+
 <img
   src="/img/settings-monitor.png"
   alt="The settings page on the Monitoring tab: six tabs along the top with Monitoring chosen, and below them the Dashboard defaults panel with the counts, the retention figures and the dates — and nothing from the other five categories."

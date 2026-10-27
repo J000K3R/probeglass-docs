@@ -376,6 +376,11 @@ text](/concepts/security#snmp-v2c).
 
 ### Device templates
 
+**New sensor** opens the catalogue itself: the device templates come first, and
+the single sensor types are one tab away. The address, name, group and credentials
+entered for one template are kept for the next template in the same dialog, so a
+device can receive several sets of sensors without being typed in again.
+
 The sensor catalogue carries a template library: **QNAP**, **Synology**, **UniFi**,
 **APC UPS**, **MikroTik**, **pfSense/OPNsense**, **Proxmox**, **TrueNAS**, printers
 and a generic **HOST-RESOURCES** set for almost anything else. The templates are
