@@ -173,9 +173,10 @@ have checked both.
 Two findings are expected in this codebase and are dismissed with their reason
 rather than silenced:
 
-- **The HTTP and redirect sensors make a request to an address an administrator
-  chose.** That request is the sensor; refusing private addresses would make it
-  unable to watch the homelab it exists for. CodeQL calls it request forgery.
+- **The HTTP and redirect sensors, and the MOS discovery client, make a request
+  to an address an administrator chose.** That request is the sensor or the
+  discovery; refusing private addresses would make it unable to watch the homelab
+  it exists for. CodeQL calls it request forgery.
 - **The session cookie is not `Secure` on a plain-HTTP homelab.** It is
   `Secure` whenever the request arrived over TLS, directly or through a proxy
   sending `X-Forwarded-Proto: https`; on plain HTTP the flag would make the
