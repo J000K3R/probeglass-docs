@@ -406,6 +406,12 @@ Templates](https://gitlab.com/PRTG/Device-Templates) (BSD-3-Clause); the
 **Source** line in a template's detail view names the MIB or template its numbers
 came from.
 
+The template cards carry the vendor or application mark — QNAP, Synology, UniFi,
+MOS, Home Assistant and the rest — from [Dashboard
+Icons](https://github.com/homarr-labs/dashboard-icons) (Apache-2.0). The icon is
+kept on the sensors a template creates unless the individual check brings its own
+(disks, CPU, temperature, containers).
+
 ### Application templates and MOS
 
 A template does not have to be SNMP. Its checks may be HTTP, TCP or ping, each
