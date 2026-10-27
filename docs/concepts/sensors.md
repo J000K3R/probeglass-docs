@@ -376,13 +376,30 @@ text](/concepts/security#snmp-v2c).
 
 ### Device templates
 
-The sensor catalogue offers a few ready-made sets of checks: **QNAP**,
-**Synology**, **UniFi**, **APC UPS** and a generic **HOST-RESOURCES** template for
-almost anything else. Choosing one asks for the device's address and SNMP
-credentials, shows the checks it would add, and creates the ticked ones as ordinary
-sensors in one group. Nothing is hidden afterwards: every sensor has the same
-options as one made by hand, and a vendor OID that differs on your firmware is
-edited, not worked around.
+The sensor catalogue carries a template library: **QNAP**, **Synology**, **UniFi**,
+**APC UPS**, **MikroTik**, **pfSense/OPNsense**, **Proxmox**, **TrueNAS**, printers
+and a generic **HOST-RESOURCES** set for almost anything else. The templates are
+filtered by vendor, system and what they watch (availability, CPU, temperature,
+storage, power), and the detail view names the MIB or community template the OIDs
+were checked against.
+
+Choosing one asks for the device's address and SNMP credentials. **Check device**
+makes one real SNMP request before anything is created: the box answers with its
+own `sysDescr`, so a wrong address, a wrong community or the wrong vendor's
+template is visible before a dozen sensors exist. The checks are then ticked (all
+of them by default) and created as ordinary sensors in one group, in one
+transaction. Nothing is hidden afterwards: every sensor has the same options as one
+made by hand, and a vendor OID that differs on your firmware is edited, not worked
+around.
+
+The QNAP and Synology templates carry disk 1–4 temperatures as separate checks. A
+NAS with more or fewer bays is a matter of unticking and adding one by hand; the
+template does not guess at a table it has not walked.
+
+Some vendor OIDs were cross-checked against the community [PRTG Device
+Templates](https://gitlab.com/PRTG/Device-Templates) (BSD-3-Clause); the
+**Source** line in a template's detail view names the MIB or template its numbers
+came from.
 
 Vendor OIDs are a starting point, not a promise. UniFi's MIB, for example, has no
 CPU, memory or temperature objects, and not every firmware answers its private
