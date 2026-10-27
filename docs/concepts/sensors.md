@@ -401,6 +401,30 @@ Templates](https://gitlab.com/PRTG/Device-Templates) (BSD-3-Clause); the
 **Source** line in a template's detail view names the MIB or template its numbers
 came from.
 
+### Application templates and MOS
+
+A template does not have to be SNMP. Its checks may be HTTP, TCP or ping, each
+with a target pattern: `{address}` is what you typed and `{host}` is its host
+without a scheme or port, so one template can request
+`http://{address}:8123/` or `{host}:1883`. A template may also ask for a
+credential such as an API token; it is stored with the created sensors and masked
+in the API like every other secret.
+
+**MOS NAS OS** is one of these. It uses the MOS API under `/api/v1`, authenticated
+with a Bearer token:
+
+1. Create an admin token in MOS — **Settings → API tokens**, or
+   `POST /api/v1/auth/admin-tokens` — and copy it.
+2. Apply the **MOS NAS OS** template, enter the NAS address (with `:998` if the API
+   is on its own port) and paste the token.
+3. The template checks `system/load`, `disks` and `pools`, and offers the UPS
+   status from `nut/status` unticked, because not every NAS has NUT configured.
+
+The same pattern covers the homelab applications in the catalogue: Home
+Assistant, Pi-hole, AdGuard Home, Grafana, Portainer, Jellyfin, Uptime Kuma,
+Node-RED, Mosquitto and Shelly. A template's first check is what **Check device**
+runs, so a wrong port or token is visible before the sensors are created.
+
 Vendor OIDs are a starting point, not a promise. UniFi's MIB, for example, has no
 CPU, memory or temperature objects, and not every firmware answers its private
 uptime object — so that template asks the standard uptime OID and adds an ICMP
