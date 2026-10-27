@@ -207,6 +207,12 @@ is the source of truth — this page mirrors it.
   generic HOST-RESOURCES templates. A template creates its ticked checks as ordinary
   sensors in one group, in one transaction; they remain editable because vendor OIDs
   move between firmware versions. See [Sensors](/concepts/sensors#device-templates).
+- **Application templates and deeper MOS discovery.** A template check can carry
+  HTTP/TCP/ping target patterns and an API token, and HTTP checks can read a JSON
+  value with an optional list match. The MOS NAS OS template uses that to read CPU
+  load, temperature and memory, and its Check device asks MOS for the disks,
+  pools, Docker/LXC containers, VMs and hardware sensors it actually has, offering
+  each as a tickable sensor.
 
 ## Next — 0.3.x and beyond
 

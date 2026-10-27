@@ -410,17 +410,26 @@ without a scheme or port, so one template can request
 credential such as an API token; it is stored with the created sensors and masked
 in the API like every other secret.
 
-**MOS NAS OS** is one of these. It uses the MOS API under `/api/v1`, authenticated
-with a Bearer token:
+**MOS NAS OS** goes further than a fixed list. It uses the MOS API under
+`/api/v1`, authenticated with a Bearer token:
 
 1. Create an admin token in MOS — **Settings → API tokens**, or
    `POST /api/v1/auth/admin-tokens` — and copy it.
 2. Apply the **MOS NAS OS** template, enter the NAS address (with `:998` if the API
    is on its own port) and paste the token.
-3. The template checks `system/load`, `disks` and `pools`, and offers the UPS
-   status from `nut/status` unticked, because not every NAS has NUT configured.
+3. **Check device** reads CPU load, CPU temperature and memory, then asks MOS what
+   the box actually has: its **disks** (temperature and SMART status), **pools**
+   (mounted), **Docker and LXC containers** (CPU or running state), **VMs**
+   (running) and its **hardware sensors** (temperature, fans, voltage, power).
+   Each becomes a ticked suggestion in the same dialog; untick what you do not
+   want and apply the rest.
 
-The same pattern covers the homelab applications in the catalogue: Home
+The MOS checks are ordinary HTTP sensors with a JSON value: `json_path` names the
+field (`cpu.load`, `temperature.0.value`), `json_match_key`/`json_match_value`
+select one item from a list (`name` = `sda`), and `json_expect`, `json_min` or
+`json_max` judge the result. The same options work on any JSON API, not only MOS.
+
+The homelab applications in the catalogue use the same template shape: Home
 Assistant, Pi-hole, AdGuard Home, Grafana, Portainer, Jellyfin, Uptime Kuma,
 Node-RED, Mosquitto and Shelly. A template's first check is what **Check device**
 runs, so a wrong port or token is visible before the sensors are created.
