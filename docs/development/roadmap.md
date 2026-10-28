@@ -213,6 +213,14 @@ is the source of truth — this page mirrors it.
   load, temperature and memory, and its Check device asks MOS for the disks,
   pools, Docker/LXC containers, VMs and hardware sensors it actually has, offering
   each as a tickable sensor.
+- **Network scan.** A private IPv4 range of at most 256 addresses, the fixed port
+  list the templates already use, optional SNMP identification, and ping, HTTP, TLS
+  and SNMP checks offered for what answered. See
+  [Scanning a network](/operations/network-scan).
+- **Certificate inventory.** Every certificate an HTTPS, TLS-enabled TCP or TLS
+  sensor has seen, on one page and sorted by expiry, with the sensor and service it
+  belongs to. One row per sensor, replaced on renewal. See
+  [The certificate inventory](/operations/certificates).
 
 ## Next — 0.3.x and beyond
 
@@ -222,8 +230,6 @@ The rest of 0.3.0, ordered by value per unit of work.
   share outside the LAN, with the incidents you choose to publish.
 - **SLA reports.** Monthly uptime per sensor and per group as a printable summary,
   built from the daily rollups that are already kept forever.
-- **Certificate inventory.** One page listing every TLS certificate seen by any HTTPS
-  or TLS-enabled TCP sensor, sorted by expiry.
 - **Remote probes.** A second instance reporting into the first, for watching the
   homelab from outside.
 - **Notification digest.** A daily "here is what happened" message instead of only

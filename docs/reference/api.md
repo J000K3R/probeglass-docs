@@ -122,6 +122,19 @@ administrator's edit; `PATCH` accepts exactly one field and is what lets an
 operator pause a sensor without being able to rename it. A `PATCH` body carrying
 anything else is a `403`, not a silent partial update.
 
+### Certificates
+
+| Method | Path | Purpose | Role |
+|---|---|---|---|
+| `GET` | `/api/certificates` | Every certificate a sensor has seen: `{"certificates":[…]}` sorted by `not_after` | viewer |
+
+A row carries the sensor (`sensor_id`, `sensor_name`, `sensor_type`,
+`sensor_icon`, `target`, `group`, `site`), the certificate (`subject`, `issuer`,
+`serial`, `fingerprint`, `dns_names`, `not_before`, `not_after`, `tls_version`,
+`warn_days`, `observed_at`), and `days_left`, which is worked out when the answer
+is built. There is one row per sensor: a renewal replaces it, and a probe that
+completed without a certificate removes it.
+
 ### History
 
 | Method | Path | Purpose |
