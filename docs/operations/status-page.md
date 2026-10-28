@@ -108,8 +108,8 @@ The same page in its three layouts:
 
 ## What protects it
 
-- The token is 32 random bytes in base64url, the same kind the Prometheus endpoint
-  uses, and only its holder can read the page.
+- The token is 24 random bytes in base64url — 32 characters, the same kind the
+  Prometheus endpoint uses — and only its holder can read the page.
 - A wrong token and a page that is switched off answer the same `404`, so an
   outsider cannot tell a stale link from an installation that has none.
 - The page sends `X-Robots-Tag: noindex, nofollow` and `Referrer-Policy:
