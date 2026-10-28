@@ -249,6 +249,7 @@ the way.
 | `POST` | `/api/me/totp/disable` | `{"password":"…"}` — clears the secret and the recovery codes | viewer |
 | `POST` | `/api/me/totp/recovery` | `{"password":"…"}` → a fresh set; the old one stops working | viewer |
 | `POST` | `/api/doctor` | Run the self-check | operator |
+| `POST` | `/api/scan` | Scan a private IPv4 range (`{"cidr":"192.168.1.0/24","snmp":{…}}`) and return answering hosts with sensor suggestions | admin |
 
 :::note
 `GET /api/settings` returns the API key **in clear text** to an administrator —
