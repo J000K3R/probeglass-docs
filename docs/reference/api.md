@@ -83,6 +83,7 @@ pattern-matching on the status code.
 | `POST` | `/api/logout` | Clears the cookie |
 | `POST` | `/api/setup` | First-run only; refuses once an account exists. `{"username":"…","password":"…","mode":"simple"\|"advanced"}` |
 | `GET` | `/metrics` | Prometheus text format, guarded by the read-only [metrics token](/operations/metrics) rather than the API key. `404` until a token is generated |
+| `GET` | `/status/{token}` | The [public status page](/operations/status-page) as `text/html`; `404` for a wrong or rotated token |
 
 ### Metrics
 
@@ -101,6 +102,14 @@ different credentials on purpose. A missing or wrong token is `401` with a
 instance that does not use Prometheus does not advertise the endpoint.
 
 The series are listed in [Metrics](/operations/metrics#what-is-exposed).
+
+### Public status page
+
+The page is rendered by the server, reads the token from the path, and draws only
+the sensors selected through `/api/status-page`. It sends `Cache-Control:
+no-store`, `X-Robots-Tag: noindex, nofollow`, `Referrer-Policy: no-referrer` and a
+CSP that allows inline styles and nothing else. The request log records the route
+as `/status/…`, not the token.
 
 ### Sensors
 
@@ -255,6 +264,10 @@ the way.
 | `GET` | `/api/metrics-token` | `{"enabled":bool,"token":"…"}` — the read-only token `/metrics` uses | admin |
 | `PUT` | `/api/metrics-token` | Generate or rotate it; a scraper with the old one starts getting `401` | admin |
 | `DELETE` | `/api/metrics-token` | Remove it; `/metrics` answers `404` | admin |
+| `GET` | `/api/status-page` | `{"enabled":bool,"token":"…","sensor_ids":[…],"show_causes":bool}` — the public page's link and selection | admin |
+| `PUT` | `/api/status-page` | `{"sensor_ids":[…],"show_causes":false}` — replace the published set | admin |
+| `PUT` | `/api/status-token` | Generate or rotate the share link; every old URL starts answering `404` | admin |
+| `DELETE` | `/api/status-token` | Switch the page off; the selection is kept | admin |
 | `PUT` | `/api/password` | `{"current_password":"…","new_password":"…"}` | viewer |
 | `POST` | `/api/me/totp/start` | `{"secret":"…","uri":"otpauth://…"}` — stores it as unconfirmed | viewer |
 | `GET` | `/api/me/totp/qr` | The same secret as an `image/png` QR code, `Cache-Control: no-store` | viewer |

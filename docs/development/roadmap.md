@@ -221,13 +221,16 @@ is the source of truth — this page mirrors it.
   sensor has seen, on one page and sorted by expiry, with the sensor and service it
   belongs to. One row per sensor, replaced on renewal. See
   [The certificate inventory](/operations/certificates).
+- **Public status page.** A read-only, server-rendered page at `/status/<token>`
+  for the people a homelab serves: the published sensors with their 24-hour,
+  7-day and 30-day uptime and the incidents of the last thirty days. The link is
+  revocable and separate from the selection; no target or probe detail is drawn.
+  See [The public status page](/operations/status-page).
 
 ## Next — 0.3.x and beyond
 
 The rest of 0.3.0, ordered by value per unit of work.
 
-- **Public status page.** A read-only view on its own path and its own token, safe to
-  share outside the LAN, with the incidents you choose to publish.
 - **SLA reports.** Monthly uptime per sensor and per group as a printable summary,
   built from the daily rollups that are already kept forever.
 - **Remote probes.** A second instance reporting into the first, for watching the
