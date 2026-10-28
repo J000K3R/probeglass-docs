@@ -448,6 +448,21 @@ Assistant, Pi-hole, AdGuard Home, Grafana, Portainer, Jellyfin, Uptime Kuma,
 Node-RED, Mosquitto and Shelly. A template's first check is what **Check device**
 runs, so a wrong port or token is visible before the sensors are created.
 
+Applications with an API key have a template of their own: **Sonarr**, **Radarr**,
+**Lidarr**, **Prowlarr**, **Bazarr**, **Overseerr**, **Jellyseerr**, the
+**Portainer API** and **Paperless-ngx**. Each asks for the key once and checks the
+application's own status endpoint. The key travels in the header the application
+expects — `X-Api-Key` for the *Arr apps, `X-API-Key` for Bazarr and Portainer,
+`Authorization: Token …` for Paperless — and is masked in the API like every other
+credential. The *Arr templates also check the `appName` in the reply, so a key
+pasted into the wrong application is caught.
+
+The **Ubiquiti** templates cover the product line, not only access points:
+**UniFi Switch**, **UniFi Gateway / Dream Machine**, **UniFi Protect**, **UniFi
+Access**, **UniFi Talk**, **airMAX / airFiber** and **EdgeMAX**. Each watches
+standard-MIB uptime and reachability; airMAX adds board temperature. SNMP has to
+be enabled for the device in the UniFi or UISP controller first.
+
 Vendor OIDs are a starting point, not a promise. UniFi's MIB, for example, has no
 CPU, memory or temperature objects, and not every firmware answers its private
 uptime object — so that template asks the standard uptime OID and adds an ICMP
