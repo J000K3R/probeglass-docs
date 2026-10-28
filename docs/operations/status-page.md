@@ -47,8 +47,10 @@ with **Save page**, and the page follows at its next load.
 
 **Status messages** sit at the top of the page, the way a status page says "the
 NAS is being upgraded this evening" without opening an incident. Each message is
-a sentence, an accent colour and an optional symbol (any of the built-in
-drawings, a brand mark or an uploaded image). **Add message** adds another;
+a sentence, an accent colour and an optional symbol. Beside the full icon picker
+are the signs a message usually wants — **no icon**, info, warning, error, done,
+help, maintenance and the bell — and the picker itself offers every built-in
+drawing, brand mark or uploaded image. **Add message** adds another;
 the ✕ removes it. They are saved with the page and appear in order above the
 overall banner.
 
