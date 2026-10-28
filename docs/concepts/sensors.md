@@ -381,6 +381,12 @@ the single sensor types are one tab away. The address, name, group and credentia
 entered for one template are kept for the next template in the same dialog, so a
 device can receive several sets of sensors without being typed in again.
 
+The cards sort alphabetically by default. Drag one onto another to arrange your
+own order; it is remembered on your account, and the **A–Z** button next to the
+filters clears it. The filter button opens the vendor, system and "watches" chips
+only when they are wanted; what is chosen appears as removable chips under the
+search box.
+
 The sensor catalogue carries a template library: **QNAP**, **Synology**, **UniFi**,
 **APC UPS**, **MikroTik**, **pfSense/OPNsense**, **Proxmox**, **TrueNAS**, printers
 and a generic **HOST-RESOURCES** set for almost anything else. The templates are
