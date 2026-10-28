@@ -84,6 +84,7 @@ pattern-matching on the status code.
 | `POST` | `/api/setup` | First-run only; refuses once an account exists. `{"username":"…","password":"…","mode":"simple"\|"advanced"}` |
 | `GET` | `/metrics` | Prometheus text format, guarded by the read-only [metrics token](/operations/metrics) rather than the API key. `404` until a token is generated |
 | `GET` | `/status/{token}` | The [public status page](/operations/status-page) as `text/html`; `404` for a wrong or rotated token |
+| `GET` | `/status/{token}/icon/{id}` | An uploaded symbol of a published sensor, served as its own media type; `404` for an unpublished one |
 
 ### Metrics
 
@@ -106,7 +107,14 @@ The series are listed in [Metrics](/operations/metrics#what-is-exposed).
 ### Public status page
 
 The page is rendered by the server, reads the token from the path, and draws only
-the sensors selected through `/api/status-page`. It sends `Cache-Control:
+the sensors in the configuration saved through `/api/status-page`. Its
+`config` is `title`, `subtitle`, `theme` (`auto`/`light`/`dark`), `accent` (one of
+the six palette names), `layout` (`list`/`cards`/`compact`), the switches
+`show_logos`, `show_uptime_24`, `show_uptime_7`, `show_uptime_30`,
+`show_last_check`, `show_heartbeat`, `show_incidents`, `show_causes`,
+`incident_days` (7/30/90), and `sections`: an ordered list of
+`{"title","colour","sensors":[{"id","label","icon"}]}`. A sensor may appear in one
+section; `label` and `icon` are optional overrides. It sends `Cache-Control:
 no-store`, `X-Robots-Tag: noindex, nofollow`, `Referrer-Policy: no-referrer` and a
 CSP that allows inline styles and nothing else. The request log records the route
 as `/status/…`, not the token.
@@ -264,8 +272,8 @@ the way.
 | `GET` | `/api/metrics-token` | `{"enabled":bool,"token":"…"}` — the read-only token `/metrics` uses | admin |
 | `PUT` | `/api/metrics-token` | Generate or rotate it; a scraper with the old one starts getting `401` | admin |
 | `DELETE` | `/api/metrics-token` | Remove it; `/metrics` answers `404` | admin |
-| `GET` | `/api/status-page` | `{"enabled":bool,"token":"…","sensor_ids":[…],"show_causes":bool}` — the public page's link and selection | admin |
-| `PUT` | `/api/status-page` | `{"sensor_ids":[…],"show_causes":false}` — replace the published set | admin |
+| `GET` | `/api/status-page` | `{"enabled":bool,"token":"…","config":{…}}` — the public page's link and its whole shape | admin |
+| `PUT` | `/api/status-page` | `{"config":{…}}` — replace the page; omitted switches keep their defaults | admin |
 | `PUT` | `/api/status-token` | Generate or rotate the share link; every old URL starts answering `404` | admin |
 | `DELETE` | `/api/status-token` | Switch the page off; the selection is kept | admin |
 | `PUT` | `/api/password` | `{"current_password":"…","new_password":"…"}` | viewer |

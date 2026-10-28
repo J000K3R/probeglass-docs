@@ -12,7 +12,8 @@ to watch, then offers them as sensors.
 
 ## What it does
 
-1. Open **New sensor → Scan network**.
+1. Open **New sensor** and choose the **Network scan** tab, next to Templates and
+   Single sensor.
 2. Enter a private IPv4 range — `192.168.1.0/24`, up to 256 addresses — and,
    optionally, SNMP credentials.
 3. **Scan.** Without SNMP the scan is TCP only. With credentials it also asks each

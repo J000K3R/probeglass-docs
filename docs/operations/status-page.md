@@ -28,19 +28,48 @@ the shareable URL and four buttons:
 The selection is kept while the page is off, so turning it back on restores the
 page you configured.
 
-## Choosing what is published
+## Building the page
 
-The same panel lists every sensor, grouped by its group, with a filter line
-above. Tick the services the page should show and press **Save selection**.
+Below the link, the panel is the page: title, subtitle, theme, accent colour,
+layout and the switches for what each service shows. Everything is saved together
+with **Save page**, and the page follows at its next load.
 
-A published page contains:
+- **Theme** — system, light or dark.
+- **Layout** — a **list** (a table with the columns you enabled), **cards** (one
+  card per service, with its logo and heartbeat) or **compact** (one line each).
+- **Accent colour** — azure, violet, emerald, amber, rose or slate. It colours the
+  rule under the title and the section headings.
+- **What the page shows** — each uptime window can be shown or hidden, and so can
+  the last check, the heartbeat, the logos, the incidents and their causes. A
+  page with only names and states is a valid page.
+
+### Sections
+
+The services are grouped into **sections** you name yourself — Internet, Media,
+Homelab, whatever the people reading the page understand. Each section has its
+own heading, an accent colour for that heading, and its own list of sensors.
+
+**Add section**, type a heading, then press **Sensors**. The dialog lists every
+sensor by its group with a filter line; tick what belongs in the section. A sensor
+can only be in one section. The arrows move a section up or down, and **Save
+page** writes the whole arrangement at once.
+
+A section with nothing in it is not drawn. A sensor that is deleted drops out of
+every section without any further action.
+
+A published page contains, according to the switches:
 
 - the service's **name** and its current state — operational, degraded, down,
   paused;
 - its **uptime** for 24 hours, 7 days and 30 days;
 - when it was **last checked**;
-- recent **incidents**, thirty days back, with the times and — only if you turn
-  this on — the probe's own message.
+- the **heartbeat**: the last thirty probes as a strip of ticks, so a reader sees
+  how the last hour has gone without a chart;
+- the service's **logo**, when the sensor has one. The built-in drawings and brand
+  marks are static files; an uploaded image is served through the page's own token
+  and only while a sensor on the page wears it;
+- recent **incidents** for the chosen window (7, 30 or 90 days), with the times and
+  — only if you turn this on — the probe's own message.
 
 It never contains the sensor's **target**, its options, its credentials, its
 channels, or any other sensor. There is no login box and no link back into the
@@ -67,6 +96,16 @@ message built from a body check can quote content you did not mean to publish.
 With the switch off, the page says when an incident started, whether it is still
 running, and how long it lasted, and nothing about why.
 
+## The shapes it can take
+
+The same page in its three layouts:
+
+- **List** — the table, with a column for each window you enabled.
+- **Cards** — a grid of cards, each with the logo, the state, the figures you
+  chose and the heartbeat.
+- **Compact** — one line per service: logo, name, state, 24-hour figure and
+  heartbeat. Useful for a page with thirty services on a phone.
+
 ## What protects it
 
 - The token is 32 random bytes in base64url, the same kind the Prometheus endpoint
@@ -74,19 +113,29 @@ running, and how long it lasted, and nothing about why.
 - A wrong token and a page that is switched off answer the same `404`, so an
   outsider cannot tell a stale link from an installation that has none.
 - The page sends `X-Robots-Tag: noindex, nofollow` and `Referrer-Policy:
-  no-referrer`, and its CSP allows inline styles and nothing else: no script, no
-  image, no font, no frame.
+  no-referrer`, and its CSP allows inline styles and images from this server and
+  nothing else: no script, no font, no frame. The only images are the symbols.
 - The token is not written to the request log; the log shows `/status/…`.
 - The page is read-only in the only sense that matters: there is no route on it
   that changes anything, no session cookie is read, and its data comes from the
   same tables the dashboard uses.
 
+## API
+
+`GET /api/status-page` returns `{"enabled":…,"token":"…","config":{…}}`; `PUT`
+with `{"config":{…}}` replaces the page. Omitted switches keep their defaults; an
+explicit `false` turns one off. An unknown theme, accent or layout falls back to
+the default, and a sensor can appear in only one section.
+
+`GET /status/{token}` is the page and `GET /status/{token}/icon/{id}` is an
+uploaded symbol of a published sensor, both reachable without a session.
+
 ## Limits
 
-- **Only sensors, not groups.** Publishing a group means ticking its sensors; a
-  sensor added to the group later is not published automatically. That is on
-  purpose — a new sensor should not appear on a public page because somebody
-  filed it under the wrong heading.
+- **Sections are a list, not a rule.** A sensor added to a dashboard group later
+  does not appear in a status section by itself. That is on purpose — a new
+  sensor should not appear on a public page because somebody filed it under the
+  wrong heading.
 - **No history beyond the incident list.** The uptime figures are the three
   standard windows; the dashboard is where the charts are.
 - **One page per installation.** There is no second public page for a second
