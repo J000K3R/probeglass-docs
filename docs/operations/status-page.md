@@ -43,6 +43,15 @@ with **Save page**, and the page follows at its next load.
   the last check, the heartbeat, the logos, the incidents and their causes. A
   page with only names and states is a valid page.
 
+### Messages
+
+**Status messages** sit at the top of the page, the way a status page says "the
+NAS is being upgraded this evening" without opening an incident. Each message is
+a sentence, an accent colour and an optional symbol (any of the built-in
+drawings, a brand mark or an uploaded image). **Add message** adds another;
+the ✕ removes it. They are saved with the page and appear in order above the
+overall banner.
+
 ### Sections
 
 The services are grouped into **sections** you name yourself — Internet, Media,
@@ -105,6 +114,20 @@ The same page in its three layouts:
   chose and the heartbeat.
 - **Compact** — one line per service: logo, name, state, 24-hour figure and
   heartbeat. Useful for a page with thirty services on a phone.
+
+## Editing the page from the page
+
+A signed-in administrator who opens the shared link sees **Edit page** under the
+footer. It leads straight to **Settings → Monitoring**, with the status panel in
+view — the link is `/#/settings/monitor/status`. Nobody else is shown it: the
+public page reads the session cookie only to decide whether to draw that one
+link, and never exposes anything else about the account.
+
+## The footer
+
+At the bottom, centred, is the ProbeGlass mark and name, linking to the project
+website. It is the page's only outward link, it carries no token and it opens in
+a new tab.
 
 ## What protects it
 
