@@ -39,6 +39,10 @@ with **Save page**, and the page follows at its next load.
   card per service, with its logo and heartbeat) or **compact** (one line each).
 - **Accent colour** — azure, violet, emerald, amber, rose or slate. It colours the
   rule under the title and the section headings.
+- **Branding** — a **page logo** from the icon picker, and a **background image**
+  as an https address or a path on this server. The **dimming** lays the page
+  colour over the picture, from none to strong, so the text stays readable; the
+  default is medium.
 - **What the page shows** — each uptime window can be shown or hidden, and so can
   the last check, the heartbeat, the logos, the incidents and their causes. A
   page with only names and states is a valid page.
@@ -61,9 +65,19 @@ Homelab, whatever the people reading the page understand. Each section has its
 own heading, an accent colour for that heading, and its own list of sensors.
 
 **Add section**, type a heading, then press **Sensors**. The dialog lists every
-sensor by its group with a filter line; tick what belongs in the section. A sensor
-can only be in one section. The arrows move a section up or down, and **Save
-page** writes the whole arrangement at once.
+sensor by its group with a filter line; nothing is ticked at the start.
+
+- The **box beside a group's name** ticks or clears every sensor in that group at
+  once, and shows a dash when only some of them are chosen. **Select all** and
+  **Select none** do the same for what the filter is showing.
+- A section has its own **symbol** (the small picker beside its heading), its own
+  colour and its place in the order.
+- **Use my groups** builds the sections from the dashboard groups in one step:
+  each group becomes a section with its sensors, and takes over the group's icon
+  and colour. It replaces the sections that are there, which is why it asks first.
+
+A sensor can only be in one section. The arrows move a section up or down, and
+**Save page** writes the whole arrangement at once.
 
 A section with nothing in it is not drawn. A sensor that is deleted drops out of
 every section without any further action.
@@ -138,8 +152,9 @@ a new tab.
 - A wrong token and a page that is switched off answer the same `404`, so an
   outsider cannot tell a stale link from an installation that has none.
 - The page sends `X-Robots-Tag: noindex, nofollow` and `Referrer-Policy:
-  no-referrer`, and its CSP allows inline styles and images from this server and
-  nothing else: no script, no font, no frame. The only images are the symbols.
+  no-referrer`, and its CSP allows inline styles and images from this server or an
+  https address — the background you chose — and nothing else: no script, no font,
+  no frame.
 - The token is not written to the request log; the log shows `/status/…`.
 - The page is read-only in the only sense that matters: there is no route on it
   that changes anything, no session cookie is read, and its data comes from the

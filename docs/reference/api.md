@@ -108,14 +108,16 @@ The series are listed in [Metrics](/operations/metrics#what-is-exposed).
 
 The page is rendered by the server, reads the token from the path, and draws only
 the sensors in the configuration saved through `/api/status-page`. Its
-`config` is `title`, `subtitle`, `theme` (`auto`/`light`/`dark`), `accent` (one of
-the six palette names), `layout` (`list`/`cards`/`compact`), the switches
+`config` is `title`, `subtitle`, `logo` (an icon reference), `theme`
+(`auto`/`light`/`dark`), `accent` (one of the six palette names), `layout`
+(`list`/`cards`/`compact`), `background_url` (https or a path on this server),
+`background_dim` (0–90), the switches
 `show_logos`, `show_uptime_24`, `show_uptime_7`, `show_uptime_30`,
 `show_last_check`, `show_heartbeat`, `show_incidents`, `show_causes`,
 `incident_days` (7/30/90), `notices`: an ordered list of `{"text","colour","icon"}`
 for the messages at the top, and `sections`: an ordered list of
-`{"title","colour","sensors":[{"id","label","icon"}]}`. A sensor may appear in one
-section; `label` and `icon` are optional overrides. It sends `Cache-Control:
+`{"title","icon","colour","sensors":[{"id","label","icon"}]}`. A sensor may appear
+in one section; `label` and `icon` are optional overrides. It sends `Cache-Control:
 no-store`, `X-Robots-Tag: noindex, nofollow`, `Referrer-Policy: no-referrer` and a
 CSP that allows inline styles and nothing else. The request log records the route
 as `/status/…`, not the token.
