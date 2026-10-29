@@ -85,6 +85,7 @@ pattern-matching on the status code.
 | `GET` | `/metrics` | Prometheus text format, guarded by the read-only [metrics token](/operations/metrics) rather than the API key. `404` until a token is generated |
 | `GET` | `/status/{token}` | The [public status page](/operations/status-page) as `text/html`; `404` for a wrong or rotated token |
 | `GET` | `/status/{token}/icon/{id}` | An uploaded symbol of a published sensor, served as its own media type; `404` for an unpublished one |
+| `GET` | `/status/{token}/background` | The page's uploaded background photograph, served as its own media type with an ETag |
 
 ### Metrics
 
@@ -117,10 +118,18 @@ the sensors in the configuration saved through `/api/status-page`. Its
 `incident_days` (7/30/90), `notices`: an ordered list of `{"text","colour","icon"}`
 for the messages at the top, and `sections`: an ordered list of
 `{"title","icon","colour","sensors":[{"id","label","icon"}]}`. A sensor may appear
-in one section; `label` and `icon` are optional overrides. It sends `Cache-Control:
-no-store`, `X-Robots-Tag: noindex, nofollow`, `Referrer-Policy: no-referrer` and a
-CSP that allows inline styles and nothing else. The request log records the route
-as `/status/…`, not the token.
+in one section; `label` and `icon` are optional overrides.
+
+The answer also carries `background_upload` — `null` or the uploaded photograph's
+`{"media_type","width","height","size","digest","created_at"}` — and
+`background_limits` (`max_bytes`, `max_side`, `media_types`). While an upload
+exists the page draws it instead of `background_url`, at
+`/status/{token}/background?v=<digest>`.
+
+It sends `Cache-Control: no-store`, `X-Robots-Tag: noindex, nofollow`,
+`Referrer-Policy: no-referrer` and a CSP that allows inline styles and images from
+this server or an https address, and nothing else. The request log records the
+route as `/status/…`, not the token.
 
 ### Sensors
 
@@ -275,8 +284,11 @@ the way.
 | `GET` | `/api/metrics-token` | `{"enabled":bool,"token":"…"}` — the read-only token `/metrics` uses | admin |
 | `PUT` | `/api/metrics-token` | Generate or rotate it; a scraper with the old one starts getting `401` | admin |
 | `DELETE` | `/api/metrics-token` | Remove it; `/metrics` answers `404` | admin |
-| `GET` | `/api/status-page` | `{"enabled":bool,"token":"…","config":{…}}` — the public page's link and its whole shape | admin |
+| `GET` | `/api/status-page` | `{"enabled":bool,"token":"…","config":{…},"background_upload":…,"background_limits":{…}}` — the public page's link and its whole shape | admin |
 | `PUT` | `/api/status-page` | `{"config":{…}}` — replace the page; omitted switches keep their defaults | admin |
+| `GET` | `/api/status-background` | The uploaded background as `image/png`, `image/jpeg` or `image/gif`, for the panel's preview | admin |
+| `POST` | `/api/status-background` | Multipart `file`, up to 4096×4096 and 12 MiB; returns the stored metadata | admin |
+| `DELETE` | `/api/status-background` | Remove the upload; the page falls back to `background_url`; `404` when there is none | admin |
 | `PUT` | `/api/status-token` | Generate or rotate the share link; every old URL starts answering `404` | admin |
 | `DELETE` | `/api/status-token` | Switch the page off; the selection is kept | admin |
 | `PUT` | `/api/password` | `{"current_password":"…","new_password":"…"}` | viewer |

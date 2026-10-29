@@ -42,8 +42,9 @@ menus and two buttons:
 
 **What to include** decides what the file is about:
 
-- **Without history** — the sensors, the sites, the alert channels, the accounts
-  and the settings. This is the file to keep in version control or to carry to a new
+- **Without history** — the sensors, the sites, the groups and tags with their
+  icons and colours, uploaded images, the public status page with its background
+  photograph, the alert channels, the accounts and the settings. This is the file to keep in version control or to carry to a new
   machine, because nothing in it changes from one hour to the next. Outages and probe
   results are left out, and a restore leaves the ones already on the machine
   untouched.
@@ -100,6 +101,12 @@ summarise. The rollups *are* in it, and they are what every uptime figure and ev
 chart beyond the raw window is computed from, so the numbers are right after a
 restore. What is missing is stated plainly: the individual probe messages of the
 days you left behind are no longer findable with the search.
+
+**The size of the background.** Uploaded images and the status page's photograph
+travel as base64, which adds about a third to their size. A 4K photograph of a few
+megabytes makes the document a few megabytes larger; the restore accepts up to
+64 MiB, so a configuration backup stays comfortably inside it even with a maximum
+12 MiB image.
 
 :::warning
 The file carries your secrets in clear text — password hashes, TOTP secrets,

@@ -455,8 +455,8 @@ Node-RED, Mosquitto and Shelly. A template's first check is what **Check device*
 runs, so a wrong port or token is visible before the sensors are created.
 
 Applications with an API key have a template of their own: **Sonarr**, **Radarr**,
-**Lidarr**, **Prowlarr**, **Bazarr**, **Overseerr**, **Jellyseerr**, the
-**Portainer API** and **Paperless-ngx**. Each asks for the key once and checks the
+**Lidarr**, **Prowlarr**, **Bazarr**, **Seerr** (formerly Overseerr and
+Jellyseerr), the **Portainer API** and **Paperless-ngx**. Each asks for the key once and checks the
 application's own status endpoint. The key travels in the header the application
 expects — `X-Api-Key` for the *Arr apps, `X-API-Key` for Bazarr and Portainer,
 `Authorization: Token …` for Paperless — and is masked in the API like every other

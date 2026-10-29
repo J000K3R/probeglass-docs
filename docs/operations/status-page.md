@@ -39,10 +39,13 @@ with **Save page**, and the page follows at its next load.
   card per service, with its logo and heartbeat) or **compact** (one line each).
 - **Accent colour** — azure, violet, emerald, amber, rose or slate. It colours the
   rule under the title and the section headings.
-- **Branding** — a **page logo** from the icon picker, and a **background image**
-  as an https address or a path on this server. The **dimming** lays the page
-  colour over the picture, from none to strong, so the text stays readable; the
-  default is medium.
+- **Branding** — a **page logo** from the icon picker, and a **background image**.
+  The image is either uploaded — **PNG, JPEG or GIF, up to 4096×4096 pixels and
+  12 MiB** — or named by an https address or a path on this server. An upload is
+  stored in the database, travels in the JSON backup, and is used while it exists;
+  **Remove image** falls back to the address, or to the plain surface. The
+  **dimming** lays the page colour over the picture, from none to strong, so the
+  text stays readable; the default is medium.
 - **What the page shows** — each uptime window can be shown or hidden, and so can
   the last check, the heartbeat, the logos, the incidents and their causes. A
   page with only names and states is a valid page.
@@ -154,7 +157,8 @@ a new tab.
 - The page sends `X-Robots-Tag: noindex, nofollow` and `Referrer-Policy:
   no-referrer`, and its CSP allows inline styles and images from this server or an
   https address — the background you chose — and nothing else: no script, no font,
-  no frame.
+  no frame. An uploaded background is served under the page's token, like an
+  uploaded symbol, and never from a path a stranger can guess.
 - The token is not written to the request log; the log shows `/status/…`.
 - The page is read-only in the only sense that matters: there is no route on it
   that changes anything, no session cookie is read, and its data comes from the
@@ -162,13 +166,22 @@ a new tab.
 
 ## API
 
-`GET /api/status-page` returns `{"enabled":…,"token":"…","config":{…}}`; `PUT`
-with `{"config":{…}}` replaces the page. Omitted switches keep their defaults; an
-explicit `false` turns one off. An unknown theme, accent or layout falls back to
-the default, and a sensor can appear in only one section.
+`GET /api/status-page` returns `{"enabled":…,"token":"…","config":{…},
+"background_upload":…,"background_limits":{…}}`; `PUT` with `{"config":{…}}`
+replaces the page. Omitted switches keep their defaults; an explicit `false` turns
+one off. An unknown theme, accent or layout falls back to the default, and a sensor
+can appear in only one section.
 
-`GET /status/{token}` is the page and `GET /status/{token}/icon/{id}` is an
-uploaded symbol of a published sensor, both reachable without a session.
+`POST /api/status-background` takes a multipart `file` (`image/png`,
+`image/jpeg` or `image/gif`), `GET` returns the image for the panel's preview, and
+`DELETE` removes it — all administrator-only. The page draws an upload at
+`/status/<token>/background?v=<digest>`; the digest in the address is what makes a
+replacement visible at once although the image is cached for a day.
+
+`GET /status/{token}` is the page, `GET /status/{token}/icon/{id}` is an uploaded
+symbol of a published sensor, and `GET /status/{token}/background` is its uploaded
+photograph — all reachable without a session, and all 404 for a wrong or rotated
+token.
 
 ## Limits
 
