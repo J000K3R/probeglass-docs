@@ -104,15 +104,18 @@ A published page contains, according to the switches:
 - in the charts layout, a **day-by-day uptime strip** over the history window —
   green from 99.9 %, amber from 99 %, red below that, grey for a day without
   probes, blue for a day entirely inside maintenance — and a **response-time
-  curve** of the daily average, with the days that held a failure marked. Grey is
-  a day the sensor was not watched, which is not the same as a day it was down;
+  curve** of the daily average, with the day's fastest and slowest successful
+  probe as a band around it and the days that held a failure marked. Grey is a
+  day the sensor was not watched, which is not the same as a day it was down;
 - the section's own count (**2 of 2 operational**) and, in the banner, the whole
   page's uptime over the same window;
 - the service's **logo**, when the sensor has one. The built-in drawings and brand
   marks are static files; an uploaded image is served through the page's own token
   and only while a sensor on the page wears it;
-- recent **incidents** for the chosen window (7, 30 or 90 days), with the times and
-  — only if you turn this on — the probe's own message.
+- recent **incidents** for the chosen window (7, 30 or 90 days), each as a card
+  with its state (**Ongoing** or **Resolved**), its start and how long it lasted
+  or has lasted — and, only if you turn this on, the probe's own message. An
+  empty list says there were no incidents rather than disappearing.
 
 It never contains the sensor's **target**, its options, its credentials, its
 channels, or any other sensor. There is no login box and no link back into the
@@ -144,8 +147,9 @@ running, and how long it lasted, and nothing about why.
 The same page in its four layouts:
 
 - **Charts** — one block per service: name, protocol, state and history uptime,
-  a day-by-day strip, and a response-time curve. The closest to a conventional
-  public status page, and the one that answers "has it been fine" at a glance.
+  a day-by-day strip, and a response-time curve with its min–max band and mean.
+  The closest to a conventional public status page, and the one that answers
+  "has it been fine" at a glance.
 - **List** — the table, with a column for each window you enabled.
 - **Cards** — a grid of cards, each with the logo, the state, the figures you
   chose and the heartbeat.
