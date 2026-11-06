@@ -111,10 +111,11 @@ The page is rendered by the server, reads the token from the path, and draws onl
 the sensors in the configuration saved through `/api/status-page`. Its
 `config` is `title`, `subtitle`, `logo` (an icon reference), `theme`
 (`auto`/`light`/`dark`), `accent` (one of the six palette names), `layout`
-(`list`/`cards`/`compact`), `background_url` (https or a path on this server),
-`background_dim` (0–90), the switches
+(`charts`/`list`/`cards`/`compact`), `background_url` (https or a path on this
+server), `background_dim` (0–90), the switches
 `show_logos`, `show_uptime_24`, `show_uptime_7`, `show_uptime_30`,
-`show_last_check`, `show_heartbeat`, `show_incidents`, `show_causes`,
+`show_last_check`, `show_heartbeat`, `show_uptime_strip`, `show_response_time`,
+`show_incidents`, `show_causes`, `history_days` (30/60/90),
 `incident_days` (7/30/90), `notices`: an ordered list of `{"text","colour","icon"}`
 for the messages at the top, and `sections`: an ordered list of
 `{"title","icon","colour","sensors":[{"id","label","icon"}]}`. A sensor may appear

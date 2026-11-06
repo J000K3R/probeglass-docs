@@ -35,8 +35,11 @@ layout and the switches for what each service shows. Everything is saved togethe
 with **Save page**, and the page follows at its next load.
 
 - **Theme** — system, light or dark.
-- **Layout** — a **list** (a table with the columns you enabled), **cards** (one
-  card per service, with its logo and heartbeat) or **compact** (one line each).
+- **Layout** — **charts** (one block per service with a day-by-day uptime strip
+  and a response-time curve), a **list** (a table with the columns you enabled),
+  **cards** (one card per service, with its logo and heartbeat) or **compact**
+  (one line each). Charts is the default for a page that never chose a layout;
+  a stored page keeps the one it has.
 - **Accent colour** — azure, violet, emerald, amber, rose or slate. It colours the
   rule under the title and the section headings.
 - **Branding** — a **page logo** from the icon picker, and a **background image**.
@@ -47,8 +50,12 @@ with **Save page**, and the page follows at its next load.
   **dimming** lays the page colour over the picture, from none to strong, so the
   text stays readable; the default is medium.
 - **What the page shows** — each uptime window can be shown or hidden, and so can
-  the last check, the heartbeat, the logos, the incidents and their causes. A
-  page with only names and states is a valid page.
+  the last check, the heartbeat, the uptime strip, the response-time curve, the
+  logos, the incidents and their causes. A page with only names and states is a
+  valid page.
+- **History** — the window behind the strip, the curve and the figure in the
+  banner: **30, 60 or 90 days**, default 90. The 24-hour, 7-day and 30-day columns
+  are separate switches and keep their own windows.
 
 ### Messages
 
@@ -89,10 +96,18 @@ A published page contains, according to the switches:
 
 - the service's **name** and its current state — operational, degraded, down,
   paused;
-- its **uptime** for 24 hours, 7 days and 30 days;
+- its **uptime** for 24 hours, 7 days and 30 days — and, in the charts layout,
+  over the chosen history window;
 - when it was **last checked**;
 - the **heartbeat**: the last thirty probes as a strip of ticks, so a reader sees
   how the last hour has gone without a chart;
+- in the charts layout, a **day-by-day uptime strip** over the history window —
+  green from 99.9 %, amber from 99 %, red below that, grey for a day without
+  probes, blue for a day entirely inside maintenance — and a **response-time
+  curve** of the daily average, with the days that held a failure marked. Grey is
+  a day the sensor was not watched, which is not the same as a day it was down;
+- the section's own count (**2 of 2 operational**) and, in the banner, the whole
+  page's uptime over the same window;
 - the service's **logo**, when the sensor has one. The built-in drawings and brand
   marks are static files; an uploaded image is served through the page's own token
   and only while a sensor on the page wears it;
@@ -126,13 +141,21 @@ running, and how long it lasted, and nothing about why.
 
 ## The shapes it can take
 
-The same page in its three layouts:
+The same page in its four layouts:
 
+- **Charts** — one block per service: name, protocol, state and history uptime,
+  a day-by-day strip, and a response-time curve. The closest to a conventional
+  public status page, and the one that answers "has it been fine" at a glance.
 - **List** — the table, with a column for each window you enabled.
 - **Cards** — a grid of cards, each with the logo, the state, the figures you
   chose and the heartbeat.
 - **Compact** — one line per service: logo, name, state, 24-hour figure and
   heartbeat. Useful for a page with thirty services on a phone.
+
+The strip and the curve are drawn on the server: the bars are ordinary HTML
+elements, and the curve is one SVG path that stretches to the page's width, with
+its numbers beside it as text. Nothing is measured in the browser and no script
+runs.
 
 ## Editing the page from the page
 
@@ -169,8 +192,9 @@ a new tab.
 `GET /api/status-page` returns `{"enabled":…,"token":"…","config":{…},
 "background_upload":…,"background_limits":{…}}`; `PUT` with `{"config":{…}}`
 replaces the page. Omitted switches keep their defaults; an explicit `false` turns
-one off. An unknown theme, accent or layout falls back to the default, and a sensor
-can appear in only one section.
+one off. `show_uptime_strip`, `show_response_time` and `history_days` (30, 60 or
+90) join the existing switches. An unknown theme, accent or layout falls back to
+the default, and a sensor can appear in only one section.
 
 `POST /api/status-background` takes a multipart `file` (`image/png`,
 `image/jpeg` or `image/gif`), `GET` returns the image for the panel's preview, and
@@ -189,7 +213,11 @@ token.
   does not appear in a status section by itself. That is on purpose — a new
   sensor should not appear on a public page because somebody filed it under the
   wrong heading.
-- **No history beyond the incident list.** The uptime figures are the three
-  standard windows; the dashboard is where the charts are.
+- **The public history is at most 90 days.** The strip, the curve and the
+  banner's figure read the chosen 30, 60 or 90 days; the dashboard is where the
+  longer view and a single probe's full chart live.
+- **The curve plots a daily average, not a percentile.** The rollups store the
+  sum, minimum and maximum latency of each bucket, so the page can draw the mean
+  honestly. A p95 would need a new aggregation.
 - **One page per installation.** There is no second public page for a second
   audience.
